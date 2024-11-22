@@ -52,7 +52,7 @@ function onClick() {
                       </v-text-field>
 
                       <v-btn class="mt-2 rounded" color="secondary" type="submit" block
-                        >Login</v-btn
+                        >Sign up</v-btn
                       >
                     </v-form>
                     <v-divider class="my-5"></v-divider>

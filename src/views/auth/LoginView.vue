@@ -1,18 +1,18 @@
 <script setup>
 import { ref } from 'vue'
-import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
+// import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 
-const theme = ref('light')
+const theme = ref('dark')
 
 function onClick() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
+  theme.value = theme.value === 'light' ? 'dark' : 'dark'
 }
 </script>
 
 <template>
   <BackgroundLayout>
     <v-responsive>
-      <v-app :theme="theme" class="transparent-app">
+      <v-app :theme="theme" :class="theme === 'dark' ? 'dark-background' : 'light-background'">
         <!-- <v-app-bar class="px-3" color="transparent">
           <v-spacer></v-spacer>
 
@@ -44,13 +44,15 @@ function onClick() {
                     <v-form fast-fail @submit.prevent>
                       <v-text-field label="Email" variant="outlined">
                         <template v-slot:label>
-                          <v-icon class="mr-1">mdi-email</v-icon> Email
+                          <!-- <v-icon class="mr-1">mdi-email</v-icon>-->
+                          Email
                         </template>
                       </v-text-field>
 
                       <v-text-field label="Password" type="password" variant="outlined">
                         <template v-slot:label>
-                          <v-icon class="mr-1">mdi-lock</v-icon> Password
+                          <!-- <v-icon class="mr-1">mdi-lock</v-icon> -->
+                          Password
                         </template>
                       </v-text-field>
 
@@ -90,5 +92,9 @@ function onClick() {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
   padding: 20px; /* Optional padding for inner spacing */
   width: 70%;
+}
+.dark-background {
+  background-color: gray;
+  color: white; /* Ensure text is visible */
 }
 </style>
