@@ -13,7 +13,7 @@ function onClick() {
   <BackgroundLayout>
     <v-responsive>
       <v-app :theme="theme" class="transparent-app">
-        <!-- <v-app-bar class="px-3" color="transparent">
+        <v-app-bar class="px-3" color="transparent">
           <v-spacer></v-spacer>
 
           <v-btn
@@ -21,7 +21,7 @@ function onClick() {
             slim
             @click="onClick"
           ></v-btn>
-         </v-app-bar> -->
+        </v-app-bar>
 
         <v-main>
           <v-container class="transparent-container">
