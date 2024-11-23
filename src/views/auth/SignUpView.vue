@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 
-const theme = ref('light')
+const theme = ref('dark')
 
 function onClick() {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
