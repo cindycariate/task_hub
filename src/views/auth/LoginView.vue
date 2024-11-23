@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-// import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
+import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 
 const theme = ref('dark')
 
@@ -12,7 +12,7 @@ function onClick() {
 <template>
   <BackgroundLayout>
     <v-responsive>
-      <v-app :theme="theme" :class="theme === 'dark' ? 'dark-background' : 'light-background'">
+      <v-app :theme="theme" class="transparent-app">
         <!-- <v-app-bar class="px-3" color="transparent">
           <v-spacer></v-spacer>
 
@@ -92,9 +92,5 @@ function onClick() {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
   padding: 20px; /* Optional padding for inner spacing */
   width: 70%;
-}
-.dark-background {
-  background-color: gray;
-  color: white; /* Ensure text is visible */
 }
 </style>
