@@ -58,7 +58,7 @@ function onClick() {
                     <v-divider class="my-5"></v-divider>
                     <h4 class="text-center">
                       Already have an account?
-                      <RouterLink class="text-white" to="/login"><b>Login</b></RouterLink>
+                      <RouterLink class="text-white" to="/"><b>Login</b></RouterLink>
                     </h4>
                   </v-card-text>
                 </v-card></v-col
