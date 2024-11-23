@@ -27,14 +27,14 @@ function onClick() {
           <v-container class="transparent-container">
             <v-row class="d-flex justify-center align-center" style="min-height: 100vh">
               <v-col cols="12" md="6">
-                <h1 class="text-center text-h1" color="">taskHub</h1>
-                <h4 class="text-white justify-content-center py-16 text-h6">
+                <h1 class="text-center text-h2" color="">taskHub</h1>
+                <h4 class="text-white justify-content-center py-8 text-h6">
                   A Task Manager app helps users create tasks, assign priorities, and monitor
                   progress to stay organized and meet deadlines efficiently.
                 </h4>
               </v-col>
 
-              <v-col cols="12" md="6" class="d-flex justify-center align-center py-15 mx-auto">
+              <v-col cols="12" md="6" class="d-flex justify-center align-center py-8 mx-auto">
                 <v-card class="glassmorphic-card" elevation="16" max-width="800">
                   <template v-slot:title>
                     <span class="text-center d-block font-weight-white"><h2>LOGIN</h2></span>
