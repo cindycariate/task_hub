@@ -13,7 +13,7 @@ function onClick() {
   <BackgroundLayout>
     <v-responsive>
       <v-app :theme="theme" class="transparent-app">
-        <!-- <v-app-bar class="px-3" color="transparent">
+        <v-app-bar class="px-3" color="transparent">
           <v-spacer></v-spacer>
 
           <v-btn
@@ -21,18 +21,18 @@ function onClick() {
             slim
             @click="onClick"
           ></v-btn>
-         </v-app-bar> -->
+        </v-app-bar>
 
         <v-main>
           <v-container class="transparent-container">
             <v-row class="d-flex justify-center align-center" style="min-height: 100vh">
-              <!-- <v-col cols="12" md="6">
+              <v-col cols="12" md="6">
                 <h1 class="text-center text-h1" color="">taskHub</h1>
                 <h4 class="text-white justify-content-center py-16 text-h6">
                   A Task Manager app helps users create tasks, assign priorities, and monitor
                   progress to stay organized and meet deadlines efficiently.
                 </h4>
-              </v-col> -->
+              </v-col>
 
               <v-col cols="12" md="6" class="d-flex justify-center align-center py-15 mx-auto">
                 <v-card class="glassmorphic-card" elevation="16" max-width="800">
