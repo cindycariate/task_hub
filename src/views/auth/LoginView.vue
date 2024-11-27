@@ -35,7 +35,7 @@ function onClick() {
                   :width="290"
                   aspect-ratio="16/9"
                   cover
-                  src="/public/logo_icon.png"
+                  src="/logo_icon.png"
                   alt="TaskHub"
                 ></v-img>
 
