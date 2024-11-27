@@ -18,7 +18,7 @@ function onClick() {
           <h3 class="text-logo font-weight-black">TaskHub</h3>
           <v-spacer></v-spacer>
 
-          <!-- <v-btn 
+          <!-- <v-btn
           :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
           text="Toggle Theme"
           slim
