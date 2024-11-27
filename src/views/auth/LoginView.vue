@@ -18,7 +18,7 @@ function onClick() {
           <h3 class="text-logo font-weight-black">TaskHub</h3>
           <v-spacer></v-spacer>
 
-          <!-- <v-btn 
+          <!-- <v-btn
           :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
           text="Toggle Theme"
           slim
@@ -35,7 +35,7 @@ function onClick() {
                   :width="290"
                   aspect-ratio="16/9"
                   cover
-                  src="/public/logo_icon.png"
+                  src="/logo_icon.png"
                   alt="TaskHub"
                 ></v-img>
 
