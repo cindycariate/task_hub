@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
-const isPasswordVisible = ref(false)
+const visible = ref(false)
 </script>
 <template>
   <v-form fast-fail @submit.prevent>
@@ -11,9 +11,9 @@ const isPasswordVisible = ref(false)
       variant="outlined"
       prepend-inner-icon="mdi-lock-outline"
       label="Password"
-      :type="isPasswordVisible ? 'text' : 'password'"
-      :append-inner-icon="isPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-      @click:append-inner="isPasswordVisible = !isPasswordVisible"
+      :type="visible ? 'text' : 'password'"
+      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+      @click:append-inner="visible = !visible"
     ></v-text-field>
 
     <v-btn
