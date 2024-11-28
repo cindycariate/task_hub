@@ -66,6 +66,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                   color="cyan-lighten-3"
                   rounded="xl"
                   block
+                  prepend-icon="mdi-account-plus"
                   >Sign up</v-btn
                 >
               </v-form>

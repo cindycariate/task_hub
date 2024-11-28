@@ -52,6 +52,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                   color="cyan-lighten-2"
                   rounded="xl"
                   block
+                  prepend-icon="mdi-login"
                   >Log in</v-btn
                 >
               </v-form>
