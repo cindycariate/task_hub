@@ -5,15 +5,29 @@ import { requiredValidator, emailValidator } from '@/utils/validators'
 const visible = ref(false)
 const refVform = ref()
 
+const formDataDefault = {
+  email: '',
+  password: '',
+}
+
+const formData = ref({
+  ...formDataDefault,
+})
+
+const onLogin = () => {
+  // alert(formData.value.email)
+}
+
 const onFormSubmit = () => {
-  refVform.value?.validate().then(({ valid: isValid }) => {
-    // if (isValid) onSubmit()
+  refVform.value?.validate().then(({ valid }) => {
+    if (valid) onLogin()
   })
 }
 </script>
 <template>
   <v-form ref="refVform" fast-fail @submit.prevent="onFormSubmit">
     <v-text-field
+      v-model="formData.email"
       label="Email"
       variant="outlined"
       prepend-inner-icon="mdi-email"
@@ -21,6 +35,7 @@ const onFormSubmit = () => {
     ></v-text-field>
 
     <v-text-field
+      v-model="formData.password"
       variant="outlined"
       prepend-inner-icon="mdi-lock-outline"
       label="Password"

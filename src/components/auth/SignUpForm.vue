@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { requiredValidator } from '@/utils/validators'
 
 const visible = ref(false)
 const conPassVisible = ref(false)
