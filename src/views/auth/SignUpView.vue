@@ -32,7 +32,7 @@ import SignUpForm from '@/components/auth/SignUpForm.vue'
 
             <v-card-text class="pt-4">
               <SignUpForm></SignUpForm>
-
+              <v-divider class="my-5"></v-divider>
               <h4 class="text-center">
                 Already have an account?
                 <RouterLink style="color: white" to="/"><b>Login</b></RouterLink>
