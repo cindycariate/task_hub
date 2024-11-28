@@ -1,11 +1,24 @@
 <script setup>
 import { ref } from 'vue'
+import { requiredValidator, emailValidator } from '@/utils/validators'
 
 const visible = ref(false)
+const refVform = ref()
+
+const onFormSubmit = () => {
+  refVform.value?.validate().then(({ valid: isValid }) => {
+    // if (isValid) onSubmit()
+  })
+}
 </script>
 <template>
-  <v-form fast-fail @submit.prevent>
-    <v-text-field label="Email" variant="outlined" prepend-inner-icon="mdi-email"></v-text-field>
+  <v-form ref="refVform" fast-fail @submit.prevent="onFormSubmit">
+    <v-text-field
+      label="Email"
+      variant="outlined"
+      prepend-inner-icon="mdi-email"
+      :rules="[requiredValidator, emailValidator]"
+    ></v-text-field>
 
     <v-text-field
       variant="outlined"
@@ -14,6 +27,7 @@ const visible = ref(false)
       :type="visible ? 'text' : 'password'"
       :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
       @click:append-inner="visible = !visible"
+      :rules="[requiredValidator]"
     ></v-text-field>
 
     <v-btn
