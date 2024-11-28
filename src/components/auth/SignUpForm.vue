@@ -24,7 +24,7 @@ const formData = ref({
 })
 
 const onSubmit = () => {
-  alert(formData.value.password_confirmation)
+  // alert(formData.value.password_confirmation)
 }
 
 const onFormSubmit = () => {

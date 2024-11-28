@@ -15,7 +15,7 @@ const formData = ref({
 })
 
 const onLogin = () => {
-  alert(formData.value.password)
+  // alert(formData.value.password)
 }
 
 const onFormSubmit = () => {
