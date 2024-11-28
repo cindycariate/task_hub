@@ -1,19 +1,9 @@
 <script setup>
-<<<<<<< HEAD
 import AppLayout from '@/components/layout/AppLayout.vue'
 import SignUpForm from '@/components/auth/SignUpForm.vue'
-=======
-import { ref } from 'vue'
-import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 
-const visible = ref(false)
-
-const theme = ref('light')
-
-/*function onClick() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
-}*/
->>>>>>> 36b516c760561592095827ce6be440fc1815a419
+// import { ref } from 'vue'
+// import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 </script>
 
 <template>
