@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { requiredValidator, emailValidator } from '@/utils/validators'
+import { requiredValidator, emailValidator, passwordValidator } from '@/utils/validators'
 
 const visible = ref(false)
 const refVform = ref()
@@ -25,7 +25,7 @@ const onFormSubmit = () => {
 }
 </script>
 <template>
-  <v-form ref="refVform" fast-fail @submit.prevent="onFormSubmit">
+  <v-form ref="refVform" @submit.prevent="onFormSubmit">
     <v-text-field
       v-model="formData.email"
       label="Email"
@@ -42,7 +42,7 @@ const onFormSubmit = () => {
       :type="visible ? 'text' : 'password'"
       :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
       @click:append-inner="visible = !visible"
-      :rules="[requiredValidator]"
+      :rules="[requiredValidator, passwordValidator]"
     ></v-text-field>
 
     <v-btn
