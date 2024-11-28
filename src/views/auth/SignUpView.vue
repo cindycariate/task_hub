@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 
+const visible = ref(false)
+
 const theme = ref('light')
 
 /*function onClick() {
