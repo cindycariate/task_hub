@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 
+const visible = ref(false)
+
 const theme = ref('light')
 
 /*function onClick() {
@@ -67,9 +69,11 @@ const theme = ref('light')
 
                       <v-text-field
                         label="Password"
-                        type="password"
+                        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                        :type="visible ? 'text' : 'password'"
+                        prepend-inner-icon="mdi-lock-outline"
                         variant="outlined"
-                        prepend-inner-icon="mdi-lock"
+                        @click:append-inner="visible = !visible"
                       ></v-text-field>
 
                       <v-btn
