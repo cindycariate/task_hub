@@ -30,7 +30,7 @@ const isPasswordVisible = ref(false)
       :type="isPasswordVisible ? 'text' : 'password'"
       prepend-inner-icon="mdi-lock-outline"
       variant="outlined"
-      @click:append-inner="isPasswordVisible = isPasswordVisible"
+      @click:append-inner="isPasswordVisible = !isPasswordVisible"
     ></v-text-field>
 
     <v-btn
