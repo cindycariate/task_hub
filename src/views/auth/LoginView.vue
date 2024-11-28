@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-
+import LoginForm from '@/components/auth/LoginForm.vue'
 import AppLayout from '@/components/layout/AppLayout.vue'
 </script>
 
@@ -30,32 +30,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
             </template>
 
             <v-card-text class="pt-4">
-              <v-form fast-fail @submit.prevent>
-                <v-text-field
-                  label="Email"
-                  variant="outlined"
-                  prepend-inner-icon="mdi-email"
-                ></v-text-field>
-
-                <v-text-field
-                  label="Password"
-                  :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-                  :type="visible ? 'text' : 'password'"
-                  prepend-inner-icon="mdi-lock-outline"
-                  variant="outlined"
-                  @click:append-inner="visible = !visible"
-                ></v-text-field>
-
-                <v-btn
-                  class="mt-2 text-white"
-                  type="submit"
-                  color="cyan-lighten-2"
-                  rounded="xl"
-                  block
-                  prepend-icon="mdi-login"
-                  >Log in</v-btn
-                >
-              </v-form>
+              <LoginForm></LoginForm>
               <v-divider class="my-5"></v-divider>
               <h4 class="text-center">
                 Don't have account?
