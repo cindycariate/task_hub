@@ -7,6 +7,7 @@ import {
   confirmedValidator,
 } from '@/utils/validators'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
+import AlertNotification from '@/components/common/AlertNotification.vue'
 
 const refVform = ref()
 const visible = ref(false)
@@ -63,27 +64,10 @@ const onFormSubmit = () => {
 }
 </script>
 <template>
-  <v-alert
-    v-if="formAction.formSuccessMessage"
-    :text="formAction.formSuccessMessage"
-    title="Success!"
-    type="success"
-    variant="tonal"
-    density="compact"
-    border="start"
-    closable
-  >
-  </v-alert>
-  <v-alert
-    v-if="formAction.formErrorMessage"
-    :text="formAction.formErrorMessage"
-    title="Ooops!"
-    type="error"
-    variant="tonal"
-    density="compact"
-    border="start"
-    closable
-  ></v-alert>
+  <AlertNotification
+    :form-success-message="formAction.formSuccessMessage"
+    :form-error-message="formAction.formErrorMessage"
+  ></AlertNotification>
   <v-form ref="refVform" @submit.prevent="onFormSubmit">
     <v-row>
       <v-col cols="12" sm="6">
