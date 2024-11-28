@@ -7,6 +7,7 @@ import {
   confirmedValidator,
 } from '@/utils/validators'
 
+const refVform = ref()
 const visible = ref(false)
 const conPassVisible = ref(false)
 
@@ -23,11 +24,12 @@ const formData = ref({
 })
 
 const onSubmit = () => {
-  // alert(formData.value.email)
+  alert(formData.value.password_confirmation)
 }
 
 const onFormSubmit = () => {
   refVform.value?.validate().then(({ valid }) => {
+    console.log('Validation result:', valid)
     if (valid) onSubmit()
   })
 }
@@ -41,11 +43,11 @@ const onFormSubmit = () => {
           label="First name"
           variant="outlined"
           :rules="[requiredValidator]"
-        ></v-text-field
-      ></v-col>
+        ></v-text-field>
+      </v-col>
       <v-col cols="12" sm="6">
         <v-text-field
-          v-model="formData.firstname"
+          v-model="formData.lastname"
           label="Last name"
           variant="outlined"
           :rules="[requiredValidator]"
