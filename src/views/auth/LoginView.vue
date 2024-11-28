@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
+import BackgroundLayout from '../../../BackgroundLayout.vue'
 
 const visible = ref(false)
 

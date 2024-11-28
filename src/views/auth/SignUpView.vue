@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
+import BackgroundLayout from '../../../BackgroundLayout.vue'
 
 const theme = ref('light')
 
