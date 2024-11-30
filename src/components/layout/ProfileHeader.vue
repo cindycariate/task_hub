@@ -22,9 +22,10 @@ const onLogout = async () => {
     console.error('Error during logout:', error)
     return
   }
+  formAction.value.formProcess = false
+  // Redirect to login
+  router.replace('/')
 }
-formAction.value.formProcess = false
-router.replace('/')
 
 const userData = ref({
   email: '',
@@ -54,7 +55,7 @@ onMounted(() => {
   <v-menu min-width="200px" rounded>
     <template #activator="{ props }">
       <v-btn icon v-bind="props">
-        <v-avatar color="deep-green-lighten-1" size="large">
+        <v-avatar color="cyan-lighten-1" size="large">
           <span class="text-h5">{{ userData.initials }}</span>
         </v-avatar>
       </v-btn>
@@ -65,7 +66,7 @@ onMounted(() => {
         <v-list>
           <v-list-item :subtitle="userData.email" :title="userData.fullname">
             <template #prepend>
-              <v-avatar color="deep-green-deep-green-lighten-1" size="large">
+              <v-avatar color="cyan-lighten-1" size="large">
                 <span class="text-h5">{{ userData.initials }}</span>
               </v-avatar>
             </template>
@@ -73,9 +74,7 @@ onMounted(() => {
         </v-list>
         <v-divider class="my-3"></v-divider>
 
-        <v-btn prepend-icon="mdi-wrench" variant="plain" to="/account/settings">
-          Account Settings
-        </v-btn>
+        <v-btn prepend-icon="mdi-wrench" variant="plain"> Account Settings </v-btn>
 
         <v-divider class="my-3"></v-divider>
 

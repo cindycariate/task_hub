@@ -10,12 +10,16 @@ import { supabase, formActionDefault } from '@/utils/supabase.js'
 import AlertNotification from '@/components/common/AlertNotification.vue'
 import { useRouter } from 'vue-router'
 
+// Load variables
+
 const router = useRouter()
 
 const refVform = ref()
+// pass the password here
 const visible = ref(false)
 const conPassVisible = ref(false)
 
+//
 const formDataDefault = {
   firstname: '',
   lastname: '',
@@ -25,10 +29,13 @@ const formDataDefault = {
 }
 
 const formData = ref({ ...formDataDefault })
+
 const formAction = ref({ ...formActionDefault })
 
 const onSubmit = async () => {
+  // Reset utils here
   formAction.value = { ...formActionDefault }
+  // Turn on proccessing
   formAction.value.formProcess = true
 
   const { data, error } = await supabase.auth.signUp({
