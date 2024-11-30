@@ -8,6 +8,9 @@ import {
 } from '@/utils/validators'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import AlertNotification from '@/components/common/AlertNotification.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const refVform = ref()
 const visible = ref(false)
@@ -21,13 +24,8 @@ const formDataDefault = {
   password_confirmation: '',
 }
 
-const formData = ref({
-  ...formDataDefault,
-})
-
-const formAction = ref({
-  ...formActionDefault,
-})
+const formData = ref({ ...formDataDefault })
+const formAction = ref({ ...formActionDefault })
 
 const onSubmit = async () => {
   formAction.value = { ...formActionDefault }
@@ -43,49 +41,51 @@ const onSubmit = async () => {
       },
     },
   })
+
   if (error) {
-    console.log(error)
+    console.error(error)
     formAction.value.formErrorMessage = error.message
     formAction.value.formStatus = error.status
   } else if (data) {
-    console.log(data)
-    formAction.value.formSuccessMessage = 'Sucessfully Registered Acount.'
-    //Will add more actions later... maybe... possibly..?
-    refVform.value?.reset()
+    formAction.value.formSuccessMessage = 'Successfully Registered Account.'
+    router.replace('/system/dashboard')
   }
+
+  refVform.value?.resetValidation()
+  refVform.value?.reset()
   formAction.value.formProcess = false
 }
 
 const onFormSubmit = () => {
   refVform.value?.validate().then(({ valid }) => {
-    console.log('Validation result:', valid)
     if (valid) onSubmit()
   })
 }
 </script>
+
 <template>
   <AlertNotification
     :form-success-message="formAction.formSuccessMessage"
     :form-error-message="formAction.formErrorMessage"
-  ></AlertNotification>
+  />
   <v-form ref="refVform" @submit.prevent="onFormSubmit">
     <v-row>
       <v-col cols="12" sm="6">
         <v-text-field
           v-model="formData.firstname"
-          label="First name"
+          label="First Name"
           variant="outlined"
           :rules="[requiredValidator]"
-        ></v-text-field>
+        />
       </v-col>
       <v-col cols="12" sm="6">
         <v-text-field
           v-model="formData.lastname"
-          label="Last name"
+          label="Last Name"
           variant="outlined"
           :rules="[requiredValidator]"
-        ></v-text-field
-      ></v-col>
+        />
+      </v-col>
     </v-row>
 
     <v-text-field
@@ -94,7 +94,7 @@ const onFormSubmit = () => {
       variant="outlined"
       prepend-inner-icon="mdi-email"
       :rules="[requiredValidator, emailValidator]"
-    ></v-text-field>
+    />
 
     <v-text-field
       v-model="formData.password"
@@ -105,7 +105,8 @@ const onFormSubmit = () => {
       variant="outlined"
       @click:append-inner="visible = !visible"
       :rules="[requiredValidator, passwordValidator]"
-    ></v-text-field>
+    />
+
     <v-text-field
       v-model="formData.password_confirmation"
       label="Confirm Password"
@@ -116,9 +117,9 @@ const onFormSubmit = () => {
       @click:append-inner="conPassVisible = !conPassVisible"
       :rules="[
         requiredValidator,
-        confirmedValidator(formData.password_confirmation, formData.password),
+        () => confirmedValidator(formData.password_confirmation, formData.password),
       ]"
-    ></v-text-field>
+    />
 
     <v-btn
       class="mt-2 text-white"
@@ -129,7 +130,8 @@ const onFormSubmit = () => {
       prepend-icon="mdi-account-plus"
       :disabled="formAction.formProcess"
       :loading="formAction.formProcess"
-      >Sign up</v-btn
     >
+      Sign up
+    </v-btn>
   </v-form>
 </template>

@@ -1,10 +1,17 @@
 <script setup>
-/*import { ref } from 'vue'
+import { ref } from 'vue'
+/*
 import { RouterLink } from 'vue-router'
 */
 import { isAuthenticated } from '@/utils/supabase'
 import BackgroundLayout from '../auth/BackgroundLayout.vue'
 import { onMounted } from 'vue'
+import ProfileHeader from './ProfileHeader.vue'
+
+// for the navbar
+const props = defineProps(['isWithAppBarNavIcon'])
+
+const emit = defineEmits(['isDrawerVisible'])
 
 //Load variables
 const isLoggedIn = ref(false)
@@ -25,14 +32,20 @@ onMounted(() => {
       <v-app :theme="theme" class="transparent-app">
         <v-app-bar class="px-3" color="transparent">
           <h3 class="text-logo font-weight-black">TaskHub</h3>
+
           <v-spacer></v-spacer>
         </v-app-bar>
-
-        <v-main>
-          <v-container>
-            <slot name="content"></slot>
-          </v-container>
-        </v-main>
+        <v-container> </v-container>
+        <v-app-bar-nav-icon
+          v-if="props.isWithAppBarNavIcon"
+          icon="mdi-menu"
+          :theme="theme"
+          @click="emit('isDrawerVisible')"
+        >
+          <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
+        </v-app-bar-nav-icon>
+        <v-spacer></v-spacer>
+        <v-main><slot name="content"></slot> </v-main>
       </v-app>
     </v-responsive>
   </BackgroundLayout>
