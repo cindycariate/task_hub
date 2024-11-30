@@ -2,7 +2,22 @@
 /*import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 */
+import { isAuthenticated } from '@/utils/supabase'
 import BackgroundLayout from '../auth/BackgroundLayout.vue'
+import { onMounted } from 'vue'
+
+//Load variables
+const isLoggedIn = ref(false)
+
+// Get authentication from Supabase
+const getLoggedStatus = async () => {
+  isLoggedIn.value = await isAuthenticated()
+}
+
+// Load functions during component rendering
+onMounted(() => {
+  getLoggedStatus()
+})
 </script>
 <template>
   <BackgroundLayout>
