@@ -43,7 +43,7 @@ export const emailValidator = (value) => {
 
 // 👉 Password Validator
 export const passwordValidator = (password) => {
-  const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/
+  const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-_!@#$%&*()]).{8,}/
   const validPassword = regExp.test(password)
 
   return (
