@@ -31,7 +31,9 @@ onMounted(() => {
     <v-responsive>
       <v-app :theme="theme" class="transparent-app">
         <v-app-bar class="px-3" color="transparent">
-          <h3 class="text-logo font-weight-black">TaskHub</h3>
+          <h3 class="text-logo font-weight-black">
+            <span class="task-text">Task</span><span class="hub-text">Hub</span>
+          </h3>
 
           <v-spacer></v-spacer>
         </v-app-bar>
@@ -73,9 +75,15 @@ onMounted(() => {
 }
 
 .text-logo {
-  color: aqua;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-weight: bolder;
   font-size: x-large;
+}
+
+.task-text {
+  color: white;
+}
+.hub-text {
+  color: aqua;
 }
 </style>
