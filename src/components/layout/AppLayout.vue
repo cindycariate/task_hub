@@ -36,15 +36,17 @@ onMounted(() => {
           </h3>
 
           <v-spacer></v-spacer>
+          <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
         </v-app-bar>
+
         <v-container> </v-container>
+
         <v-app-bar-nav-icon
           v-if="props.isWithAppBarNavIcon"
           icon="mdi-menu"
           :theme="theme"
           @click="emit('isDrawerVisible')"
         >
-          <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
         </v-app-bar-nav-icon>
         <v-spacer></v-spacer>
         <v-main><slot name="content"></slot> </v-main>
