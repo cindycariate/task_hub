@@ -26,11 +26,19 @@ onMounted(() => {
   getLoggedStatus()
 })
 </script>
-<template>
+<template v-if="isLoginOrSignup">
   <BackgroundLayout>
     <v-responsive>
       <v-app :theme="theme" class="transparent-app">
         <v-app-bar class="px-3" color="transparent">
+          <v-app-bar-nav-icon
+            v-if="props.isWithAppBarNavIcon"
+            icon="mdi-menu"
+            color="white"
+            :theme="theme"
+            @click="emit('isDrawerVisible')"
+          >
+          </v-app-bar-nav-icon>
           <h3 class="text-logo font-weight-black">
             <span class="task-text">Task</span><span class="hub-text">Hub</span>
           </h3>
@@ -41,13 +49,6 @@ onMounted(() => {
 
         <v-container> </v-container>
 
-        <v-app-bar-nav-icon
-          v-if="props.isWithAppBarNavIcon"
-          icon="mdi-menu"
-          :theme="theme"
-          @click="emit('isDrawerVisible')"
-        >
-        </v-app-bar-nav-icon>
         <v-spacer></v-spacer>
         <v-main><slot name="content"></slot> </v-main>
       </v-app>

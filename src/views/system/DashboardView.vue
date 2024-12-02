@@ -11,9 +11,7 @@ const isDrawerVisible = ref(true)
     :is-with-app-bar-nav-icon="true"
     @is-drawer-visible="isDrawerVisible = !isDrawerVisible"
   >
-    <template #navigation>
-      <SideNavigation :is-drawer-visible="isDrawerVisible"></SideNavigation>
-    </template>
+    <template #navigation> </template>
     <template #content>
       <v-container></v-container>
     </template>

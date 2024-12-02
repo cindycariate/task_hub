@@ -56,7 +56,7 @@ onMounted(() => {
     <template #activator="{ props }">
       <v-btn icon v-bind="props">
         <v-avatar color="cyan-lighten-1" size="large">
-          <span class="text-h5">{{ userData.initials }}</span>
+          <span class="text-h5 text-white">{{ userData.initials }}</span>
         </v-avatar>
       </v-btn>
     </template>
