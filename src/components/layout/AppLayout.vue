@@ -1,19 +1,14 @@
 <script setup>
-import { ref } from 'vue'
-/*
-import { RouterLink } from 'vue-router'
-*/
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router' // Import useRoute to detect the current route
 import { isAuthenticated } from '@/utils/supabase'
 import BackgroundLayout from '../auth/BackgroundLayout.vue'
-import { onMounted } from 'vue'
 import ProfileHeader from './ProfileHeader.vue'
 
 // for the navbar
 const props = defineProps(['isWithAppBarNavIcon'])
-
 const emit = defineEmits(['isDrawerVisible'])
 
-//Load variables
 const isLoggedIn = ref(false)
 
 // Get authentication from Supabase
@@ -25,12 +20,43 @@ const getLoggedStatus = async () => {
 onMounted(() => {
   getLoggedStatus()
 })
+
+// Get the current route to determine if it's the login/signup or dashboard
+const route = useRoute()
+
+// Check if we are on the login or signup route
+const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 'signUp')
 </script>
-<template v-if="isLoginOrSignup">
-  <BackgroundLayout>
+
+<template>
+  <!-- Apply BackgroundLayout only for the login/signup route -->
+  <template v-if="isLoginOrSignup">
+    <BackgroundLayout>
+      <v-responsive>
+        <v-app :theme="theme" class="transparent-app">
+          <v-app-bar class="px-3" color="transparent">
+            <h3 class="text-logo font-weight-black">
+              <span class="task-text">Task</span><span class="hub-text">Hub</span>
+            </h3>
+
+            <v-spacer></v-spacer>
+            <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
+          </v-app-bar>
+
+          <v-container> </v-container>
+
+          <v-spacer></v-spacer>
+          <v-main><slot name="content"></slot> </v-main>
+        </v-app>
+      </v-responsive>
+    </BackgroundLayout>
+  </template>
+
+  <!-- For other views like dashboard, render the default content without BackgroundLayout -->
+  <template v-else>
     <v-responsive>
-      <v-app :theme="theme" class="transparent-app">
-        <v-app-bar class="px-3" color="transparent">
+      <v-app :theme="theme">
+        <v-app-bar class="app-bar px-3">
           <v-app-bar-nav-icon
             v-if="props.isWithAppBarNavIcon"
             icon="mdi-menu"
@@ -42,28 +68,23 @@ onMounted(() => {
           <h3 class="text-logo font-weight-black">
             <span class="task-text">Task</span><span class="hub-text">Hub</span>
           </h3>
-
           <v-spacer></v-spacer>
           <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
         </v-app-bar>
-
-        <v-container> </v-container>
-
-        <v-spacer></v-spacer>
-        <v-main><slot name="content"></slot> </v-main>
       </v-app>
     </v-responsive>
-  </BackgroundLayout>
+  </template>
 </template>
+
 <style scoped>
 .transparent-app {
   background: transparent;
 }
+
 .glassmorphic-card {
   color: white;
   background: rgba(64, 64, 64, 0.15); /* Transparent white */
   backdrop-filter: blur(25px); /* Frosted glass effect */
-  /* -webkit-backdrop-filter: blur(10px); Safari support */
   border: 2px solid rgba(255, 255, 255, 0.959); /* Frosted border */
   border-radius: 16px; /* Rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
@@ -88,5 +109,13 @@ onMounted(() => {
 }
 .hub-text {
   color: aqua;
+}
+
+.app-bar {
+  background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
+}
+.nav-drawer {
+  background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
+  color: white;
 }
 </style>

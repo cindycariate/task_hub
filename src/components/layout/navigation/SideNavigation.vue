@@ -1,4 +1,5 @@
 <script setup>
+import { mainNav } from './SideNavigation'
 import { supabase, formActionDefault } from '@/utils/supabase'
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'

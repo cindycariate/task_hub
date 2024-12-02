@@ -1,9 +1,9 @@
 // 👉 Main Navigation; Title, Icon
 export const mainNav = [
-  ['User Management', 'mdi-account-box-multiple'],
-  ['Product Management', 'mdi-clipboard-list'],
-  ['Inventory', 'mdi-invoice-list'],
-  ['Expenses Management', 'mdi-cash-register'],
+  ['Home', 'mdi-home'],
+  ['Tasks', 'mdi-pen'],
+  ['Status', 'mdi-invoice-list'],
+  ['Priorities', 'mdi-cash-register'],
   ['Reporting', 'mdi-file-chart'],
 ]
 
