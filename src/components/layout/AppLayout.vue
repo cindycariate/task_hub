@@ -107,7 +107,7 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
 }
 
 .text-logo {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: 'Poppins';
   font-weight: bolder;
   font-size: x-large;
 }
