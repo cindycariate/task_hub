@@ -56,6 +56,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   border: 2px solid rgba(255, 255, 255, 0.959); /* Frosted border */
   border-radius: 16px; /* Rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  font-family: 'Poppins', sans-serif;
 }
 
 .description {
