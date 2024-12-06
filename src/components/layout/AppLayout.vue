@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router' // Import useRoute to detect the current r
 import { isAuthenticated } from '@/utils/supabase'
 import BackgroundLayout from '../auth/BackgroundLayout.vue'
 import ProfileHeader from './ProfileHeader.vue'
+import SideNav from './navigation/SideNav.vue'
 
 // for the navbar
 const props = defineProps(['isWithAppBarNavIcon'])
@@ -26,6 +27,9 @@ const route = useRoute()
 
 // Check if we are on the login or signup route
 const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 'signUp')
+
+// For managing the side navigation (drawer)
+const isDrawerVisible = ref(false) // Controls drawer visibility
 </script>
 
 <template>
@@ -62,7 +66,7 @@ const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 
             icon="mdi-menu"
             color="white"
             :theme="theme"
-            @click="emit('isDrawerVisible')"
+            @click="isDrawerVisible = !isDrawerVisible"
           >
           </v-app-bar-nav-icon>
           <h3 class="text-logo font-weight-black">
@@ -71,6 +75,10 @@ const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 
           <v-spacer></v-spacer>
           <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
         </v-app-bar>
+        <!-- Side Navigation (Drawer) -->
+        <SideNav v-model:drawer-visible="isDrawerVisible" />
+
+        <!-- Only one scrollable area for the content -->
       </v-app>
     </v-responsive>
   </template>
