@@ -4,11 +4,6 @@ import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 import ProfileHeader from '../ProfileHeader.vue'
 const isDrawerVisible = ref(true) // Sidebar visibility state
 
-// Toggle Sidebar visibility
-const toggleSidebar = () => {
-  isDrawerVisible.value = !isDrawerVisible.value // Toggle visibility
-}
-
 // Active menu state
 const activeMenuItem = ref('')
 const setActiveMenuItem = (item) => {
@@ -112,13 +107,6 @@ const togglePriorityDropdown = () => {
       </ul>
     </div>
 
-    <!-- Main Content -->
-    <div class="menu-btn">
-      <!-- Button to toggle the sidebar visibility -->
-      <v-btn icon @click="toggleSidebar" class="toggle-btn">
-        <v-icon>{{ isDrawerVisible ? 'mdi-menu-open' : 'mdi-menu' }}</v-icon>
-      </v-btn>
-    </div>
     <div class="main-content">
       <div class="welcome-message">
         <h1 class="text-white text-h3">
@@ -244,15 +232,5 @@ const togglePriorityDropdown = () => {
   margin-right: 40%;
   justify-content: center; /* Center the ProfileHeader horizontally */
   /* margin-top: 50px; Add margin if needed to separate from other items */
-}
-
-.profile-header {
-  /* You can add specific styles for ProfileHeader here if necessary */
-}
-.menu-btn {
-  position: sticky;
-  top: 20px; /* Move to top */
-  left: 20px; /* Move to the left */
-  z-index: 10; /* Ensure button stays above content */
 }
 </style>
