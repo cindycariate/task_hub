@@ -11,6 +11,7 @@
   background-size: cover;
   background-position: center;
   min-height: 100vh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -55,6 +55,7 @@ import SignUpForm from '@/components/auth/SignUpForm.vue'
   background: rgba(64, 64, 64, 0.15); /* Transparent white */
   backdrop-filter: blur(25px);
   border: 2px solid rgba(255, 255, 255, 0.959); /* Frosted border */
+  font-family: 'Poppins', sans-serif;
 }
 .description {
   font-size: 18px;

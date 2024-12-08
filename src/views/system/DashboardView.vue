@@ -13,7 +13,9 @@ const isDrawerVisible = ref(true)
   >
     <template #navigation> </template>
     <template #content>
-      <v-container></v-container>
+      <v-container-fluid class="container"> ></v-container-fluid>
     </template>
   </AppLayout>
 </template>
+
+<style></style>
