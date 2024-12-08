@@ -32,7 +32,7 @@ onMounted(() => {
       <v-container>
         <v-row>
           <v-col class="mx-auto mt-16 text-center" cols="12" lg="4">
-            <h1 class="text-h1 font-weight-black text-red-darken-4">404</h1>
+            <h1 class="text-h1 font-weight-black text-cyan-darken-4">404</h1>
             <h2 class="text-h2 font-weight-black mb-2">Page Not Found</h2>
 
             <p class="text-subtitle-1 font-weight-bold mb-4">Page does not exist.</p>
