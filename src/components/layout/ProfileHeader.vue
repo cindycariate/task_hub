@@ -33,18 +33,30 @@ const userData = ref({
   initials: '',
 })
 
-//Getting user information
+// Getting user information with proper error handling
 const getUser = async () => {
-  const {
-    data: {
-      user: { user_metadata: metadata },
-    },
-  } = await supabase.auth.getUser()
+  try {
+    const { data, error } = await supabase.auth.getUser()
 
-  userData.value.email = metadata.email
-  userData.value.fullname = metadata.firstname + ' ' + metadata.lastname
-  userData.value.initials = getAvatarText(userData.value.fullname)
+    // Null-check and error handling
+    if (error || !data?.user) {
+      console.error('Error fetching user:', error || 'User is not logged in.')
+      userData.value.fullname = 'Guest User'
+      userData.value.email = 'No email available'
+      userData.value.initials = 'G'
+      return
+    }
+
+    const metadata = data.user.user_metadata
+
+    userData.value.email = metadata?.email || 'No email'
+    userData.value.fullname = (metadata?.firstname || 'No') + ' ' + (metadata?.lastname || 'Name')
+    userData.value.initials = getAvatarText(userData.value.fullname)
+  } catch (err) {
+    console.error('Unexpected error during getUser:', err)
+  }
 }
+
 // Loading Function during component rendering
 onMounted(() => {
   getUser()

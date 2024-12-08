@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router' // Import useRoute to detect the current route
 import { isAuthenticated } from '@/utils/supabase'
 import BackgroundLayout from '../auth/BackgroundLayout.vue'
-import ProfileHeader from './ProfileHeader.vue'
+
 import SideNav from './navigation/SideNav.vue'
 
 // for the navbar
