@@ -44,7 +44,6 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
             </h3>
 
             <v-spacer></v-spacer>
-            <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
           </v-app-bar>
 
           <v-container> </v-container>
@@ -60,22 +59,12 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
   <template v-else>
     <v-responsive>
       <v-app :theme="theme">
-        <v-app-bar class="app-bar px-3">
-          <v-app-bar-nav-icon
-            v-if="props.isWithAppBarNavIcon"
-            icon="mdi-menu"
-            color="white"
-            :theme="theme"
-            @click="isDrawerVisible = !isDrawerVisible"
-          >
-          </v-app-bar-nav-icon>
-          <h3 class="text-logo font-weight-black">
-            <span class="task-text">Task</span><span class="hub-text">Hub</span>
-          </h3>
+        <v-app-bar class="app-bar px-3" flat>
           <v-spacer></v-spacer>
           <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
         </v-app-bar>
         <!-- Side Navigation (Drawer) -->
+
         <SideNav v-model:drawer-visible="isDrawerVisible" />
 
         <!-- Only one scrollable area for the content -->
@@ -120,7 +109,7 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
 }
 
 .app-bar {
-  background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
+  background: transparent;
 }
 .nav-drawer {
   background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
