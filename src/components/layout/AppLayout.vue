@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { isAuthenticated } from '@/utils/supabase'
 import BackgroundLayout from '../auth/BackgroundLayout.vue'
 import ProfileHeader from './ProfileHeader.vue'
+import SideNav from './navigation/SideNav.vue'
 
 // Props and Emits
 const props = defineProps(['isWithAppBarNavIcon'])
@@ -24,6 +25,9 @@ onMounted(() => {
 // Route and layout logic
 const route = useRoute()
 const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 'signUp')
+
+// For managing the side navigation (drawer)
+const isDrawerVisible = ref(false) // Controls drawer visibility
 </script>
 
 <template>
@@ -36,6 +40,8 @@ const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 
             <h3 class="text-logo font-weight-black">
               <span class="task-text">Task</span><span class="hub-text">Hub</span>
             </h3>
+
+            <v-spacer></v-spacer>
           </v-app-bar>
 
           <v-container></v-container>
@@ -51,23 +57,16 @@ const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 
   <!-- Render default layout for other routes -->
   <template v-else>
     <v-responsive>
-      <v-app>
-        <v-app-bar class="app-bar px-3">
-          <v-app-bar-nav-icon
-            v-if="props.isWithAppBarNavIcon"
-            icon="mdi-menu"
-            color="white"
-            @click="emit('isDrawerVisible')"
-          ></v-app-bar-nav-icon>
-          <h3 class="text-logo font-weight-black">
-            <span class="task-text">Task</span><span class="hub-text">Hub</span>
-          </h3>
+      <v-app :theme="theme">
+        <v-app-bar class="app-bar px-3" flat>
           <v-spacer></v-spacer>
           <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
         </v-app-bar>
-        <v-main>
-          <slot name="content"></slot>
-        </v-main>
+        <!-- Side Navigation (Drawer) -->
+
+        <SideNav v-model:drawer-visible="isDrawerVisible" />
+
+        <!-- Only one scrollable area for the content -->
       </v-app>
     </v-responsive>
   </template>
@@ -79,7 +78,7 @@ const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 
 }
 
 .text-logo {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: 'Poppins';
   font-weight: bolder;
   font-size: x-large;
 }
@@ -93,6 +92,6 @@ const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 
 }
 
 .app-bar {
-  background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
+  background: transparent;
 }
 </style>

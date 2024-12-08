@@ -27,7 +27,7 @@ const routes = [
     path: '/signUp',
     name: 'signUp',
     component: SignUpView,
-    meta: { requiresGuest: true },
+    meta: { requiresGuest: true }, // Meta field for guest-only routes
   },
   {
     path: '/system/dashboard',

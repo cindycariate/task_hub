@@ -54,9 +54,9 @@ onMounted(() => {
 <template>
   <v-menu min-width="200px" rounded>
     <template #activator="{ props }">
-      <v-btn icon v-bind="props">
+      <v-btn icon v-bind="props" class="mt-4">
         <v-avatar color="cyan-lighten-1" size="large">
-          <span class="text-h5 text-white">{{ userData.initials }}</span>
+          <span class="text-h6 text-white">{{ userData.initials }}</span>
         </v-avatar>
       </v-btn>
     </template>
@@ -66,8 +66,8 @@ onMounted(() => {
         <v-list>
           <v-list-item :subtitle="userData.email" :title="userData.fullname">
             <template #prepend>
-              <v-avatar color="cyan-lighten-1" size="large">
-                <span class="text-h5">{{ userData.initials }}</span>
+              <v-avatar color="cyan-darken-2" size="large">
+                <span class="text-h6">{{ userData.initials }}</span>
               </v-avatar>
             </template>
           </v-list-item>

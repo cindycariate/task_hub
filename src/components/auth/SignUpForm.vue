@@ -131,7 +131,7 @@ const onFormSubmit = () => {
     <v-btn
       class="mt-2 text-white"
       type="submit"
-      color="cyan-lighten-3"
+      color="cyan-lighten-2"
       rounded="xl"
       block
       prepend-icon="mdi-account-plus"
