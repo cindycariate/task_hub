@@ -2,15 +2,21 @@
 import { ref } from 'vue'
 import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
 import ProfileHeader from '../ProfileHeader.vue'
+const isDrawerVisible = ref(true) // Sidebar visibility state
 
-const isDrawerVisible = ref(true)
+// Toggle Sidebar visibility
+const toggleSidebar = () => {
+  isDrawerVisible.value = !isDrawerVisible.value // Toggle visibility
+}
+
+// Active menu state
+const activeMenuItem = ref('')
+const setActiveMenuItem = (item) => {
+  activeMenuItem.value = item
+}
+
+// Task dropdown toggle
 const isTaskDropdownVisible = ref(false)
-const isPriorityDropdownVisible = ref(false)
-
-// Track the active drawer item
-const activeMenuItem = ref('') // Store the currently active item
-
-// Function to toggle the Task dropdown
 const toggleTaskDropdown = () => {
   if (isPriorityDropdownVisible.value) {
     isPriorityDropdownVisible.value = false
@@ -18,28 +24,26 @@ const toggleTaskDropdown = () => {
   isTaskDropdownVisible.value = !isTaskDropdownVisible.value
 }
 
-// Function to toggle the Priority dropdown
+// Priority dropdown toggle
+const isPriorityDropdownVisible = ref(false)
 const togglePriorityDropdown = () => {
   if (isTaskDropdownVisible.value) {
     isTaskDropdownVisible.value = false
   }
   isPriorityDropdownVisible.value = !isPriorityDropdownVisible.value
 }
-
-// Function to set the active menu item
-const setActiveMenuItem = (item) => {
-  activeMenuItem.value = item
-}
 </script>
 
 <template>
   <BackgroundLayout>
     <!-- Sidebar Drawer -->
-    <div class="nav-drawer rounded-sm" style="font-family: 'Poppins'" v-if="isDrawerVisible">
+
+    <div v-if="isDrawerVisible" class="nav-drawer rounded-sm" style="font-family: 'Poppins'">
       <div class="drawer-header mb-5">
         <img class="logo-icon" src="/logo_icon.png" alt="" />
         <h1><span class="task-text">Task</span><span class="hub-text">Hub</span></h1>
       </div>
+
       <ul class="drawer-menu">
         <li :class="{ active: activeMenuItem === 'Home' }" @click="setActiveMenuItem('Home')">
           <i class="mdi mdi-home"></i>
@@ -63,7 +67,7 @@ const setActiveMenuItem = (item) => {
             :class="{ active: activeMenuItem === 'In Progress' }"
             @click="setActiveMenuItem('In Progress')"
           >
-            In progress
+            In Progress
           </li>
           <li
             :class="{ active: activeMenuItem === 'Pending' }"
@@ -100,10 +104,21 @@ const setActiveMenuItem = (item) => {
           <i class="mdi mdi-cog"></i>
           <span>Settings</span>
         </li>
+        <li>
+          <div class="profile-header-container">
+            <ProfileHeader></ProfileHeader>
+          </div>
+        </li>
       </ul>
     </div>
 
     <!-- Main Content -->
+    <div class="menu-btn">
+      <!-- Button to toggle the sidebar visibility -->
+      <v-btn icon @click="toggleSidebar" class="toggle-btn">
+        <v-icon>{{ isDrawerVisible ? 'mdi-menu-open' : 'mdi-menu' }}</v-icon>
+      </v-btn>
+    </div>
     <div class="main-content">
       <div class="welcome-message">
         <h1 class="text-white text-h3">
@@ -115,7 +130,6 @@ const setActiveMenuItem = (item) => {
     </div>
   </BackgroundLayout>
 </template>
-
 <style scoped>
 /* Sidebar Drawer */
 .nav-drawer {
@@ -221,5 +235,24 @@ const setActiveMenuItem = (item) => {
   font-size: 18px;
   padding-bottom: 20px;
   color: rgb(236, 229, 221);
+}
+/* ProfileHeader container styles */
+.profile-header-container {
+  display: flex;
+  margin-top: 30%;
+  margin-left: 40%;
+  margin-right: 40%;
+  justify-content: center; /* Center the ProfileHeader horizontally */
+  /* margin-top: 50px; Add margin if needed to separate from other items */
+}
+
+.profile-header {
+  /* You can add specific styles for ProfileHeader here if necessary */
+}
+.menu-btn {
+  position: sticky;
+  top: 20px; /* Move to top */
+  left: 20px; /* Move to the left */
+  z-index: 10; /* Ensure button stays above content */
 }
 </style>
