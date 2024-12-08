@@ -40,6 +40,8 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
             <h3 class="text-logo font-weight-black">
               <span class="task-text">Task</span><span class="hub-text">Hub</span>
             </h3>
+
+            <v-spacer></v-spacer>
           </v-app-bar>
 
           <v-container></v-container>
@@ -70,6 +72,7 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
           <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
         </v-app-bar>
         <!-- Side Navigation (Drawer) -->
+
         <SideNav v-model:drawer-visible="isDrawerVisible" />
 
         <!-- Only one scrollable area for the content -->
@@ -98,6 +101,6 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
 }
 
 .app-bar {
-  background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
+  background: transparent;
 }
 </style>
