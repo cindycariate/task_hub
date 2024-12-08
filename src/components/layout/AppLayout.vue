@@ -3,33 +3,33 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router' // Import useRoute to detect the current route
 import { isAuthenticated } from '@/utils/supabase'
 import BackgroundLayout from '../auth/BackgroundLayout.vue'
-
 import SideNav from './navigation/SideNav.vue'
 
-// for the navbar
+// Props and emits for navigation icon and drawer visibility
 const props = defineProps(['isWithAppBarNavIcon'])
 const emit = defineEmits(['isDrawerVisible'])
 
+// Authentication status
 const isLoggedIn = ref(false)
 
-// Get authentication from Supabase
+// Get the user's logged-in status from Supabase
 const getLoggedStatus = async () => {
   isLoggedIn.value = await isAuthenticated()
 }
 
-// Load functions during component rendering
+// Load function on component mount
 onMounted(() => {
   getLoggedStatus()
 })
 
-// Get the current route to determine if it's the login/signup or dashboard
+// Get the current route
 const route = useRoute()
 
-// Check if we are on the login or signup route
+// Check if the current route is for login or signup
 const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 'signUp')
 
-// For managing the side navigation (drawer)
-const isDrawerVisible = ref(false) // Controls drawer visibility
+// For managing the drawer visibility
+const isDrawerVisible = ref(false)
 </script>
 
 <template>
@@ -37,33 +37,37 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
   <template v-if="isLoginOrSignup">
     <BackgroundLayout>
       <v-responsive>
-        <v-app :theme="theme" class="transparent-app">
+        <v-app class="transparent-app">
+          <!-- App Bar -->
           <v-app-bar class="px-3" color="transparent">
             <h3 class="text-logo font-weight-black">
               <span class="task-text">Task</span><span class="hub-text">Hub</span>
             </h3>
-
             <v-spacer></v-spacer>
           </v-app-bar>
 
+          <!-- Main Container -->
           <v-container> </v-container>
 
-          <v-spacer></v-spacer>
-          <v-main><slot name="content"></slot> </v-main>
+          <v-main>
+            <slot name="content"></slot>
+          </v-main>
         </v-app>
       </v-responsive>
     </BackgroundLayout>
   </template>
 
-  <!-- For other views like dashboard, render the default content without BackgroundLayout -->
+  <!-- Default layout for authenticated users (e.g., dashboard) -->
   <template v-else>
     <v-responsive>
-      <v-app :theme="theme">
+      <v-app>
         <!-- Side Navigation (Drawer) -->
-
         <SideNav v-model:drawer-visible="isDrawerVisible" />
 
-        <!-- Only one scrollable area for the content -->
+        <!-- Main content area -->
+        <v-main>
+          <slot></slot>
+        </v-main>
       </v-app>
     </v-responsive>
   </template>
@@ -72,23 +76,6 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
 <style scoped>
 .transparent-app {
   background: transparent;
-}
-
-.glassmorphic-card {
-  color: white;
-  background: rgba(64, 64, 64, 0.15); /* Transparent white */
-  backdrop-filter: blur(25px); /* Frosted glass effect */
-  border: 2px solid rgba(255, 255, 255, 0.959); /* Frosted border */
-  border-radius: 16px; /* Rounded corners */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-}
-
-.description {
-  font-size: 18px;
-  color: white;
-  text-align: center;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva,
-    Verdana, sans-serif;
 }
 
 .text-logo {

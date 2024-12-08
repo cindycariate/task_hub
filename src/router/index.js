@@ -43,9 +43,8 @@ const routes = [
   {
     // Catch-all route for undefined paths
     path: '/:catchAll(.*)',
-    redirect: (to) => {
-      return { name: 'notfound' } // Redirect to the notfound page
-    },
+    name: 'notfound',
+    component: PageNotFoundView,
   },
 ]
 
