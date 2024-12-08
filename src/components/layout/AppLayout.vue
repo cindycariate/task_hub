@@ -61,31 +61,18 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
             v-if="props.isWithAppBarNavIcon"
             icon="mdi-menu"
             color="white"
-<<<<<<< HEAD
             @click="emit('isDrawerVisible')"
           ></v-app-bar-nav-icon>
-=======
-            :theme="theme"
-            @click="isDrawerVisible = !isDrawerVisible"
-          >
-          </v-app-bar-nav-icon>
->>>>>>> d9697a5ccd154c434a99acb82e316a679c55f0de
           <h3 class="text-logo font-weight-black">
             <span class="task-text">Task</span><span class="hub-text">Hub</span>
           </h3>
           <v-spacer></v-spacer>
           <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
         </v-app-bar>
-<<<<<<< HEAD
-        <v-main>
-          <slot name="content"></slot>
-        </v-main>
-=======
         <!-- Side Navigation (Drawer) -->
         <SideNav v-model:drawer-visible="isDrawerVisible" />
 
         <!-- Only one scrollable area for the content -->
->>>>>>> d9697a5ccd154c434a99acb82e316a679c55f0de
       </v-app>
     </v-responsive>
   </template>

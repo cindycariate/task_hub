@@ -23,13 +23,8 @@ import AppLayout from '@/components/layout/AppLayout.vue'
             stay organized and meet deadlines efficiently.
           </p></v-col
         >
-<<<<<<< HEAD
         <v-col cols="12" md="6" class="mt-13">
-          <v-card class="glassmorphic-card mx-auto" :max-width="'500'" elevation="10" rounded="lg">
-=======
-        <v-col cols="12" md="6">
           <v-card class="glassmorphic-card mx-auto" :max-width="'500'" elevation="14" rounded="lg">
->>>>>>> d9697a5ccd154c434a99acb82e316a679c55f0de
             <template v-slot:title>
               <span class="font-weight-black text-center d-block text-uppercase pt-4">login</span>
             </template>
@@ -61,7 +56,6 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   border: 2px solid rgba(255, 255, 255, 0.959); /* Frosted border */
   border-radius: 16px; /* Rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-  font-family: 'Poppins', sans-serif;
 }
 
 .description {
