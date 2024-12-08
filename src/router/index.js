@@ -27,7 +27,7 @@ const routes = [
     path: '/signUp',
     name: 'signUp',
     component: SignUpView,
-    meta: { requiresGuest: true },
+    meta: { requiresGuest: true }, // Meta field for guest-only routes
   },
   {
     path: '/system/dashboard',
@@ -43,9 +43,8 @@ const routes = [
   {
     // Catch-all route for undefined paths
     path: '/:catchAll(.*)',
-    redirect: (to) => {
-      return { name: 'notfound' } // Redirect to the notfound page
-    },
+    name: 'notfound',
+    component: PageNotFoundView,
   },
 ]
 
