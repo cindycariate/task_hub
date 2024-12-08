@@ -59,10 +59,6 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
   <template v-else>
     <v-responsive>
       <v-app :theme="theme">
-        <v-app-bar class="app-bar px-3" flat>
-          <v-spacer></v-spacer>
-          <ProfileHeader v-if="isLoggedIn"></ProfileHeader>
-        </v-app-bar>
         <!-- Side Navigation (Drawer) -->
 
         <SideNav v-model:drawer-visible="isDrawerVisible" />
