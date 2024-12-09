@@ -99,11 +99,6 @@ const togglePriorityDropdown = () => {
           <i class="mdi mdi-cog"></i>
           <span>Settings</span>
         </li>
-        <li>
-          <div class="profile-header-container">
-            <ProfileHeader></ProfileHeader>
-          </div>
-        </li>
       </ul>
     </div>
 
@@ -224,13 +219,18 @@ const togglePriorityDropdown = () => {
   padding-bottom: 20px;
   color: rgb(236, 229, 221);
 }
-/* ProfileHeader container styles */
-.profile-header-container {
+/*  ProfileHeader container styles  */
+/* .profile-header-container { 
   display: flex;
   margin-top: 30%;
   margin-left: 40%;
   margin-right: 40%;
   justify-content: center; /* Center the ProfileHeader horizontally */
-  /* margin-top: 50px; Add margin if needed to separate from other items */
-}
+/* margin-top: 50px; Add margin if needed to separate from other items 
+}*/
+
+/* .profile-header { 
+  display: flex;
+  align-items: center; /* Aligns content vertically 
+}*/
 </style>
