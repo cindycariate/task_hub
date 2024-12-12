@@ -86,10 +86,6 @@ onMounted(() => {
         </v-list>
         <v-divider class="my-3"></v-divider>
 
-        <v-btn prepend-icon="mdi-wrench" variant="plain"> Account Settings </v-btn>
-
-        <v-divider class="my-3"></v-divider>
-
         <v-btn
           prepend-icon="mdi-logout"
           variant="plain"

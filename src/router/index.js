@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/auth/LoginView.vue'
 import SignUpView from '@/views/auth/SignUpView.vue'
 import DashboardView from '@/views/system/DashboardView.vue'
+
 import PageNotFoundView from '@/views/errors/PageNotFoundView.vue'
 import { supabase } from '@/utils/supabase'
 
@@ -35,6 +36,7 @@ const routes = [
     component: DashboardView,
     meta: { requiresAuth: true }, // Meta field for auth-required routes
   },
+
   {
     path: '/errors/notfound',
     name: 'notfound',

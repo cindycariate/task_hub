@@ -1,107 +1,39 @@
 <script setup>
 import { ref } from 'vue'
-import BackgroundLayout from '@/components/auth/BackgroundLayout.vue'
-import ProfileHeader from '../ProfileHeader.vue'
+import AppLayout from '../AppLayout.vue'
+
 const isDrawerVisible = ref(true) // Sidebar visibility state
-
-// Active menu state
-const activeMenuItem = ref('')
-const setActiveMenuItem = (item) => {
-  activeMenuItem.value = item
-}
-
-// Task dropdown toggle
-const isTaskDropdownVisible = ref(false)
-const toggleTaskDropdown = () => {
-  if (isPriorityDropdownVisible.value) {
-    isPriorityDropdownVisible.value = false
-  }
-  isTaskDropdownVisible.value = !isTaskDropdownVisible.value
-}
-
-// Priority dropdown toggle
-const isPriorityDropdownVisible = ref(false)
-const togglePriorityDropdown = () => {
-  if (isTaskDropdownVisible.value) {
-    isTaskDropdownVisible.value = false
-  }
-  isPriorityDropdownVisible.value = !isPriorityDropdownVisible.value
-}
+const drawer = ref(true)
+const rail = ref(true)
 </script>
 
 <template>
-  <BackgroundLayout>
-    <!-- Sidebar Drawer -->
+  <v-navigation-drawer
+    v-model="drawer"
+    :rail="rail"
+    permanent
+    @click="rail = false"
+    style="font-family: 'Poppins'"
+  >
+    <v-list-item class="sidenav-btn">
+      <template v-slot:append>
+        <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
+      </template>
+    </v-list-item>
 
-    <div v-if="isDrawerVisible" class="nav-drawer rounded-sm" style="font-family: 'Poppins'">
-      <div class="drawer-header mb-5">
-        <img class="logo-icon" src="/logo_icon.png" alt="" />
-        <h1><span class="task-text">Task</span><span class="hub-text">Hub</span></h1>
-      </div>
-
-      <ul class="drawer-menu">
-        <li :class="{ active: activeMenuItem === 'Home' }" @click="setActiveMenuItem('Home')">
-          <i class="mdi mdi-home"></i>
-          <span>Home</span>
-        </li>
-        <li :class="{ active: activeMenuItem === 'Task' }" @click="setActiveMenuItem('Task')">
-          <i class="mdi mdi-pen"></i>
-          <span>Task</span>
-          <span class="dropdown-icon" @click.stop="toggleTaskDropdown">
-            {{ isTaskDropdownVisible ? '▲' : '▼' }}
-          </span>
-        </li>
-        <ul v-if="isTaskDropdownVisible" class="dropdown">
-          <li
-            :class="{ active: activeMenuItem === 'Completed' }"
-            @click="setActiveMenuItem('Completed')"
-          >
-            Completed
-          </li>
-          <li
-            :class="{ active: activeMenuItem === 'In Progress' }"
-            @click="setActiveMenuItem('In Progress')"
-          >
-            In Progress
-          </li>
-          <li
-            :class="{ active: activeMenuItem === 'Pending' }"
-            @click="setActiveMenuItem('Pending')"
-          >
-            Pending
-          </li>
-        </ul>
-        <li
-          :class="{ active: activeMenuItem === 'Priority' }"
-          @click="setActiveMenuItem('Priority')"
-        >
-          <i class="mdi mdi-star"></i> <span> Priority</span>
-          <span class="dropdown-icon" @click.stop="togglePriorityDropdown">
-            {{ isPriorityDropdownVisible ? '▲' : '▼' }}
-          </span>
-        </li>
-        <ul v-if="isPriorityDropdownVisible" class="dropdown">
-          <li :class="{ active: activeMenuItem === 'Urgent' }" @click="setActiveMenuItem('Urgent')">
-            Urgent
-          </li>
-          <li
-            :class="{ active: activeMenuItem === 'Important' }"
-            @click="setActiveMenuItem('Important')"
-          >
-            Important
-          </li>
-        </ul>
-        <v-divider class="my-10"></v-divider>
-        <li
-          :class="{ active: activeMenuItem === 'Settings' }"
-          @click="setActiveMenuItem('Settings')"
-        >
-          <i class="mdi mdi-cog"></i>
-          <span>Settings</span>
-        </li>
-      </ul>
-    </div>
-
+    <v-list density="compact" nav>
+      <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
+      <v-list-item prepend-icon="mdi-pen" title="Task" value="task"></v-list-item>
+      <v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item>
+      <v-divider class="my-5"></v-divider>
+      <v-list-item
+        prepend-icon="mdi-cog"
+        title="Account Settings"
+        value="accountsettings"
+      ></v-list-item>
+    </v-list>
+  </v-navigation-drawer>
+  <v-main style="height: 500px">
     <div class="main-content">
       <div class="welcome-message">
         <h1 class="text-white text-h3">
@@ -111,7 +43,7 @@ const togglePriorityDropdown = () => {
         <button class="create-new-btn rounded-pill"><i class="mdi mdi-plus"></i> Create New</button>
       </div>
     </div>
-  </BackgroundLayout>
+  </v-main>
 </template>
 <style scoped>
 /* Sidebar Drawer */
@@ -233,4 +165,11 @@ const togglePriorityDropdown = () => {
   display: flex;
   align-items: center; /* Aligns content vertically 
 }*/
+
+.sidenav-btn :hover {
+  background-color: #0097a7;
+}
+.v-main {
+  background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
+}
 </style>

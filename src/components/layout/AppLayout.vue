@@ -59,12 +59,16 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
   <template v-else>
     <v-responsive>
       <v-app :theme="theme">
-        <v-app-bar class="app-bar px-3" flat>
+        <v-app-bar class="app-bar px-3">
+          <img src="/logo_icon.png" alt="" height="50px" />
+          <h3 class="text-logo font-weight-black">
+            <span class="task-text">Task</span><span class="hub-text">Hub</span>
+          </h3>
           <v-spacer></v-spacer>
-          <button class="create-new-btn rounded-pill">
-            <i class="mdi mdi-plus"></i> Create New
-          </button>
-          <ProfileHeader></ProfileHeader>
+
+          <div class="profile-header">
+            <ProfileHeader></ProfileHeader>
+          </div>
         </v-app-bar>
         <!-- Side Navigation (Drawer) -->
 
@@ -112,7 +116,8 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
 }
 
 .app-bar {
-  background: transparent;
+  background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
+  z-index: 10; /* Ensures the app bar is above other components */
 }
 
 .create-new-btn {
@@ -124,5 +129,9 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
   font-family: 'Poppins';
   margin-top: 15px;
   margin-right: 10px;
+  margin-bottom: 15px;
+}
+.profile-header {
+  margin-bottom: 15px;
 }
 </style>
