@@ -23,7 +23,9 @@ const rail = ref(true)
 
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
-      <v-list-item prepend-icon="mdi-pen" title="Task" value="task"></v-list-item>
+      <RouterLink to="/pages/task"
+        ><v-list-item prepend-icon="mdi-pen" title="Task" value="task"></v-list-item
+      ></RouterLink>
       <v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item>
       <v-divider class="my-5"></v-divider>
       <v-list-item
@@ -35,13 +37,13 @@ const rail = ref(true)
   </v-navigation-drawer>
   <v-main style="height: 500px">
     <div class="main-content">
-      <div class="welcome-message">
+      <!-- <div class="welcome-message">
         <h1 class="text-white text-h3">
           Welcome to <span class="task-text">Task</span><span class="hub-text">Hub</span>
         </h1>
         <p class="p">Visually Manage Your Tasks</p>
         <button class="create-new-btn rounded-pill"><i class="mdi mdi-plus"></i> Create New</button>
-      </div>
+      </div> -->
     </div>
   </v-main>
 </template>
@@ -152,18 +154,18 @@ const rail = ref(true)
   color: rgb(236, 229, 221);
 }
 /*  ProfileHeader container styles  */
-/* .profile-header-container { 
+/* .profile-header-container {
   display: flex;
   margin-top: 30%;
   margin-left: 40%;
   margin-right: 40%;
   justify-content: center; /* Center the ProfileHeader horizontally */
-/* margin-top: 50px; Add margin if needed to separate from other items 
+/* margin-top: 50px; Add margin if needed to separate from other items
 }*/
 
-/* .profile-header { 
+/* .profile-header {
   display: flex;
-  align-items: center; /* Aligns content vertically 
+  align-items: center; /* Aligns content vertically
 }*/
 
 .sidenav-btn :hover {

@@ -5,6 +5,7 @@ import DashboardView from '@/views/system/DashboardView.vue'
 
 import PageNotFoundView from '@/views/errors/PageNotFoundView.vue'
 import { supabase } from '@/utils/supabase'
+import TaskView from '@/components/pages/TaskView.vue'
 
 // Check if a user is authenticated using Supabase
 const isAuthenticated = async () => {
@@ -41,6 +42,11 @@ const routes = [
     path: '/errors/notfound',
     name: 'notfound',
     component: PageNotFoundView,
+  },
+  {
+    path: '/pages/task',
+    name: 'task',
+    component: TaskView,
   },
   {
     // Catch-all route for undefined paths
