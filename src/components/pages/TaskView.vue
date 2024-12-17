@@ -27,11 +27,50 @@ const toggleSidebar = () => {
 
           <v-card-text>
             <v-tabs-window v-model="tab">
-              <v-tabs-window-item value="one"> One </v-tabs-window-item>
+              <v-tabs-window-item value="one"
+                ><v-card class="mx-auto" max-width="100%" hover>
+                  <v-card-item>
+                    <v-card-title> Card title </v-card-title>
 
-              <v-tabs-window-item value="two"> Two </v-tabs-window-item>
+                    <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+                  </v-card-item>
 
-              <v-tabs-window-item value="three"> Three </v-tabs-window-item>
+                  <v-card-text>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua.
+                  </v-card-text>
+                </v-card>
+              </v-tabs-window-item>
+
+              <v-tabs-window-item value="two"
+                ><v-card class="mx-auto" max-width="100%" hover>
+                  <v-card-item>
+                    <v-card-title> Card title </v-card-title>
+
+                    <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+                  </v-card-item>
+
+                  <v-card-text>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua.
+                  </v-card-text>
+                </v-card>
+              </v-tabs-window-item>
+
+              <v-tabs-window-item value="three"
+                ><v-card class="mx-auto" max-width="100%" hover>
+                  <v-card-item>
+                    <v-card-title> Card title </v-card-title>
+
+                    <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+                  </v-card-item>
+
+                  <v-card-text>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua.
+                  </v-card-text>
+                </v-card>
+              </v-tabs-window-item>
             </v-tabs-window>
           </v-card-text>
         </v-card>
