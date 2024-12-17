@@ -23,17 +23,17 @@ const getRandomPosition = () => {
       <div class="home-content auth-background">
         <v-row>
           <!-- Responsive image column -->
-          <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
-            <img src="/src/assets/img/home_img.png" class="img-fluid note" height="325" />
+          <v-col cols="12" sm="6" md="5" class="d-flex justify-center">
+            <img src="/src/assets/img/home_img.png" class="img-fluid bouncing-image" height="330" />
           </v-col>
 
           <!-- Responsive welcome message -->
-          <v-col cols="12" sm="6" md="8">
+          <v-col cols="12" sm="6" md="7">
             <div class="welcome-message text-center text-sm-left">
-              <h1 class="text-white text-h2">
+              <h1 class="text-white text-h2 mb-4">
                 Welcome to <span class="task-text">Task</span><span class="hub-text">Hub</span>
               </h1>
-              <p class="p">Visually Manage Your Tasks</p>
+              <p class="mb-3">Visually Manage Your Tasks</p>
               <button class="create-new-btn rounded-pill">
                 <i class="mdi mdi-plus"></i> Create New
               </button>
@@ -124,6 +124,21 @@ const getRandomPosition = () => {
     opacity: 0;
   }
 }
+/* BOUNCING IMAGE */
+/* Bounce Animation */
+.bouncing-image {
+  animation: bounce 2s infinite ease-in-out; /* Name, duration, repeat, easing */
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0); /* Start and end at the original position */
+  }
+  50% {
+    transform: translateY(-20px); /* Move up */
+  }
+}
 
 /* WELCOME PAGE */
 
@@ -147,7 +162,7 @@ const getRandomPosition = () => {
 }
 .welcome-message p {
   font-weight: 500;
-  font-size: 18px;
+  font-size: 25px;
   color: rgb(236, 229, 221);
   margin: 0;
 }
