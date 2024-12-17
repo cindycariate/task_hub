@@ -1,13 +1,26 @@
+<script setup>
+import AppLayout from '../layout/AppLayout.vue'
+import { ref } from 'vue'
+
+const isDrawerVisible = ref(true)
+</script>
+
 <template>
-  <div class="home-content">
-    <div class="welcome-message">
-      <h1 class="text-white text-h3">
-        Welcome to <span class="task-text">Task</span><span class="hub-text">Hub</span>
-      </h1>
-      <p class="p">Visually Manage Your Tasks</p>
-      <button class="create-new-btn rounded-pill"><i class="mdi mdi-plus"></i> Create New</button>
-    </div>
-  </div>
+  <AppLayout :is-with-app-bar-nav-icon="true" :is-drawer-visible="isDrawerVisible">
+    <template #content>
+      <div class="home-content">
+        <div class="welcome-message">
+          <h1 class="text-white text-h3">
+            Welcome to <span class="task-text">Task</span><span class="hub-text">Hub</span>
+          </h1>
+          <p class="p">Visually Manage Your Tasks</p>
+          <button class="create-new-btn rounded-pill">
+            <i class="mdi mdi-plus"></i> Create New
+          </button>
+        </div>
+      </div>
+    </template>
+  </AppLayout>
 </template>
 
 <style scoped>
