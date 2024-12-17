@@ -7,6 +7,7 @@ import { supabase } from '@/utils/supabase'
 import HomeView from '@/components/pages/HomeView.vue'
 import TaskView from '@/components/pages/TaskView.vue'
 import PriorityView from '@/components/pages/PriorityView.vue'
+import AccountView from '@/components/pages/AccountView.vue'
 
 // Check if a user is authenticated using Supabase
 const isAuthenticated = async () => {
@@ -58,6 +59,11 @@ const routes = [
     path: '/pages/priority',
     name: 'priority',
     component: PriorityView,
+  },
+  {
+    path: '/pages/accountSettings',
+    name: 'accountSettings',
+    component: AccountView,
   },
   {
     // Catch-all route for undefined paths
