@@ -6,9 +6,8 @@ import { ref } from 'vue'
 // Sidebar visibility state
 const isDrawerVisible = ref(true)
 
-// Tabs setup
-const tabs = ['To Do', 'In Progress', 'Done']
-const currentTab = ref('To Do') // Default active tab
+// for the tabs part
+const tab = ref(null)
 
 // Toggle function for the sidebar
 const toggleSidebar = () => {
@@ -35,35 +34,23 @@ const toggleSidebar = () => {
             <v-icon>{{ isDrawerVisible.value ? 'mdi-menu-open' : 'mdi-menu' }}</v-icon>
           </v-btn>
         </div>
+        <v-card>
+          <v-tabs v-model="tab" bg-color="primary">
+            <v-tab value="one">Item One</v-tab>
+            <v-tab value="two">Item Two</v-tab>
+            <v-tab value="three">Item Three</v-tab>
+          </v-tabs>
 
-        <!-- Tabs Navigation -->
-        <v-tabs v-model="currentTab.value" background-color="white" align-tabs="center">
-          <v-tab v-for="tab in tabs" :key="tab" :value="tab">
-            {{ tab }}
-          </v-tab>
-        </v-tabs>
+          <v-card-text>
+            <v-tabs-window v-model="tab">
+              <v-tabs-window-item value="one"> One </v-tabs-window-item>
 
-        <!-- Tabs Content -->
-        <v-tabs-items v-model="currentTab.value">
-          <v-tab-item value="To Do">
-            <v-card flat class="pa-4">
-              <h2 class="text-h5">To Do</h2>
-              <p>This is the To Do tab content.</p>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item value="In Progress">
-            <v-card flat class="pa-4">
-              <h2 class="text-h5">In Progress</h2>
-              <p>This is the In Progress tab content.</p>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item value="Done">
-            <v-card flat class="pa-4">
-              <h2 class="text-h5">Done</h2>
-              <p>This is the Done tab content.</p>
-            </v-card>
-          </v-tab-item>
-        </v-tabs-items>
+              <v-tabs-window-item value="two"> Two </v-tabs-window-item>
+
+              <v-tabs-window-item value="three"> Three </v-tabs-window-item>
+            </v-tabs-window>
+          </v-card-text>
+        </v-card>
       </v-container>
     </template>
   </AppLayout>
