@@ -22,7 +22,9 @@ const rail = ref(true)
     </v-list-item>
 
     <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
+      <RouterLink to="/pages/home"
+        ><v-list-item prepend-icon="mdi-home" title="Home" value="home"></v-list-item
+      ></RouterLink>
       <RouterLink to="/pages/task"
         ><v-list-item prepend-icon="mdi-pen" title="Task" value="task"></v-list-item
       ></RouterLink>
