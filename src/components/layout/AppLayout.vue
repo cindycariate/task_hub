@@ -122,18 +122,10 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
   z-index: 10; /* Ensures the app bar is above other components */
 }
 
-.create-new-btn {
-  background: #26c6da;
-  color: white;
-  font-weight: 600;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-family: 'Poppins';
-  margin-top: 15px;
-  margin-right: 10px;
-  margin-bottom: 15px;
-}
 .profile-header {
   margin-bottom: 15px;
+}
+.v-main {
+  min-height: 100vh;
 }
 </style>
