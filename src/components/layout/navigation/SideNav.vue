@@ -28,7 +28,10 @@ const rail = ref(true)
       <RouterLink to="/pages/task"
         ><v-list-item prepend-icon="mdi-pen" title="Task" value="task"></v-list-item
       ></RouterLink>
-      <v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item>
+      <RouterLink to="/pages/priority"
+        ><v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item
+      ></RouterLink>
+
       <v-divider class="my-5"></v-divider>
       <v-list-item
         prepend-icon="mdi-cog"
