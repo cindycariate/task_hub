@@ -40,7 +40,7 @@ const onSubmit = async () => {
   } else if (data) {
     // Add success meassage
     formAction.value.formSuccessMessage = 'Successfully Logged Account.'
-    router.replace('/system/dashboard')
+    router.replace('/pages/home')
   }
 
   refVform.value?.resetValidation()

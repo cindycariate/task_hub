@@ -86,7 +86,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth && !loggedIn) {
     next({ name: 'login' }) // Redirect to login if not authenticated
   } else if (to.meta.requiresGuest && loggedIn) {
-    next({ name: 'dashboard' }) // Redirect logged-in users to dashboard
+    next({ name: 'home' }) // Redirect logged-in users to dashboard
   } else {
     next() // Proceed to the route
   }
