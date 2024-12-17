@@ -75,6 +75,8 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
         <SideNav v-model:drawer-visible="isDrawerVisible" />
 
         <!-- Only one scrollable area for the content -->
+
+        <v-main><slot name="content"></slot> </v-main>
       </v-app>
     </v-responsive>
   </template>

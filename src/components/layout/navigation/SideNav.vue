@@ -35,17 +35,6 @@ const rail = ref(true)
       ></v-list-item>
     </v-list>
   </v-navigation-drawer>
-  <v-main style="height: 500px">
-    <div class="main-content">
-      <!-- <div class="welcome-message">
-        <h1 class="text-white text-h3">
-          Welcome to <span class="task-text">Task</span><span class="hub-text">Hub</span>
-        </h1>
-        <p class="p">Visually Manage Your Tasks</p>
-        <button class="create-new-btn rounded-pill"><i class="mdi mdi-plus"></i> Create New</button>
-      </div> -->
-    </div>
-  </v-main>
 </template>
 <style scoped>
 /* Sidebar Drawer */

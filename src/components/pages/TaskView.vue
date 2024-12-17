@@ -1,9 +1,8 @@
+<!-- TaskView.vue -->
 <script setup>
 import AppLayout from '../layout/AppLayout.vue'
-import SideNav from '../layout/navigation/SideNav.vue'
 import { ref } from 'vue'
 
-// Sidebar visibility state
 const isDrawerVisible = ref(true)
 
 // for the tabs part
@@ -16,41 +15,12 @@ const toggleSidebar = () => {
 </script>
 
 <template>
-  <AppLayout
-    :is-with-app-bar-nav-icon="true"
-    @is-drawer-visible="isDrawerVisible.value = !isDrawerVisible.value"
-  >
-    <!-- Sidebar Navigation -->
-    <template #navigation>
-      <SideNav :is-drawer-visible="isDrawerVisible.value" />
-    </template>
-
-    <!-- Main Content -->
+  <AppLayout :is-with-app-bar-nav-icon="true" :is-drawer-visible="isDrawerVisible">
     <template #content>
-      <v-container fluid class="container gradient-bg fill-height">
-        <!-- Sidebar Toggle Button -->
-        <div class="menu-btn">
-          <v-btn icon @click="toggleSidebar" class="toggle-btn">
-            <v-icon>{{ isDrawerVisible.value ? 'mdi-menu-open' : 'mdi-menu' }}</v-icon>
-          </v-btn>
-        </div>
-        <v-card>
-          <v-tabs v-model="tab" bg-color="primary">
-            <v-tab value="one">Item One</v-tab>
-            <v-tab value="two">Item Two</v-tab>
-            <v-tab value="three">Item Three</v-tab>
-          </v-tabs>
-
-          <v-card-text>
-            <v-tabs-window v-model="tab">
-              <v-tabs-window-item value="one"> One </v-tabs-window-item>
-
-              <v-tabs-window-item value="two"> Two </v-tabs-window-item>
-
-              <v-tabs-window-item value="three"> Three </v-tabs-window-item>
-            </v-tabs-window>
-          </v-card-text>
-        </v-card>
+      <v-container fluid>
+        <h1>TaskHub</h1>
+        <h2>Hello</h2>
+        <!-- Your Task Content Goes Here -->
       </v-container>
     </template>
   </AppLayout>
