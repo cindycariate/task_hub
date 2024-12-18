@@ -34,7 +34,11 @@ const rail = ref(true)
         ><v-list-item prepend-icon="mdi-pen" title="Task" value="task"></v-list-item
       ></RouterLink>
       <RouterLink to="/pages/status" @click.stop
-        ><v-list-item prepend-icon="mdi-star" title="Status" value="status"></v-list-item
+        ><v-list-item
+          prepend-icon="mdi mdi-text-box-check-outline"
+          title="Status"
+          value="status"
+        ></v-list-item
       ></RouterLink>
       <RouterLink to="/pages/priority" @click.stop
         ><v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item
@@ -47,6 +51,9 @@ const rail = ref(true)
           value="accountSettings"
         ></v-list-item>
       </RouterLink>
+      <div class="create-new-btn-side">
+        <button class="create-new-btn rounded-pill"><i class="mdi mdi-plus"></i> Create New</button>
+      </div>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -117,4 +124,21 @@ const rail = ref(true)
 .v-main {
   background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
 }
+/* SIDENAV CREATE NEW BTN */
+.create-new-btn-side {
+  margin-top: auto; /* Push the button to the bottom */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  padding: 20px; /* Optional padding for spacing */
+}
+
+.create-new-btn {
+  background: #0097a7;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Poppins';
+}
+/* END */
 </style>

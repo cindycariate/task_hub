@@ -78,7 +78,7 @@ const deleteTask = (index) => {
                     <v-row>
                       <!-- First Column: To Do Tasks -->
                       <v-col cols="12" class="pa-4">
-                        <h3 class="text-h6 mb-4">Tasks</h3>
+                        <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
 
                         <!-- Task List (Dynamic Example) -->
                         <v-card
@@ -92,7 +92,7 @@ const deleteTask = (index) => {
                             <span>{{ task.title }}</span>
                             <div>
                               <!-- Edit Button -->
-                              <v-btn icon color="primary" @click="editTask(index)" size="small">
+                              <v-btn icon color="#00ACC1" @click="editTask(index)" size="small">
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
 
@@ -134,7 +134,7 @@ const deleteTask = (index) => {
                     <v-row>
                       <!-- First Column: To Do Tasks -->
                       <v-col cols="12" class="pa-4">
-                        <h3 class="text-h6 mb-4">Tasks</h3>
+                        <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
 
                         <!-- Task List (Dynamic Example) -->
                         <v-card
@@ -177,9 +177,9 @@ const deleteTask = (index) => {
                     <v-card-title style="font-family: 'Poppins'; color: #00838f">
                       <b>Routine Tasks</b>
                       <v-icon
-                        class="mdi mdi-alert-octagon-outline"
+                        class="mdi mdi-clipboard-text-clock-outline"
                         style="font-size: 25px"
-                        color="red-darken-3"
+                        color="cyan-darken-2"
                       ></v-icon>
                     </v-card-title>
 
@@ -190,7 +190,7 @@ const deleteTask = (index) => {
                     <v-row>
                       <!-- First Column: To Do Tasks -->
                       <v-col cols="12" class="pa-4">
-                        <h3 class="text-h6 mb-4">Tasks</h3>
+                        <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
 
                         <!-- Task List (Dynamic Example) -->
                         <v-card
@@ -204,7 +204,7 @@ const deleteTask = (index) => {
                             <span>{{ task.title }}</span>
                             <div>
                               <!-- Edit Button -->
-                              <v-btn icon color="primary" @click="editTask(index)" size="small">
+                              <v-btn icon color="#00ACC1" @click="editTask(index)" size="small">
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
 
