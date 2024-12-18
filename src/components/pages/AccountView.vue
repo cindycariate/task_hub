@@ -7,54 +7,6 @@ const isDrawerVisible = ref(true)
 
 // for the tabs part
 const tab = ref(1)
-
-// Task data
-const tasks = ref([
-  {
-    title: 'Web App',
-    description: 'Develop the frontend interface',
-    notes: 'Use Vuetify for UI components',
-    dueDate: '2024-12-18',
-    startTime: '08:00',
-    endTime: '10:00',
-  },
-  {
-    title: 'Database',
-    description: 'Design database schema',
-    notes: 'Focus on normalization and indexes',
-    dueDate: '2024-12-18',
-    startTime: '10:00',
-    endTime: '12:00',
-  },
-])
-
-// New task inputs
-const newTask = ref({
-  title: '',
-  description: '',
-  notes: '',
-  dueDate: '',
-})
-
-// Function to add a new task
-const addTask = () => {
-  if (newTask.value.title.trim()) {
-    tasks.value.push({ ...newTask.value })
-    newTask.value = { title: '', description: '', notes: '', startTime: '', endTime: '' }
-  }
-}
-
-// Function to delete a task
-const deleteTask = (index) => {
-  if (confirm('Are you sure you want to delete this task?')) {
-    tasks.value.splice(index, 1)
-  }
-}
-
-// Function to edit task
-const editTask = (index) => {
-  alert(`Edit task: ${tasks.value[index].title}`)
-}
 </script>
 
 <template>
@@ -64,7 +16,51 @@ const editTask = (index) => {
         <v-card>
           <v-tabs v-model="tab" class="auth-background tabs-head"> </v-tabs>
 
-          <v-container fluid> </v-container>
+          <v-row>
+            <!-- Profile Picture Section -->
+            <v-col cols="12" md="3" class="d-flex flex-column align-center justify-center">
+              <v-avatar color="#26C6DA" size="100" class="mt-3 mb-3">
+                <span class="text-white text-h5 font-weight-bold">CC</span>
+              </v-avatar>
+              <v-btn color="#00838f" class="change-photo-btn" prepend-icon="mdi-camera">
+                Change Photo
+              </v-btn>
+            </v-col>
+
+            <!-- Profile Information Section -->
+            <v-col cols="12" md="9">
+              <v-row>
+                <v-col cols="12">
+                  <p class="text-h6 mt-3" style="color: #00838f; font-family: 'Poppins'">
+                    <b>Profile Information</b>
+                  </p>
+                </v-col>
+
+                <!-- Email Address Field -->
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    label="Email Address"
+                    variant="outlined"
+                    value="cariatecindy@gmail.com"
+                  ></v-text-field>
+                </v-col>
+
+                <!-- Name Field -->
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    label="Your Name"
+                    variant="outlined"
+                    value="Cindy Cariate"
+                  ></v-text-field>
+                </v-col>
+
+                <!-- Save Changes Button -->
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn color="cyan-darken-2" class="save-btn">Save Changes</v-btn>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
         </v-card>
       </v-container>
     </template>
@@ -72,6 +68,39 @@ const editTask = (index) => {
 </template>
 
 <style scoped>
+/* Profile Card */
+.profile-card {
+  color: #00838f;
+  border-radius: 12px;
+}
+
+/* Avatar */
+.v-avatar {
+  background-color: #673ab7; /* Purple color */
+}
+
+/* Change Photo Button */
+.change-photo-btn {
+  color: #00838f;
+  text-transform: none;
+  font-weight: 600;
+}
+
+/* Buttons */
+.v-btn {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.save-btn {
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+/* Typography */
+p {
+  margin: 0;
+}
 /* Gradient background */
 .gradient-bg {
   background: linear-gradient(135deg, #1e3c72, #2a5298);
