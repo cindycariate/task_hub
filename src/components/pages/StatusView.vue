@@ -62,8 +62,8 @@ const deleteTask = (index) => {
               <v-tabs-window-item value="one">
                 <v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
-                    <v-card-title>
-                      To Do Tasks
+                    <v-card-title style="font-family: 'Poppins'; color: #00838f">
+                      <b>To Do Tasks </b>
                       <v-icon
                         class="mdi mdi-progress-pencil"
                         style="font-size: 25px"
@@ -83,7 +83,13 @@ const deleteTask = (index) => {
                         <h3 class="text-h6 mb-4">Tasks</h3>
 
                         <!-- Task List (Dynamic Example) -->
-                        <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
+                        <v-card
+                          v-for="(task, index) in tasks"
+                          :key="index"
+                          class="mb-5 custom-border"
+                          elevation="0"
+                          outlined
+                        >
                           <v-card-text class="d-flex justify-space-between align-center">
                             <span>{{ task.title }}</span>
                             <div>
@@ -114,8 +120,8 @@ const deleteTask = (index) => {
               <v-tabs-window-item value="two"
                 ><v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
-                    <v-card-title
-                      >In Progress Tasks
+                    <v-card-title style="font-family: 'Poppins'; color: #00838f"
+                      ><b>In Progress Tasks </b>
                       <v-icon
                         class="mdi mdi-progress-clock"
                         style="font-size: 25px"
@@ -133,7 +139,13 @@ const deleteTask = (index) => {
                         <h3 class="text-h6 mb-4">Tasks</h3>
 
                         <!-- Task List (Dynamic Example) -->
-                        <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
+                        <v-card
+                          v-for="(task, index) in tasks"
+                          :key="index"
+                          class="mb-5 custom-border"
+                          elevation="0"
+                          outlined
+                        >
                           <v-card-text class="d-flex justify-space-between align-center">
                             <span>{{ task.title }}</span>
                             <div>
@@ -164,8 +176,8 @@ const deleteTask = (index) => {
               <v-tabs-window-item value="three"
                 ><v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
-                    <v-card-title>
-                      Done Tasks
+                    <v-card-title style="font-family: 'Poppins'; color: #00838f">
+                      <b>Done Tasks </b>
                       <v-icon
                         class="mdi mdi-check-circle-outline"
                         style="font-size: 25px"
@@ -183,7 +195,13 @@ const deleteTask = (index) => {
                         <h3 class="text-h6 mb-4">Tasks</h3>
 
                         <!-- Task List (Dynamic Example) -->
-                        <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
+                        <v-card
+                          v-for="(task, index) in tasks"
+                          :key="index"
+                          class="mb-5 custom-border"
+                          elevation="0"
+                          outlined
+                        >
                           <v-card-text class="d-flex justify-space-between align-center">
                             <span>{{ task.title }}</span>
                             <div>
@@ -257,5 +275,9 @@ const deleteTask = (index) => {
 .tabs-head {
   color: white;
   font-family: 'Poppins', sans-serif;
+}
+.custom-border {
+  border: 2px solid #0097a7; /* Adjust color as needed */
+  border-radius: 8px; /* Optional: Adds rounded corners */
 }
 </style>

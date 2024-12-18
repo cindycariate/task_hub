@@ -34,8 +34,6 @@ const newTask = ref({
   description: '',
   notes: '',
   dueDate: '',
-  startTime: '',
-  endTime: '',
 })
 
 // Function to add a new task
@@ -64,9 +62,7 @@ const editTask = (index) => {
     <template #content>
       <v-container fluid>
         <v-card>
-          <v-tabs v-model="tab" class="auth-background tabs-head">
-            <v-tab value="one">To Do</v-tab>
-          </v-tabs>
+          <v-tabs v-model="tab" class="auth-background tabs-head"> </v-tabs>
 
           <v-container fluid>
             <v-row>
@@ -126,12 +122,12 @@ const editTask = (index) => {
                   <v-text-field v-model="newTask.title" label="Title" outlined dense></v-text-field>
 
                   <v-text-field
-                    v-model="newTask.description"
-                    label="Description"
+                    v-model="newTask.dueDate"
+                    label="Deadline Date/Time"
+                    type="datetime-local"
                     outlined
                     dense
                   ></v-text-field>
-
                   <v-textarea v-model="newTask.notes" label="Notes" outlined dense></v-textarea>
 
                   <v-row>
@@ -155,7 +151,7 @@ const editTask = (index) => {
                     </v-col>
                   </v-row>
 
-                  <v-btn color="primary" style="font-family: 'Poppins'" type="submit" class="mt-2">
+                  <v-btn color="#00838F" style="font-family: 'Poppins'" type="submit" class="mt-2">
                     <v-icon left>mdi-plus</v-icon> Add Task
                   </v-btn>
                 </v-form>
@@ -169,8 +165,7 @@ const editTask = (index) => {
                 <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
                   <v-card-text>
                     <strong>{{ task.title }}</strong>
-                    <div class="text-caption">Start: {{ task.startTime || '-' }}</div>
-                    <div class="text-caption">End: {{ task.endTime || '-' }}</div>
+                    <div class="text-caption">Deadline: {{ task.dueDate || '-' }}</div>
                   </v-card-text>
                 </v-card>
               </v-col>
