@@ -72,7 +72,7 @@ const deleteTask = (index) => {
                       <v-spacer></v-spacer>
                     </v-card-title>
 
-                    <v-card-subtitle>Manage your tasks and schedule</v-card-subtitle>
+                    <v-card-subtitle>Plan, Prioritize, and Complete your tasks</v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
@@ -123,7 +123,7 @@ const deleteTask = (index) => {
                       ></v-icon>
                     </v-card-title>
 
-                    <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+                    <v-card-subtitle> Plan, Prioritize, and Complete your tasks </v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
@@ -173,7 +173,7 @@ const deleteTask = (index) => {
                       ></v-icon>
                     </v-card-title>
 
-                    <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+                    <v-card-subtitle> Plan, Prioritize, and Complete your tasks </v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
