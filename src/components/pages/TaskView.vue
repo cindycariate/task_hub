@@ -8,11 +8,6 @@ const isDrawerVisible = ref(true)
 // for the tabs part
 const tab = ref(1)
 
-// Toggle function for the sidebar
-const toggleSidebar = () => {
-  isDrawerVisible.value = !isDrawerVisible.value
-}
-
 // Task data
 const tasks = ref([
   {
@@ -57,6 +52,11 @@ const deleteTask = (index) => {
     tasks.value.splice(index, 1)
   }
 }
+
+// Function to edit task
+const editTask = (index) => {
+  alert(`Edit task: ${tasks.value[index].title}`)
+}
 </script>
 
 <template>
@@ -66,43 +66,63 @@ const deleteTask = (index) => {
         <v-card>
           <v-tabs v-model="tab" class="auth-background tabs-head">
             <v-tab value="one">To Do</v-tab>
-            <v-tab value="two">In Progress</v-tab>
-            <v-tab value="three">Done</v-tab>
           </v-tabs>
+
           <v-container fluid>
             <v-row>
               <!-- First Column: My Tasks -->
-              <v-col cols="6">
-                <h2 class="text-h5 mb-3">My Tasks</h2>
+              <v-col cols="8">
+                <v-card-title class="d-flex align-center">
+                  <div class="d-flex align-center" style="font-family: 'Poppins'">
+                    <span class="mr-2">My Tasks</span>
+                    <v-icon style="font-size: 25px" color="cyan-darken-2"
+                      >mdi-progress-pencil</v-icon
+                    >
+                  </div>
+                </v-card-title>
+                <v-card-subtitle class="mb-3" style="font-family: 'Poppins'"
+                  >Stay on Top of Your Tasks</v-card-subtitle
+                >
 
-                <!-- Task List with Dropdown -->
-                <v-expansion-panels>
-                  <v-expansion-panel v-for="(task, index) in tasks" :key="index" class="mb-2">
-                    <v-expansion-panel-title>
-                      <div class="d-flex justify-space-between align-center">
-                        <!-- Task Title -->
-                        <strong>{{ task.title }}</strong>
-                        <div>
-                          <!-- Delete Button -->
-                          <v-btn icon color="red" size="small" @click.stop="deleteTask(index)">
-                            <v-icon>mdi-delete</v-icon>
-                          </v-btn>
-                        </div>
-                      </div>
-                    </v-expansion-panel-title>
+                <!-- Task List -->
+                <v-row
+                  v-for="(task, index) in tasks"
+                  :key="index"
+                  class="task-container mb-2 align-center"
+                >
+                  <!-- Left Side: Task Panel -->
+                  <v-col cols="10">
+                    <v-expansion-panels>
+                      <v-expansion-panel class="custom-border">
+                        <v-expansion-panel-title>
+                          <!-- Task Title -->
+                          <strong>{{ task.title }}</strong>
+                        </v-expansion-panel-title>
 
-                    <v-expansion-panel-text>
-                      <!-- Task Details -->
-                      <div>
-                        <div><strong>Description:</strong> {{ task.description }}</div>
-                        <div><strong>Notes:</strong> {{ task.notes }}</div>
-                      </div>
-                    </v-expansion-panel-text>
-                  </v-expansion-panel>
-                </v-expansion-panels>
+                        <v-expansion-panel-text>
+                          <!-- Task Details -->
+                          <div><strong>Description:</strong> {{ task.description }}</div>
+                          <div><strong>Notes:</strong> {{ task.notes }}</div>
+                          <div><strong>Due Date:</strong> {{ task.dueDate }}</div>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-col>
+
+                  <!-- Right Side: Edit and Delete Buttons -->
+                  <v-col cols="2" class="d-flex justify-end">
+                    <v-btn color="cyan-darken-2" size="small" @click="editTask(index)" class="mr-2">
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+
+                    <v-btn color="red" size="small" @click.stop="deleteTask(index)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
 
                 <!-- Add New Task -->
-                <v-form @submit.prevent="addTask">
+                <v-form @submit.prevent="addTask" class="mt-4">
                   <v-text-field v-model="newTask.title" label="Title" outlined dense></v-text-field>
 
                   <v-text-field
@@ -135,17 +155,15 @@ const deleteTask = (index) => {
                     </v-col>
                   </v-row>
 
-                  <v-btn color="primary" type="submit" class="mt-2">
+                  <v-btn color="primary" style="font-family: 'Poppins'" type="submit" class="mt-2">
                     <v-icon left>mdi-plus</v-icon> Add Task
                   </v-btn>
                 </v-form>
               </v-col>
 
               <!-- Second Column: Due Today -->
-              <v-col cols="6">
-                <h2 class="text-h5 mb-3">Due Today</h2>
-
-                <!-- Due Today List -->
+              <v-col cols="4">
+                <h2 class="text-h5 mb-3" style="color: red">Due Today</h2>
                 <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
                   <v-card-text>
                     <strong>{{ task.title }}</strong>
@@ -205,5 +223,9 @@ const deleteTask = (index) => {
 .text-caption {
   color: #777;
   font-size: 0.9em;
+}
+.custom-border {
+  border: 2px solid #0097a7; /* Adjust color as needed */
+  border-radius: 8px; /* Optional: Adds rounded corners */
 }
 </style>

@@ -63,7 +63,7 @@ const deleteTask = (index) => {
                 <v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
                     <v-card-title>Urgent Tasks</v-card-title>
-                    <v-card-subtitle>Manage your tasks and schedule</v-card-subtitle>
+                    <v-card-subtitle>Plan, Prioritize, and Complete your tasks</v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
@@ -84,7 +84,13 @@ const deleteTask = (index) => {
                               </v-btn>
 
                               <!-- Delete Button -->
-                              <v-btn icon color="red" @click="deleteTask(index)" size="small">
+                              <v-btn
+                                icon
+                                color="red"
+                                @click="deleteTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
                                 <v-icon>mdi-delete</v-icon>
                               </v-btn>
                             </div>
@@ -101,7 +107,7 @@ const deleteTask = (index) => {
                   <v-card-item>
                     <v-card-title> Important Tasks </v-card-title>
 
-                    <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+                    <v-card-subtitle> Plan, Prioritize, and Complete your tasks </v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
@@ -121,7 +127,13 @@ const deleteTask = (index) => {
                               </v-btn>
 
                               <!-- Delete Button -->
-                              <v-btn icon color="red" @click="deleteTask(index)" size="small">
+                              <v-btn
+                                icon
+                                color="red"
+                                @click="deleteTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
                                 <v-icon>mdi-delete</v-icon>
                               </v-btn>
                             </div>
@@ -138,7 +150,7 @@ const deleteTask = (index) => {
                   <v-card-item>
                     <v-card-title> Card title </v-card-title>
 
-                    <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+                    <v-card-subtitle> Plan, Prioritize, and Complete your tasks </v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
@@ -158,7 +170,13 @@ const deleteTask = (index) => {
                               </v-btn>
 
                               <!-- Delete Button -->
-                              <v-btn icon color="red" @click="deleteTask(index)" size="small">
+                              <v-btn
+                                icon
+                                color="red"
+                                @click="deleteTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
                                 <v-icon>mdi-delete</v-icon>
                               </v-btn>
                             </div>
