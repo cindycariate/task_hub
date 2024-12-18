@@ -73,8 +73,8 @@ const editTask = (index) => {
               <!-- First Column: My Tasks -->
               <v-col cols="8">
                 <v-card-title class="d-flex align-center">
-                  <div class="d-flex align-center" style="font-family: 'Poppins'">
-                    <span class="mr-2">My Tasks</span>
+                  <div class="d-flex align-center" style="font-family: 'Poppins'; color: #00838f">
+                    <span class="mr-2"><b>My Tasks</b></span>
                     <v-icon style="font-size: 25px" color="cyan-darken-2"
                       >mdi-progress-pencil</v-icon
                     >
@@ -163,7 +163,9 @@ const editTask = (index) => {
 
               <!-- Second Column: Due Today -->
               <v-col cols="4">
-                <h2 class="text-h5 mb-3" style="color: red">Due Today</h2>
+                <h2 class="text-h5 mb-3" style="color: red; font-family: 'Poppins'">
+                  <b>Due Today</b>
+                </h2>
                 <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
                   <v-card-text>
                     <strong>{{ task.title }}</strong>
