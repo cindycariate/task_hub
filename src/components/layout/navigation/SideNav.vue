@@ -22,7 +22,7 @@ const rail = ref(true)
     </v-list-item>
 
     <v-list class="sidenav" density="compact" nav>
-      <RouterLink to="/pages/home"
+      <RouterLink to="/pages/home" @click.stop
         ><v-list-item
           prepend-icon="mdi-home"
           title="Home"
@@ -33,14 +33,14 @@ const rail = ref(true)
       <RouterLink to="/pages/task" @click.stop
         ><v-list-item prepend-icon="mdi-pen" title="Task" value="task"></v-list-item
       ></RouterLink>
-      <RouterLink to="/pages/priority"
-        ><v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item
-      ></RouterLink>
-      <RouterLink to="/pages/status"
+      <RouterLink to="/pages/status" @click.stop
         ><v-list-item prepend-icon="mdi-star" title="Status" value="status"></v-list-item
       ></RouterLink>
+      <RouterLink to="/pages/priority" @click.stop
+        ><v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item
+      ></RouterLink>
       <v-divider class="my-5"></v-divider>
-      <RouterLink to="/pages/accountSettings">
+      <RouterLink to="/pages/accountSettings" @click.stop>
         <v-list-item
           prepend-icon="mdi-cog"
           title="Account Settings"

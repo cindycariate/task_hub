@@ -12,6 +12,38 @@ const tab = ref(1)
 const toggleSidebar = () => {
   isDrawerVisible.value = !isDrawerVisible.value
 }
+
+// Task list array
+const tasks = ref([
+  { title: 'Task 1: Lorem ipsum dolor sit amet' },
+  { title: 'Task 2: Consectetur adipiscing elit' },
+])
+
+// New task input model
+const newTask = ref('')
+
+// Function to add a new task
+const addTask = () => {
+  if (newTask.value.trim()) {
+    tasks.value.push({ title: newTask.value })
+    newTask.value = ''
+  }
+}
+
+// Function to edit a task
+const editTask = (index) => {
+  const updatedTitle = prompt('Edit Task:', tasks.value[index].title)
+  if (updatedTitle !== null && updatedTitle.trim()) {
+    tasks.value[index].title = updatedTitle
+  }
+}
+
+// Function to delete a task
+const deleteTask = (index) => {
+  if (confirm('Are you sure you want to delete this task?')) {
+    tasks.value.splice(index, 1)
+  }
+}
 </script>
 
 <template>
@@ -27,17 +59,54 @@ const toggleSidebar = () => {
 
           <v-card-text>
             <v-tabs-window v-model="tab">
-              <v-tabs-window-item value="one"
-                ><v-card class="mx-auto" max-width="100%" hover>
+              <v-tabs-window-item value="one">
+                <v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
-                    <v-card-title> Card title </v-card-title>
+                    <v-card-title>
+                      To Do Tasks
+                      <v-icon
+                        class="mdi mdi-progress-pencil"
+                        style="font-size: 25px"
+                        color="cyan-darken-2"
+                      ></v-icon>
+                      <v-spacer></v-spacer>
+                    </v-card-title>
 
-                    <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
+                    <v-card-subtitle>Manage your tasks and schedule</v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua.
+                    <!-- Two-column Layout -->
+                    <v-row>
+                      <!-- First Column: To Do Tasks -->
+                      <v-col cols="12" class="pa-4">
+                        <h3 class="text-h6 mb-4">Tasks</h3>
+
+                        <!-- Task List (Dynamic Example) -->
+                        <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
+                          <v-card-text class="d-flex justify-space-between align-center">
+                            <span>{{ task.title }}</span>
+                            <div>
+                              <!-- Edit Button -->
+                              <v-btn icon color="primary" @click="editTask(index)" size="small">
+                                <v-icon>mdi-pencil</v-icon>
+                              </v-btn>
+
+                              <!-- Delete Button -->
+                              <v-btn
+                                icon
+                                color="red"
+                                @click="deleteTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
+                                <v-icon>mdi-delete</v-icon>
+                              </v-btn>
+                            </div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
                   </v-card-text>
                 </v-card>
               </v-tabs-window-item>
@@ -45,14 +114,49 @@ const toggleSidebar = () => {
               <v-tabs-window-item value="two"
                 ><v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
-                    <v-card-title> Card title </v-card-title>
+                    <v-card-title
+                      >In Progress Tasks
+                      <v-icon
+                        class="mdi mdi-progress-clock"
+                        style="font-size: 25px"
+                        color="cyan-darken-2"
+                      ></v-icon>
+                    </v-card-title>
 
                     <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua.
+                    <v-row>
+                      <!-- First Column: To Do Tasks -->
+                      <v-col cols="12" class="pa-4">
+                        <h3 class="text-h6 mb-4">Tasks</h3>
+
+                        <!-- Task List (Dynamic Example) -->
+                        <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
+                          <v-card-text class="d-flex justify-space-between align-center">
+                            <span>{{ task.title }}</span>
+                            <div>
+                              <!-- Edit Button -->
+                              <v-btn icon color="primary" @click="editTask(index)" size="small">
+                                <v-icon>mdi-pencil</v-icon>
+                              </v-btn>
+
+                              <!-- Delete Button -->
+                              <v-btn
+                                icon
+                                color="red"
+                                @click="deleteTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
+                                <v-icon>mdi-delete</v-icon>
+                              </v-btn>
+                            </div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
                   </v-card-text>
                 </v-card>
               </v-tabs-window-item>
@@ -60,14 +164,49 @@ const toggleSidebar = () => {
               <v-tabs-window-item value="three"
                 ><v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
-                    <v-card-title> Card title </v-card-title>
+                    <v-card-title>
+                      Done Tasks
+                      <v-icon
+                        class="mdi mdi-check-circle-outline"
+                        style="font-size: 25px"
+                        color="cyan-darken-2"
+                      ></v-icon>
+                    </v-card-title>
 
                     <v-card-subtitle> Card subtitle secondary text </v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua.
+                    <v-row>
+                      <!-- First Column: To Do Tasks -->
+                      <v-col cols="12" class="pa-4">
+                        <h3 class="text-h6 mb-4">Tasks</h3>
+
+                        <!-- Task List (Dynamic Example) -->
+                        <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
+                          <v-card-text class="d-flex justify-space-between align-center">
+                            <span>{{ task.title }}</span>
+                            <div>
+                              <!-- Edit Button -->
+                              <v-btn icon color="primary" @click="editTask(index)" size="small">
+                                <v-icon>mdi-pencil</v-icon>
+                              </v-btn>
+
+                              <!-- Delete Button -->
+                              <v-btn
+                                icon
+                                color="red"
+                                @click="deleteTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
+                                <v-icon>mdi-delete</v-icon>
+                              </v-btn>
+                            </div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
                   </v-card-text>
                 </v-card>
               </v-tabs-window-item>
