@@ -1,9 +1,12 @@
 <!-- TaskView.vue -->
 <script setup>
 import AppLayout from '../layout/AppLayout.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const isDrawerVisible = ref(true)
+
+// Modal visibility
+const isAddTaskDialogVisible = ref(false)
 
 // for the tabs part
 const tab = ref(1)
@@ -14,7 +17,7 @@ const tasks = ref([
     title: 'Web App',
     description: 'Develop the frontend interface',
     notes: 'Use Vuetify for UI components',
-    dueDate: '2024-12-18',
+    dueDate: '2024-12-19', // Example date in "Due Today"
     startTime: '08:00',
     endTime: '10:00',
   },
@@ -34,13 +37,27 @@ const newTask = ref({
   description: '',
   notes: '',
   dueDate: '',
+  startTime: '',
+  endTime: '',
 })
 
 // Function to add a new task
 const addTask = () => {
-  if (newTask.value.title.trim()) {
-    tasks.value.push({ ...newTask.value })
-    newTask.value = { title: '', description: '', notes: '', startTime: '', endTime: '' }
+  if (newTask.value.title.trim() && newTask.value.dueDate.trim()) {
+    // Parse `dueDate` to `YYYY-MM-DD` format
+    const formattedDueDate = newTask.value.dueDate.split('T')[0] // Extract date part only
+    tasks.value.push({ ...newTask.value, dueDate: formattedDueDate }) // Add formatted dueDate
+    newTask.value = {
+      title: '',
+      description: '',
+      notes: '',
+      dueDate: '',
+      startTime: '',
+      endTime: '',
+    }
+    isAddTaskDialogVisible.value = false // Close the modal after adding
+  } else {
+    alert('Please provide a title and due date!')
   }
 }
 
@@ -55,6 +72,12 @@ const deleteTask = (index) => {
 const editTask = (index) => {
   alert(`Edit task: ${tasks.value[index].title}`)
 }
+
+// Filter tasks for "Due Today"
+const dueTodayTasks = computed(() => {
+  const today = new Date().toISOString().split('T')[0] // Get today's date in 'YYYY-MM-DD' format
+  return tasks.value.filter((task) => task.dueDate === today)
+})
 </script>
 
 <template>
@@ -118,43 +141,16 @@ const editTask = (index) => {
                 </v-row>
 
                 <!-- Add New Task -->
-                <v-form @submit.prevent="addTask" class="mt-4">
-                  <v-text-field v-model="newTask.title" label="Title" outlined dense></v-text-field>
 
-                  <v-text-field
-                    v-model="newTask.dueDate"
-                    label="Deadline Date/Time"
-                    type="datetime-local"
-                    outlined
-                    dense
-                  ></v-text-field>
-                  <v-textarea v-model="newTask.notes" label="Notes" outlined dense></v-textarea>
-
-                  <v-row>
-                    <v-col cols="6">
-                      <v-text-field
-                        v-model="newTask.startTime"
-                        label="Start Date/Time"
-                        type="datetime-local"
-                        outlined
-                        dense
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        v-model="newTask.endTime"
-                        label="End Date/Time"
-                        type="datetime-local"
-                        outlined
-                        dense
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-
-                  <v-btn color="#00838F" style="font-family: 'Poppins'" type="submit" class="mt-2">
-                    <v-icon left>mdi-plus</v-icon> Add Task
-                  </v-btn>
-                </v-form>
+                <v-btn
+                  color="#00838F"
+                  style="font-family: 'Poppins'"
+                  type="submit"
+                  class="mt-2 rounded-pill"
+                  @click="isAddTaskDialogVisible = true"
+                >
+                  <v-icon left>mdi-plus</v-icon> Add Task
+                </v-btn>
               </v-col>
 
               <!-- Second Column: Due Today -->
@@ -162,7 +158,7 @@ const editTask = (index) => {
                 <h2 class="text-h5 mb-3" style="color: red; font-family: 'Poppins'">
                   <b>Due Today</b>
                 </h2>
-                <v-card v-for="(task, index) in tasks" :key="index" class="mb-2" outlined>
+                <v-card v-for="(task, index) in dueTodayTasks" :key="index" class="mb-2" outlined>
                   <v-card-text>
                     <strong>{{ task.title }}</strong>
                     <div class="text-caption">Deadline: {{ task.dueDate || '-' }}</div>
@@ -173,6 +169,103 @@ const editTask = (index) => {
           </v-container>
         </v-card>
       </v-container>
+      <!-- Add Task Modal -->
+      <v-dialog v-model="isAddTaskDialogVisible" max-width="600">
+        <v-card class="elevation-3 add-task-dialog">
+          <!-- Dialog Title -->
+          <v-card-title class="d-flex justify-center align-center">
+            <v-icon class="mr-2" color="cyan-darken-2">mdi mdi-pen-plus</v-icon>
+            <span
+              class="headline"
+              style="font-family: 'Poppins'; font-weight: bold; color: #00838f"
+            >
+              Add New Task
+            </span>
+          </v-card-title>
+
+          <!-- Dialog Content -->
+          <v-card-text class="pa-4">
+            <v-form>
+              <!-- Task Title -->
+              <v-text-field
+                v-model="newTask.title"
+                label="Task Title"
+                outlined
+                dense
+                color="cyan-darken-3"
+                class="mb-3"
+              ></v-text-field>
+
+              <!-- Task Description -->
+              <v-textarea
+                v-model="newTask.description"
+                label="Task Description"
+                outlined
+                dense
+                color="cyan-darken-3"
+                rows="3"
+                class="mb-3"
+              ></v-textarea>
+
+              <!-- Task Notes -->
+              <v-text-field
+                v-model="newTask.notes"
+                label="Additional Notes"
+                outlined
+                dense
+                color="cyan-darken-3"
+                class="mb-3"
+              ></v-text-field>
+
+              <!-- Task Deadline -->
+              <v-text-field
+                v-model="newTask.dueDate"
+                label="Due Date"
+                type="datetime-local"
+                outlined
+                dense
+                color="cyan-darken-3"
+                class="mb-3"
+              ></v-text-field>
+
+              <!-- Task Start Time -->
+              <v-text-field
+                v-model="newTask.startTime"
+                label="Start Time"
+                type="datetime-local"
+                outlined
+                dense
+                color="cyan-darken-3"
+                class="mb-3"
+              ></v-text-field>
+
+              <!-- Task End Time -->
+              <v-text-field
+                v-model="newTask.endTime"
+                label="End Time"
+                type="datetime-local"
+                outlined
+                dense
+                color="cyan-darken-3"
+                class="mb-3"
+              ></v-text-field>
+            </v-form>
+          </v-card-text>
+
+          <!-- Dialog Actions -->
+          <v-card-actions class="pa-3 d-flex justify-space-between">
+            <v-btn
+              color="red lighten-1"
+              text
+              @click="isAddTaskDialogVisible = false"
+              class="cancel-btn"
+            >
+              Cancel
+            </v-btn>
+            <v-btn color="cyan-darken-3" text @click="addTask" class="save-btn"> Save Task </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </template>
   </AppLayout>
 </template>
@@ -225,4 +318,25 @@ const editTask = (index) => {
   border: 2px solid #0097a7; /* Adjust color as needed */
   border-radius: 8px; /* Optional: Adds rounded corners */
 }
+
+/* DIALOG */
+
+.add-task-dialog {
+  border-radius: 12px; /* Round corners */
+  border: 2px solid #0097a7; /* Adjust color as needed */
+  overflow: hidden;
+  background-color: #f7f9fa; /* Light background for contrast */
+}
+
+.cancel-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+}
+
+.save-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+}
+
+/* END DIALOG */
 </style>

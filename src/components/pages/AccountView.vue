@@ -19,7 +19,7 @@ const tab = ref(1)
           <v-row>
             <!-- Profile Picture Section -->
             <v-col cols="12" md="3" class="d-flex flex-column align-center justify-center">
-              <v-avatar color="#26C6DA" size="100" class="mt-3 mb-3">
+              <v-avatar color="#26C6DA" size="100" class="mt-2 mb-3">
                 <span class="text-white text-h5 font-weight-bold">CC</span>
               </v-avatar>
               <v-btn color="#00838f" class="change-photo-btn" prepend-icon="mdi-camera">
@@ -31,7 +31,7 @@ const tab = ref(1)
             <v-col cols="12" md="9">
               <v-row>
                 <v-col cols="12">
-                  <p class="text-h6 mt-3" style="color: #00838f; font-family: 'Poppins'">
+                  <p class="text-h6 mt-3 mx-3" style="color: #00838f; font-family: 'Poppins'">
                     <b>Profile Information</b>
                   </p>
                 </v-col>
