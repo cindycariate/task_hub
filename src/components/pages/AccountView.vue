@@ -1,32 +1,21 @@
 <!-- TaskView.vue -->
 <script setup>
 import AppLayout from '../layout/AppLayout.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useTaskStore } from '@/stores/taskStore'
 
 const isDrawerVisible = ref(true)
 
 // for the tabs part
 const tab = ref(1)
 
-// Task data
-const tasks = ref([
-  {
-    title: 'Web App',
-    description: 'Develop the frontend interface',
-    notes: 'Use Vuetify for UI components',
-    dueDate: '2024-12-18',
-    startTime: '08:00',
-    endTime: '10:00',
-  },
-  {
-    title: 'Database',
-    description: 'Design database schema',
-    notes: 'Focus on normalization and indexes',
-    dueDate: '2024-12-18',
-    startTime: '10:00',
-    endTime: '12:00',
-  },
-])
+// Use the task store
+const taskStore = useTaskStore()
+
+// Fetch tasks when the component is mounted
+onMounted(() => {
+  taskStore.fetchTasks()
+})
 
 // New task inputs
 const newTask = ref({
@@ -34,12 +23,14 @@ const newTask = ref({
   description: '',
   notes: '',
   dueDate: '',
+  startTime: '',
+  endTime: '',
 })
 
 // Function to add a new task
 const addTask = () => {
   if (newTask.value.title.trim()) {
-    tasks.value.push({ ...newTask.value })
+    taskStore.addTask({ ...newTask.value })
     newTask.value = { title: '', description: '', notes: '', startTime: '', endTime: '' }
   }
 }
@@ -47,13 +38,13 @@ const addTask = () => {
 // Function to delete a task
 const deleteTask = (index) => {
   if (confirm('Are you sure you want to delete this task?')) {
-    tasks.value.splice(index, 1)
+    taskStore.tasks.splice(index, 1)
   }
 }
 
 // Function to edit task
 const editTask = (index) => {
-  alert(`Edit task: ${tasks.value[index].title}`)
+  alert(`Edit task: ${taskStore.tasks[index].title}`)
 }
 </script>
 
