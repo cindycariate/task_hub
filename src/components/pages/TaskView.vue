@@ -9,7 +9,7 @@ const isDrawerVisible = ref(true)
 const isAddTaskDialogVisible = ref(false)
 
 // for the tabs part
-const tab = ref(1)
+const tab = ref('one')
 
 // Task data
 const tasks = ref([
@@ -17,9 +17,11 @@ const tasks = ref([
     title: 'Web App',
     description: 'Develop the frontend interface',
     notes: 'Use Vuetify for UI components',
-    dueDate: '2024-12-19', // Example date in "Due Today"
+    dueDate: '2024-12-19',
     startTime: '08:00',
     endTime: '10:00',
+    priority: 'High', // New field
+    status: 'In Progress', // New field
   },
   {
     title: 'Database',
@@ -28,6 +30,8 @@ const tasks = ref([
     dueDate: '2024-12-18',
     startTime: '10:00',
     endTime: '12:00',
+    priority: 'Medium', // New field
+    status: 'Pending', // New field
   },
 ])
 
@@ -39,14 +43,19 @@ const newTask = ref({
   dueDate: '',
   startTime: '',
   endTime: '',
+  priority: '', // New field
+  status: '', // New field
 })
+
+// Dropdown options
+const priorityOptions = ['Urgent', 'Important', 'Routine']
+const statusOptions = ['Pending', 'In Progress', 'Done']
 
 // Function to add a new task
 const addTask = () => {
   if (newTask.value.title.trim() && newTask.value.dueDate.trim()) {
-    // Parse `dueDate` to `YYYY-MM-DD` format
-    const formattedDueDate = newTask.value.dueDate.split('T')[0] // Extract date part only
-    tasks.value.push({ ...newTask.value, dueDate: formattedDueDate }) // Add formatted dueDate
+    const formattedDueDate = newTask.value.dueDate.split('T')[0]
+    tasks.value.push({ ...newTask.value, dueDate: formattedDueDate })
     newTask.value = {
       title: '',
       description: '',
@@ -54,8 +63,10 @@ const addTask = () => {
       dueDate: '',
       startTime: '',
       endTime: '',
+      priority: '', // Reset field
+      status: '', // Reset field
     }
-    isAddTaskDialogVisible.value = false // Close the modal after adding
+    isAddTaskDialogVisible.value = false
   } else {
     alert('Please provide a title and due date!')
   }
@@ -68,14 +79,9 @@ const deleteTask = (index) => {
   }
 }
 
-// Function to edit task
-const editTask = (index) => {
-  alert(`Edit task: ${tasks.value[index].title}`)
-}
-
 // Filter tasks for "Due Today"
 const dueTodayTasks = computed(() => {
-  const today = new Date().toISOString().split('T')[0] // Get today's date in 'YYYY-MM-DD' format
+  const today = new Date().toISOString().split('T')[0]
   return tasks.value.filter((task) => task.dueDate === today)
 })
 </script>
@@ -123,6 +129,8 @@ const dueTodayTasks = computed(() => {
                           <div><strong>Description:</strong> {{ task.description }}</div>
                           <div><strong>Notes:</strong> {{ task.notes }}</div>
                           <div><strong>Due Date:</strong> {{ task.dueDate }}</div>
+                          <div><strong>Priority:</strong> {{ task.priority }}</div>
+                          <div><strong>Status:</strong> {{ task.status }}</div>
                         </v-expansion-panel-text>
                       </v-expansion-panel>
                     </v-expansion-panels>
@@ -217,6 +225,35 @@ const dueTodayTasks = computed(() => {
                 class="mb-3"
               ></v-text-field>
 
+              <!-- Row for Status and Priority -->
+              <v-row>
+                <!-- Status on the left -->
+                <v-col cols="6">
+                  <v-select
+                    v-model="newTask.status"
+                    :items="statusOptions"
+                    label="Status"
+                    outlined
+                    dense
+                    color="cyan-darken-3"
+                    class="mb-3"
+                  ></v-select>
+                </v-col>
+
+                <!-- Priority on the right -->
+                <v-col cols="6">
+                  <v-select
+                    v-model="newTask.priority"
+                    :items="priorityOptions"
+                    label="Priority"
+                    outlined
+                    dense
+                    color="cyan-darken-3"
+                    class="mb-3"
+                  ></v-select>
+                </v-col>
+              </v-row>
+
               <!-- Task Deadline -->
               <v-text-field
                 v-model="newTask.dueDate"
@@ -228,27 +265,33 @@ const dueTodayTasks = computed(() => {
                 class="mb-3"
               ></v-text-field>
 
-              <!-- Task Start Time -->
-              <v-text-field
-                v-model="newTask.startTime"
-                label="Start Time"
-                type="datetime-local"
-                outlined
-                dense
-                color="cyan-darken-3"
-                class="mb-3"
-              ></v-text-field>
+              <v-row>
+                <!-- Task Start Time -->
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="newTask.startTime"
+                    label="Start Time"
+                    type="datetime-local"
+                    outlined
+                    dense
+                    color="cyan-darken-3"
+                    class="mb-3"
+                  ></v-text-field>
+                </v-col>
 
-              <!-- Task End Time -->
-              <v-text-field
-                v-model="newTask.endTime"
-                label="End Time"
-                type="datetime-local"
-                outlined
-                dense
-                color="cyan-darken-3"
-                class="mb-3"
-              ></v-text-field>
+                <!-- Task End Time -->
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="newTask.endTime"
+                    label="End Time"
+                    type="datetime-local"
+                    outlined
+                    dense
+                    color="cyan-darken-3"
+                    class="mb-3"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
             </v-form>
           </v-card-text>
 
@@ -262,7 +305,9 @@ const dueTodayTasks = computed(() => {
             >
               Cancel
             </v-btn>
-            <v-btn color="cyan-darken-3" text @click="addTask" class="save-btn"> Save Task </v-btn>
+            <v-btn color="cyan-darken-3" text @click="addTask" class="save-btn rounded-pill">
+              Save
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
