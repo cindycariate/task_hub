@@ -8,7 +8,7 @@ import HomeView from '@/components/pages/HomeView.vue'
 import TaskView from '@/components/pages/TaskView.vue'
 import PriorityView from '@/components/pages/PriorityView.vue'
 import AccountView from '@/components/pages/AccountView.vue'
-
+import TaskManager from '@/views/auth/TaskManager.vue'
 // Check if a user is authenticated using Supabase
 const isAuthenticated = async () => {
   const { data, error } = await supabase.auth.getSession()
@@ -59,6 +59,11 @@ const routes = [
     path: '/pages/priority',
     name: 'priority',
     component: PriorityView,
+  },
+  {
+    path: '/taskmanager',
+    name: 'taskmanager',
+    component: TaskManager,
   },
   {
     path: '/pages/accountSettings',
