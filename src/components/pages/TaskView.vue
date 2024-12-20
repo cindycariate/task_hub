@@ -17,21 +17,21 @@ const tasks = ref([
     title: 'Web App',
     description: 'Develop the frontend interface',
     notes: 'Use Vuetify for UI components',
-    dueDate: '2024-12-19',
-    startTime: '08:00',
-    endTime: '10:00',
-    priority: 'High', // New field
-    status: 'In Progress', // New field
+    deadline: '2024-12-19',
+    start_date: '08:00',
+    end_date: '10:00',
+    priority_level: 'Important', // New field
+    status_name: 'In Progress', // New field
   },
   {
     title: 'Database',
     description: 'Design database schema',
     notes: 'Focus on normalization and indexes',
-    dueDate: '2024-12-18',
-    startTime: '10:00',
-    endTime: '12:00',
-    priority: 'Medium', // New field
-    status: 'Pending', // New field
+    deadline: '2024-12-18',
+    start_date: '10:00',
+    end_date: '12:00',
+    priority_level: 'Routine', // New field
+    status_name: 'Pending', // New field
   },
 ])
 
@@ -40,11 +40,11 @@ const newTask = ref({
   title: '',
   description: '',
   notes: '',
-  dueDate: '',
-  startTime: '',
-  endTime: '',
-  priority: '', // New field
-  status: '', // New field
+  deadline: '',
+  start_date: '',
+  end_date: '',
+  priority_level: '', // New field
+  status_name: '', // New field
 })
 
 // Dropdown options
@@ -53,18 +53,18 @@ const statusOptions = ['Pending', 'In Progress', 'Done']
 
 // Function to add a new task
 const addTask = () => {
-  if (newTask.value.title.trim() && newTask.value.dueDate.trim()) {
-    const formattedDueDate = newTask.value.dueDate.split('T')[0]
-    tasks.value.push({ ...newTask.value, dueDate: formattedDueDate })
+  if (newTask.value.title.trim() && newTask.value.deadline.trim()) {
+    const formattedDueDate = newTask.value.deadline.split('T')[0]
+    tasks.value.push({ ...newTask.value, deadline: formattedDueDate })
     newTask.value = {
       title: '',
       description: '',
       notes: '',
-      dueDate: '',
-      startTime: '',
-      endTime: '',
-      priority: '', // Reset field
-      status: '', // Reset field
+      deadline: '',
+      start_date: '',
+      end_date: '',
+      priority_level: '', // Reset field
+      status_name: '', // Reset field
     }
     isAddTaskDialogVisible.value = false
   } else {
@@ -82,7 +82,7 @@ const deleteTask = (index) => {
 // Filter tasks for "Due Today"
 const dueTodayTasks = computed(() => {
   const today = new Date().toISOString().split('T')[0]
-  return tasks.value.filter((task) => task.dueDate === today)
+  return tasks.value.filter((task) => task.deadline === today)
 })
 </script>
 
@@ -129,9 +129,9 @@ const dueTodayTasks = computed(() => {
                           <!-- Task Details -->
                           <div><strong>Description:</strong> {{ task.description }}</div>
                           <div><strong>Notes:</strong> {{ task.notes }}</div>
-                          <div><strong>Due Date:</strong> {{ task.dueDate }}</div>
-                          <div><strong>Priority:</strong> {{ task.priority }}</div>
-                          <div><strong>Status:</strong> {{ task.status }}</div>
+                          <div><strong>Due Date:</strong> {{ task.deadline }}</div>
+                          <div><strong>Priority:</strong> {{ task.priority_level }}</div>
+                          <div><strong>Status:</strong> {{ task.status_name }}</div>
                         </v-expansion-panel-text>
                       </v-expansion-panel>
                     </v-expansion-panels>
@@ -175,7 +175,7 @@ const dueTodayTasks = computed(() => {
                 <v-card v-for="(task, index) in dueTodayTasks" :key="index" class="mb-2" outlined>
                   <v-card-text>
                     <strong>{{ task.title }}</strong>
-                    <div class="text-caption">Deadline: {{ task.dueDate || '-' }}</div>
+                    <div class="text-caption">Deadline: {{ task.deadline || '-' }}</div>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -236,7 +236,7 @@ const dueTodayTasks = computed(() => {
                 <!-- Status on the left -->
                 <v-col cols="6">
                   <v-select
-                    v-model="newTask.status"
+                    v-model="newTask.status_name"
                     :items="statusOptions"
                     label="Status"
                     outlined
@@ -249,7 +249,7 @@ const dueTodayTasks = computed(() => {
                 <!-- Priority on the right -->
                 <v-col cols="6">
                   <v-select
-                    v-model="newTask.priority"
+                    v-model="newTask.priority_level"
                     :items="priorityOptions"
                     label="Priority"
                     outlined
@@ -262,7 +262,7 @@ const dueTodayTasks = computed(() => {
 
               <!-- Task Deadline -->
               <v-text-field
-                v-model="newTask.dueDate"
+                v-model="newTask.deadline"
                 label="Deadline"
                 type="datetime-local"
                 outlined
@@ -275,7 +275,7 @@ const dueTodayTasks = computed(() => {
                 <!-- Task Start Time -->
                 <v-col cols="6">
                   <v-text-field
-                    v-model="newTask.startTime"
+                    v-model="newTask.start_date"
                     label="Start Time"
                     type="datetime-local"
                     outlined
@@ -288,7 +288,7 @@ const dueTodayTasks = computed(() => {
                 <!-- Task End Time -->
                 <v-col cols="6">
                   <v-text-field
-                    v-model="newTask.endTime"
+                    v-model="newTask.end_date"
                     label="End Time"
                     type="datetime-local"
                     outlined

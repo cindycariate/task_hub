@@ -124,55 +124,6 @@ const editTask = (index) => {
               </v-row>
             </v-col>
           </v-row>
-
-          <!-- Task Input Form -->
-          <v-form @submit.prevent="addTask">
-            <v-text-field
-              v-model="newTask.title"
-              label="Title"
-              placeholder="Task Title"
-              required
-            ></v-text-field>
-
-            <v-textarea
-              v-model="newTask.description"
-              label="Description"
-              placeholder="Task Description"
-            ></v-textarea>
-
-            <v-text-field
-              v-model="newTask.startTime"
-              label="Start Time"
-              placeholder="YYYY-MM-DD"
-              type="date"
-            ></v-text-field>
-
-            <v-text-field
-              v-model="newTask.endTime"
-              label="End Time"
-              placeholder="YYYY-MM-DD"
-              type="date"
-            ></v-text-field>
-
-            <v-btn type="submit" color="primary" class="mt-4">Add Task</v-btn>
-          </v-form>
-
-          <!-- Task List -->
-          <v-container fluid>
-            <v-list>
-              <v-list-item
-                v-for="(task, index) in taskStore.tasks"
-                :key="index"
-                class="custom-border mb-2"
-              >
-                <v-list-item-title>{{ task.title }}</v-list-item-title>
-                <v-list-item-subtitle>{{ task.description }}</v-list-item-subtitle>
-
-                <v-btn @click="editTask(index)" color="blue">Edit</v-btn>
-                <v-btn @click="deleteTask(index)" color="red" class="ml-2">Delete</v-btn>
-              </v-list-item>
-            </v-list>
-          </v-container>
         </v-card>
       </v-container>
     </template>
