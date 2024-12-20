@@ -51,6 +51,8 @@ const rail = ref(true)
           value="accountSettings"
         ></v-list-item>
       </RouterLink>
+
+      <!-- BUTTON CONTAINER -->
       <div class="create-new-btn-side">
         <button class="create-new-btn rounded-pill"><i class="mdi mdi-plus"></i> Create New</button>
       </div>
@@ -129,7 +131,7 @@ const rail = ref(true)
   margin-top: auto; /* Push the button to the bottom */
   display: flex;
   justify-content: center; /* Center horizontally */
-  padding: 20px; /* Optional padding for spacing */
+  padding: 20px;
 }
 
 .create-new-btn {
@@ -142,4 +144,12 @@ const rail = ref(true)
   margin-top: 30px;
 }
 /* END */
+
+/* SIDENAV STYLES */
+.v-navigation-drawer {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the button stays at the bottom */
 </style>

@@ -99,7 +99,7 @@ const deleteTask = (index) => {
                                 color="#00ACC1"
                                 @click="editTask(index)"
                                 size="small"
-                                class="ml-2 mb-2"
+                                class="ml-2"
                               >
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
@@ -161,7 +161,7 @@ const deleteTask = (index) => {
                                 color="#00ACC1"
                                 @click="editTask(index)"
                                 size="small"
-                                class="ml-2 mb-2"
+                                class="ml-2"
                               >
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
@@ -223,7 +223,7 @@ const deleteTask = (index) => {
                                 color="#00ACC1"
                                 @click="editTask(index)"
                                 size="small"
-                                class="ml-2 mb-2"
+                                class="ml-2"
                               >
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>

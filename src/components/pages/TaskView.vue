@@ -96,7 +96,7 @@ const dueTodayTasks = computed(() => {
           <v-container fluid>
             <v-row>
               <!-- First Column: My Tasks -->
-              <v-col cols="8">
+              <v-col :cols="12" md="8">
                 <v-card-title class="d-flex align-center">
                   <div class="d-flex align-center" style="font-family: 'Poppins'; color: #00838f">
                     <span class="mr-2"><b>My Tasks</b></span>
@@ -116,7 +116,7 @@ const dueTodayTasks = computed(() => {
                   class="task-container mb-2 align-center"
                 >
                   <!-- Left Side: Task Panel -->
-                  <v-col cols="10">
+                  <v-col cols="12" md="10">
                     <v-expansion-panels>
                       <v-expansion-panel class="custom-border">
                         <v-expansion-panel-title>
@@ -137,7 +137,7 @@ const dueTodayTasks = computed(() => {
                   </v-col>
 
                   <!-- Right Side: Edit and Delete Buttons -->
-                  <v-col cols="2" class="d-flex justify-end">
+                  <v-col cols="12" md="2" class="d-flex justify-end mt-2 mt-md-0">
                     <v-btn color="cyan-darken-2" size="small" @click="editTask(index)" class="mr-2">
                       <v-icon>mdi-pencil</v-icon>
                     </v-btn>
@@ -162,7 +162,7 @@ const dueTodayTasks = computed(() => {
               </v-col>
 
               <!-- Second Column: Due Today -->
-              <v-col cols="4">
+              <v-col :cols="12" md="4">
                 <h2 class="text-h5 mb-3" style="color: red; font-family: 'Poppins'">
                   <b>Due Today</b>
                 </h2>
