@@ -15,6 +15,32 @@ const getRandomPosition = () => {
     animationDelay: `${Math.random() * 5}s`, // Randomize animation delay for each particle
   }
 }
+
+// Dialog visibility
+const isAddTaskDialogVisible = ref(false)
+
+// Data for the new task
+const newTask = ref({
+  title: '',
+  description: '',
+  notes: '',
+  status: '',
+  priority: '',
+  dueDate: '',
+  startTime: '',
+  endTime: '',
+})
+
+// Status and Priority options
+const statusOptions = ['To Do', 'In Progress', 'Done']
+const priorityOptions = ['Urgent', 'Important', 'Routine']
+
+// Function to handle adding a new task
+const addTask = () => {
+  console.log('New Task:', newTask.value)
+  // Logic for adding the task (e.g., saving to the database)
+  isAddTaskDialogVisible.value = false // Close the dialog after saving
+}
 </script>
 
 <template>
@@ -34,10 +60,146 @@ const getRandomPosition = () => {
                 Welcome to <span class="task-text">Task</span><span class="hub-text">Hub</span>
               </h1>
               <p class="mb-3">Visually Manage Your Tasks</p>
-              <button class="create-new-btn rounded-pill">
+              <!-- Button to open the dialog -->
+              <button class="create-new-btn rounded-pill" @click="isAddTaskDialogVisible = true">
                 <i class="mdi mdi-plus"></i> Create New
               </button>
             </div>
+
+            <!-- Add Task Dialog -->
+            <v-dialog v-model="isAddTaskDialogVisible" max-width="600">
+              <v-card class="elevation-3 add-task-dialog">
+                <!-- Dialog Title -->
+                <v-card-title class="d-flex justify-center align-center">
+                  <v-icon class="mr-2" color="cyan-darken-2">mdi mdi-pen-plus</v-icon>
+                  <span
+                    class="headline"
+                    style="font-family: 'Poppins'; font-weight: bold; color: #00838f"
+                  >
+                    Add New Task
+                  </span>
+                </v-card-title>
+
+                <!-- Dialog Content -->
+                <v-card-text class="pa-4">
+                  <v-form>
+                    <!-- Task Title -->
+                    <v-text-field
+                      v-model="newTask.title"
+                      label="Task Title"
+                      outlined
+                      dense
+                      color="cyan-darken-3"
+                      class="mb-3"
+                    ></v-text-field>
+
+                    <!-- Task Description -->
+                    <v-textarea
+                      v-model="newTask.description"
+                      label="Task Description"
+                      outlined
+                      dense
+                      color="cyan-darken-3"
+                      rows="3"
+                      class="mb-3"
+                    ></v-textarea>
+
+                    <!-- Task Notes -->
+                    <v-text-field
+                      v-model="newTask.notes"
+                      label="Additional Notes"
+                      outlined
+                      dense
+                      color="cyan-darken-3"
+                      class="mb-3"
+                    ></v-text-field>
+
+                    <!-- Row for Status and Priority -->
+                    <v-row>
+                      <!-- Status on the left -->
+                      <v-col cols="6">
+                        <v-select
+                          v-model="newTask.status"
+                          :items="statusOptions"
+                          label="Status"
+                          outlined
+                          dense
+                          color="cyan-darken-3"
+                          class="mb-3"
+                        ></v-select>
+                      </v-col>
+
+                      <!-- Priority on the right -->
+                      <v-col cols="6">
+                        <v-select
+                          v-model="newTask.priority"
+                          :items="priorityOptions"
+                          label="Priority"
+                          outlined
+                          dense
+                          color="cyan-darken-3"
+                          class="mb-3"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
+
+                    <!-- Task Deadline -->
+                    <v-text-field
+                      v-model="newTask.dueDate"
+                      label="Deadline"
+                      type="datetime-local"
+                      outlined
+                      dense
+                      color="cyan-darken-3"
+                      class="mb-3"
+                    ></v-text-field>
+
+                    <v-row>
+                      <!-- Task Start Time -->
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="newTask.startTime"
+                          label="Start Time"
+                          type="datetime-local"
+                          outlined
+                          dense
+                          color="cyan-darken-3"
+                          class="mb-3"
+                        ></v-text-field>
+                      </v-col>
+
+                      <!-- Task End Time -->
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="newTask.endTime"
+                          label="End Time"
+                          type="datetime-local"
+                          outlined
+                          dense
+                          color="cyan-darken-3"
+                          class="mb-3"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-card-text>
+
+                <!-- Dialog Actions -->
+                <v-card-actions class="pa-3 d-flex justify-space-between">
+                  <v-btn
+                    color="red lighten-1"
+                    text
+                    @click="isAddTaskDialogVisible = false"
+                    class="cancel-btn rounded-pill"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn color="cyan-darken-3" text @click="addTask" class="save-btn rounded-pill">
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-col>
         </v-row>
       </div>
@@ -173,4 +335,26 @@ const getRandomPosition = () => {
 .hub-text {
   color: aqua;
 }
+
+/* DIALOG */
+
+.add-task-dialog {
+  border-radius: 12px; /* Round corners */
+  border: 2px solid #0097a7; /* Adjust color as needed */
+  overflow: hidden;
+  background-color: #f7f9fa; /* Light background for contrast */
+}
+
+.cancel-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+}
+
+.save-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  border: 2px solid #0097a7; /* Adjust color as needed */
+}
+
+/* END DIALOG */
 </style>

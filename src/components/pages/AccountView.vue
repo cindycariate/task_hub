@@ -4,9 +4,6 @@ import AppLayout from '../layout/AppLayout.vue'
 import { ref } from 'vue'
 
 const isDrawerVisible = ref(true)
-
-// for the tabs part
-const tab = ref(1)
 </script>
 
 <template>
@@ -31,7 +28,7 @@ const tab = ref(1)
             <v-col cols="12" md="9">
               <v-row>
                 <v-col cols="12">
-                  <p class="text-h6 mt-4" style="color: #00838f; font-family: 'Poppins'">
+                  <p class="text-h6 mt-5" style="color: #00838f; font-family: 'Poppins'">
                     <v-icon class="mr-1" color="cyan-darken-2"
                       >mdi mdi-account-circle-outline</v-icon
                     >
@@ -78,9 +75,6 @@ const tab = ref(1)
 }
 
 /* Avatar */
-.v-avatar {
-  background-color: #673ab7; /* Purple color */
-}
 
 /* Change Photo Button */
 .change-photo-btn {

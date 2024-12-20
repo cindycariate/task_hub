@@ -301,7 +301,7 @@ const dueTodayTasks = computed(() => {
               color="red lighten-1"
               text
               @click="isAddTaskDialogVisible = false"
-              class="cancel-btn"
+              class="cancel-btn rounded-pill"
             >
               Cancel
             </v-btn>
@@ -381,6 +381,7 @@ const dueTodayTasks = computed(() => {
 .save-btn {
   font-family: 'Poppins', sans-serif;
   font-weight: bold;
+  border: 2px solid #0097a7; /* Adjust color as needed */
 }
 
 /* END DIALOG */

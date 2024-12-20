@@ -139,6 +139,7 @@ const rail = ref(true)
   padding: 10px 20px;
   cursor: pointer;
   font-family: 'Poppins';
+  margin-top: 30px;
 }
 /* END */
 </style>

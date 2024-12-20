@@ -64,6 +64,7 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
           <h3 class="text-logo font-weight-black">
             <span class="task-text">Task</span><span class="hub-text">Hub</span>
           </h3>
+
           <v-spacer></v-spacer>
 
           <div class="profile-header">
