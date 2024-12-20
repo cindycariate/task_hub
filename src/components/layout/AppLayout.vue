@@ -50,9 +50,14 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
 
           <v-spacer></v-spacer>
           <v-main><slot name="content"></slot> </v-main>
+          <v-divider class="mt-5"></v-divider>
+          <footer class="app-footer">
+            <p>Copyright © 2024 TaskHub | All Rights Reserved</p>
+          </footer>
         </v-app>
       </v-responsive>
     </BackgroundLayout>
+    <!-- Footer -->
   </template>
 
   <!-- For other views like dashboard, render the default content without BackgroundLayout -->
@@ -128,5 +133,17 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
 }
 .v-main {
   min-height: 100vh;
+}
+
+/* Footer Styles */
+.app-footer {
+  color: white; /* Text color */
+  text-align: center; /* Center-align text */
+  padding: 15px 0; /* Spacing */
+  font-size: 14px; /* Text size */
+  font-family: 'Poppins', sans-serif;
+  position: relative; /* Change to fixed if you want it always visible */
+  bottom: 0;
+  width: 100%;
 }
 </style>
