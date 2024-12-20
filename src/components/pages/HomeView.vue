@@ -29,11 +29,11 @@ const newTask = ref({
 
 // Function to add a new task
 const addTask = async () => {
-  const { data: user } = await supabase.auth.getUser() // Get authenticated user
+  const { data: user } = await supabase.auth.getUser() // Get the authenticated user
 
   if (newTask.value.title.trim()) {
     try {
-      // Add the task with the user_id
+      // Add the task and retrieve its ID
       const taskId = await taskStore.addTask({
         title: newTask.value.title,
         description: newTask.value.description,
@@ -42,12 +42,21 @@ const addTask = async () => {
         end_date: newTask.value.end_date,
         status_name: newTask.value.status_name,
         priority_level: newTask.value.priority_level,
-        user_id: user?.user?.id, // Pass the user_id from Supabase
+        user_id: user?.user?.id, // Pass the user ID
       })
+
+      console.log('Newly added task ID:', taskId) // Debugging log
 
       // Add a note referencing the task
       if (newTask.value.notes.trim()) {
-        await taskStore.addNote({ task_id: taskId, notes: newTask.value.notes })
+        if (taskId) {
+          await taskStore.addNote({
+            task_id: taskId, // Link the note to the task
+            notes: newTask.value.notes,
+          })
+        } else {
+          console.error('Task ID is null or undefined. Cannot add note.')
+        }
       }
 
       // Reset form and close modal
