@@ -1,6 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import AppLayout from '../AppLayout.vue'
+import { useTaskStore } from '@/stores/taskStore'
+import { supabase } from '@/utils/supabase'
 
 // Sidebar visibility states
 const isDrawerVisible = ref(true)
@@ -15,21 +17,100 @@ const newTask = ref({
   title: '',
   description: '',
   notes: '',
-  status: '',
-  priority: '',
-  dueDate: '',
-  startTime: '',
-  endTime: '',
+  status_name: '',
+  priority_level: '',
+  deadline: '',
+  start_date: '',
+  end_date: '',
 })
 
 // Options for select inputs
 const statusOptions = ['To Do', 'In Progress', 'Completed']
 const priorityOptions = ['Urgent', 'Important', 'Routine']
 
-// Add task function (placeholder)
-const addTask = () => {
-  console.log('Task Added:', newTask.value)
-  isAddTaskDialogVisible.value = false
+// Task store instance
+const taskStore = useTaskStore()
+
+// Fetch tasks when the component is mounted
+onMounted(() => {
+  taskStore.fetchTasks()
+})
+// User data
+const user = ref(null)
+
+// Fetch the user details on component mount
+onMounted(async () => {
+  try {
+    const { data: session, error } = await supabase.auth.getSession()
+    if (error) {
+      console.error('Error fetching session:', error.message)
+    }
+    console.log('Session data:', session) // Debugging: Log session data
+    user.value = session?.user
+    if (!user.value) {
+      console.warn('No user is currently logged in.')
+    } else {
+      console.log('User data:', user.value) // Debugging: Log user details
+    }
+  } catch (err) {
+    console.error('Error initializing user session:', err.message)
+  }
+})
+
+// Add task function
+const addTask = async () => {
+  const { data: user, error } = await supabase.auth.getUser() // Get the authenticated user
+
+  if (newTask.value.title.trim()) {
+    try {
+      // Add the task and retrieve its ID
+      const taskId = await taskStore.addTask({
+        title: newTask.value.title,
+        description: newTask.value.description,
+        deadline: newTask.value.deadline,
+        start_date: newTask.value.start_date,
+        end_date: newTask.value.end_date,
+        status_name: newTask.value.status_name,
+        priority_level: newTask.value.priority_level,
+        user_id: user?.user?.id, // Pass the user ID
+      })
+
+      console.log('Newly added task ID:', taskId) // Debugging log
+
+      // Add a note referencing the task
+      if (newTask.value.notes.trim()) {
+        if (taskId) {
+          await taskStore.addNote({
+            task_id: taskId, // Link the note to the task
+            notes: newTask.value.notes,
+          })
+        } else {
+          console.error('Task ID is null or undefined. Cannot add note.')
+        }
+      }
+
+      // Reset form and close modal
+      newTask.value = {
+        title: '',
+        description: '',
+        notes: '',
+        status_name: 'To Do',
+        priority_level: 'Routine',
+        deadline: '',
+        start_date: '',
+        end_date: '',
+      }
+      isAddTaskDialogVisible.value = false
+    } catch (error) {
+      console.error('Error adding task:', error.message)
+    }
+  }
+  if (error) {
+    console.error('Error fetching user:', error.message)
+    return // Stop execution if there's an error
+  }
+
+  console.log('Authenticated user:', user) // Debugging log
 }
 </script>
 
@@ -135,7 +216,7 @@ const addTask = () => {
           <v-row>
             <v-col cols="6">
               <v-select
-                v-model="newTask.status"
+                v-model="newTask.status_name"
                 :items="statusOptions"
                 label="Status"
                 outlined
@@ -146,7 +227,7 @@ const addTask = () => {
             </v-col>
             <v-col cols="6">
               <v-select
-                v-model="newTask.priority"
+                v-model="newTask.priority_level"
                 :items="priorityOptions"
                 label="Priority"
                 outlined
@@ -159,7 +240,7 @@ const addTask = () => {
 
           <!-- Deadline -->
           <v-text-field
-            v-model="newTask.dueDate"
+            v-model="newTask.deadline"
             label="Deadline"
             type="datetime-local"
             outlined
@@ -172,7 +253,7 @@ const addTask = () => {
           <v-row>
             <v-col cols="6">
               <v-text-field
-                v-model="newTask.startTime"
+                v-model="newTask.start_date"
                 label="Start Time"
                 type="datetime-local"
                 outlined
@@ -183,7 +264,7 @@ const addTask = () => {
             </v-col>
             <v-col cols="6">
               <v-text-field
-                v-model="newTask.endTime"
+                v-model="newTask.end_date"
                 label="End Time"
                 type="datetime-local"
                 outlined

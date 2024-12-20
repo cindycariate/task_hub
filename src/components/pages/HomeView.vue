@@ -64,11 +64,11 @@ const addTask = async () => {
         title: '',
         description: '',
         notes: '',
+        status_name: 'To Do',
+        priority_level: 'Routine',
         deadline: '',
         start_date: '',
         end_date: '',
-        status_name: 'To Do',
-        priority_level: 'Routine',
       }
       showCreateTaskModal.value = false
     } catch (error) {
