@@ -6,7 +6,7 @@ import { ref } from 'vue'
 const isDrawerVisible = ref(true)
 
 // for the tabs part
-const tab = ref(1)
+const tab = ref('one')
 
 // Toggle function for the sidebar
 const toggleSidebar = () => {

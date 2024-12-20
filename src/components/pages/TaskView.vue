@@ -220,7 +220,7 @@ const dueTodayTasks = computed(() => {
               <!-- Task Deadline -->
               <v-text-field
                 v-model="newTask.dueDate"
-                label="Due Date"
+                label="Deadline"
                 type="datetime-local"
                 outlined
                 dense

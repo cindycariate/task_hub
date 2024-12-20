@@ -31,13 +31,16 @@ const tab = ref(1)
             <v-col cols="12" md="9">
               <v-row>
                 <v-col cols="12">
-                  <p class="text-h6 mt-3 mx-3" style="color: #00838f; font-family: 'Poppins'">
+                  <p class="text-h6 mt-4" style="color: #00838f; font-family: 'Poppins'">
+                    <v-icon class="mr-1" color="cyan-darken-2"
+                      >mdi mdi-account-circle-outline</v-icon
+                    >
                     <b>Profile Information</b>
                   </p>
                 </v-col>
 
                 <!-- Email Address Field -->
-                <v-col cols="12" md="8">
+                <v-col cols="12" sm="6" md="8">
                   <v-text-field
                     label="Email Address"
                     variant="outlined"
@@ -46,7 +49,7 @@ const tab = ref(1)
                 </v-col>
 
                 <!-- Name Field -->
-                <v-col cols="12" md="8">
+                <v-col cols="12" sm="6" md="8">
                   <v-text-field
                     label="Your Name"
                     variant="outlined"
