@@ -92,7 +92,6 @@ const dueTodayTasks = computed(() => {
       <v-container fluid>
         <v-card>
           <v-tabs v-model="tab" class="auth-background tabs-head"> </v-tabs>
-
           <v-container fluid>
             <v-row>
               <!-- First Column: My Tasks -->
@@ -114,6 +113,8 @@ const dueTodayTasks = computed(() => {
                   v-for="(task, index) in tasks"
                   :key="index"
                   class="task-container mb-2 align-center"
+                  align="center"
+                  justify="space-between"
                 >
                   <!-- Left Side: Task Panel -->
                   <v-col cols="12" md="10">
@@ -137,8 +138,13 @@ const dueTodayTasks = computed(() => {
                   </v-col>
 
                   <!-- Right Side: Edit and Delete Buttons -->
-                  <v-col cols="12" md="2" class="d-flex justify-end mt-2 mt-md-0">
-                    <v-btn color="cyan-darken-2" size="small" @click="editTask(index)" class="mr-2">
+                  <v-col cols="12" md="2" class="d-flex justify-end">
+                    <v-btn
+                      color="cyan-darken-2"
+                      size="small"
+                      @click="editTask(index)"
+                      class="mr-2 ml-2"
+                    >
                       <v-icon>mdi-pencil</v-icon>
                     </v-btn>
 
