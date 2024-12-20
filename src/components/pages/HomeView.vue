@@ -29,7 +29,7 @@ const newTask = ref({
 
 // Function to add a new task
 const addTask = async () => {
-  const { data: user } = await supabase.auth.getUser() // Get the authenticated user
+  const { data: user, error } = await supabase.auth.getUser() // Get the authenticated user
 
   if (newTask.value.title.trim()) {
     try {
@@ -75,6 +75,12 @@ const addTask = async () => {
       console.error('Error adding task:', error.message)
     }
   }
+  if (error) {
+    console.error('Error fetching user:', error.message)
+    return // Stop execution if there's an error
+  }
+
+  console.log('Authenticated user:', user) // Debugging log
 }
 </script>
 

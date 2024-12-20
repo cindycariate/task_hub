@@ -32,6 +32,7 @@ export const useTaskStore = defineStore('taskStore', {
           created_at: task.created_at || new Date().toISOString(),
           updated_at: new Date().toISOString(),
         }
+        console.log('Task to insert:', cleanedTask) // Debugging log
 
         const { data, error } = await supabase
           .from('tasks')
