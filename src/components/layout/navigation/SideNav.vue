@@ -22,23 +22,38 @@ const rail = ref(true)
     </v-list-item>
 
     <v-list class="sidenav" density="compact" nav>
-      <RouterLink to="/pages/home"
-        ><v-list-item prepend-icon="mdi-home" title="Home" value="home"></v-list-item
+      <RouterLink to="/pages/home" @click.stop
+        ><v-list-item
+          prepend-icon="mdi-home"
+          title="Home"
+          value="home"
+          active-class="active"
+        ></v-list-item
       ></RouterLink>
-      <RouterLink to="/pages/task"
+      <RouterLink to="/pages/task" @click.stop
         ><v-list-item prepend-icon="mdi-pen" title="Task" value="task"></v-list-item
       ></RouterLink>
-      <RouterLink to="/pages/priority"
+      <RouterLink to="/pages/status" @click.stop
+        ><v-list-item
+          prepend-icon="mdi mdi-text-box-check-outline"
+          title="Status"
+          value="status"
+        ></v-list-item
+      ></RouterLink>
+      <RouterLink to="/pages/priority" @click.stop
         ><v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item
       ></RouterLink>
       <v-divider class="my-5"></v-divider>
-      <RouterLink to="/pages/accountSettings">
+      <RouterLink to="/pages/accountSettings" @click.stop>
         <v-list-item
           prepend-icon="mdi-cog"
           title="Account Settings"
           value="accountSettings"
         ></v-list-item>
       </RouterLink>
+      <div class="create-new-btn-side">
+        <button class="create-new-btn rounded-pill"><i class="mdi mdi-plus"></i> Create New</button>
+      </div>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -58,19 +73,27 @@ const rail = ref(true)
   object-fit: contain; /* Ensure the image fits within its bounds */
 }
 
-.sidenav li:hover {
+.sidenav a:hover .v-list-item {
   background-color: rgba(255, 255, 255, 0.2); /* Transparent white background */
+  border-radius: 5px; /* Rounded corners */
+  padding: 5px; /* Add some padding for better visual effect */
+
+  transition: background-color 0.3s; /* Smooth transition effect */
+}
+.sidenav a.router-link-active .v-list-item {
+  background-color: #0097a7;
   border-radius: 5px; /* Rounded corners */
   padding: 5px; /* Add some padding for better visual effect */
   color: white; /* Keep text color white */
   transition: background-color 0.3s; /* Smooth transition effect */
 }
-.sidenav li.active {
-  background-color: rgba(6, 149, 154, 0.817); /* Transparent white background */
-  border-radius: 5px; /* Rounded corners */
-  padding: 5px; /* Add some padding for better visual effect */
-  color: white; /* Keep text color white */
-  transition: background-color 0.3s; /* Smooth transition effect */
+.sidenav a {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit parent text color */
+}
+
+.sidenav a:hover {
+  text-decoration: none; /* Prevent underline on hover */
 }
 
 /* WELCOME PAGE */
@@ -101,4 +124,21 @@ const rail = ref(true)
 .v-main {
   background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
 }
+/* SIDENAV CREATE NEW BTN */
+.create-new-btn-side {
+  margin-top: auto; /* Push the button to the bottom */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  padding: 20px; /* Optional padding for spacing */
+}
+
+.create-new-btn {
+  background: #0097a7;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Poppins';
+}
+/* END */
 </style>

@@ -23,27 +23,3 @@ export const isAuthenticated = async () => {
   }
   return !!data.session
 }
-
-// Fetch notes FK tasks
-export const fetchTasksWithNotes = async () => {
-  const { data, error } = await supabase.from('tasks').select(`
-      id,
-      title,
-      description,
-      deadline,
-      start_date,
-      end_date,
-      priority_level,
-      status_name,
-      notes (id, notes, created_at)
-    `)
-
-  if (error) {
-    console.error('Error fetching tasks with notes:', error.message)
-  } else {
-    console.log('Tasks with Notes:', data)
-  }
-}
-
-// Call the function if needed
-// fetchTasksWithNotes()

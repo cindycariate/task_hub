@@ -52,9 +52,9 @@ const deleteTask = (index) => {
       <v-container fluid>
         <v-card>
           <v-tabs v-model="tab" class="auth-background tabs-head">
-            <v-tab value="one">Urgent</v-tab>
-            <v-tab value="two">Important</v-tab>
-            <v-tab value="three">Routine</v-tab>
+            <v-tab value="one">To Do</v-tab>
+            <v-tab value="two">In Progress</v-tab>
+            <v-tab value="three">Done</v-tab>
           </v-tabs>
 
           <v-card-text>
@@ -62,14 +62,16 @@ const deleteTask = (index) => {
               <v-tabs-window-item value="one">
                 <v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
-                    <v-card-title style="font-family: 'Poppins'; color: #00838f"
-                      ><b>Urgent Tasks </b>
+                    <v-card-title style="font-family: 'Poppins'; color: #00838f">
+                      <b>To Do Tasks </b>
                       <v-icon
-                        class="mdi mdi-alert-circle-outline"
+                        class="mdi mdi-progress-pencil"
                         style="font-size: 25px"
-                        color="red-darken-3"
-                      ></v-icon
-                    ></v-card-title>
+                        color="cyan-darken-2"
+                      ></v-icon>
+                      <v-spacer></v-spacer>
+                    </v-card-title>
+
                     <v-card-subtitle>Plan, Prioritize, and Complete your tasks</v-card-subtitle>
                   </v-card-item>
 
@@ -118,12 +120,12 @@ const deleteTask = (index) => {
               <v-tabs-window-item value="two"
                 ><v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
-                    <v-card-title style="font-family: 'Poppins'; color: #00838f">
-                      <b>Important Tasks </b>
+                    <v-card-title style="font-family: 'Poppins'; color: #00838f"
+                      ><b>In Progress Tasks </b>
                       <v-icon
-                        class="mdi mdi-alert-octagon-outline"
+                        class="mdi mdi-progress-clock"
                         style="font-size: 25px"
-                        color="red-darken-3"
+                        color="cyan-darken-2"
                       ></v-icon>
                     </v-card-title>
 
@@ -175,9 +177,9 @@ const deleteTask = (index) => {
                 ><v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
                     <v-card-title style="font-family: 'Poppins'; color: #00838f">
-                      <b>Routine Tasks</b>
+                      <b>Done Tasks </b>
                       <v-icon
-                        class="mdi mdi-clipboard-text-clock-outline"
+                        class="mdi mdi-check-circle-outline"
                         style="font-size: 25px"
                         color="cyan-darken-2"
                       ></v-icon>
