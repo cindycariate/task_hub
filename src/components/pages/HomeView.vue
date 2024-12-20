@@ -2,7 +2,7 @@
 import AppLayout from '../layout/AppLayout.vue'
 import { ref, onMounted } from 'vue'
 import { useTaskStore } from '@/stores/taskStore'
-import { supabase } from '@/utils/supabase' // Import Supabase for auth
+import { supabase } from '@/utils/supabase'
 
 const isDrawerVisible = ref(true)
 const taskStore = useTaskStore()
@@ -175,75 +175,22 @@ const addTask = async () => {
   }
 }
 
-/* Particles container */
-.particles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  z-index: -1; /* Ensure particles are behind content */
-}
-
-/* Particle style */
-.particle {
-  font-size: 2rem; /* Icon size (adjust as needed) */
-  position: absolute;
-  animation:
-    moveParticles 5s linear infinite,
-    fadeInOut 3s ease-in-out infinite;
-  color: rgba(255, 255, 255, 0.8); /* Particle color */
-  transition: transform 0.2s ease-in-out;
-}
-
-/* Keyframe animation for moving particles */
-@keyframes moveParticles {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(20px, 30px, 0); /* Change these values for more complex movement */
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-/* Keyframe animation for fading particles */
-@keyframes fadeInOut {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
 /* BOUNCING IMAGE */
-/* Bounce Animation */
 .bouncing-image {
-  animation: bounce 2s infinite ease-in-out; /* Name, duration, repeat, easing */
+  animation: bounce 2s infinite ease-in-out;
 }
 
 @keyframes bounce {
   0%,
   100% {
-    transform: translateY(0); /* Start and end at the original position */
+    transform: translateY(0);
   }
   50% {
-    transform: translateY(-20px); /* Move up */
+    transform: translateY(-20px);
   }
 }
 
 /* WELCOME PAGE */
-
 .create-new-btn {
   background: #0097a7;
   color: white;
