@@ -1,18 +1,70 @@
 <script setup>
 import AppLayout from '../layout/AppLayout.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useTaskStore } from '@/stores/taskStore'
+import { supabase } from '@/utils/supabase' // Import Supabase for auth
 
 const isDrawerVisible = ref(true)
+const taskStore = useTaskStore()
 
-// BACKGROUND
-// Function to generate random positions for particles
-const getRandomPosition = () => {
-  const x = Math.random() * 100 // Random X position (percentage)
-  const y = Math.random() * 100 // Random Y position (percentage)
-  return {
-    left: `${x}%`, // X position (from 0% to 100%)
-    top: `${y}%`, // Y position (from 0% to 100%)
-    animationDelay: `${Math.random() * 5}s`, // Randomize animation delay for each particle
+// Fetch tasks when the component is mounted
+onMounted(() => {
+  taskStore.fetchTasks()
+})
+
+// State to control the visibility of the create task modal
+const showCreateTaskModal = ref(false)
+
+// New task inputs
+const newTask = ref({
+  title: '',
+  description: '',
+  notes: '',
+  deadline: '',
+  start_date: '',
+  end_date: '',
+  status_name: 'To Do', // Default status
+  priority_level: 'Routine', // Default priority
+})
+
+// Function to add a new task
+const addTask = async () => {
+  const { data: user } = await supabase.auth.getUser() // Get authenticated user
+
+  if (newTask.value.title.trim()) {
+    try {
+      // Add the task with the user_id
+      const taskId = await taskStore.addTask({
+        title: newTask.value.title,
+        description: newTask.value.description,
+        deadline: newTask.value.deadline,
+        start_date: newTask.value.start_date,
+        end_date: newTask.value.end_date,
+        status_name: newTask.value.status_name,
+        priority_level: newTask.value.priority_level,
+        user_id: user?.user?.id, // Pass the user_id from Supabase
+      })
+
+      // Add a note referencing the task
+      if (newTask.value.notes.trim()) {
+        await taskStore.addNote({ task_id: taskId, notes: newTask.value.notes })
+      }
+
+      // Reset form and close modal
+      newTask.value = {
+        title: '',
+        description: '',
+        notes: '',
+        deadline: '',
+        start_date: '',
+        end_date: '',
+        status_name: 'To Do',
+        priority_level: 'Routine',
+      }
+      showCreateTaskModal.value = false
+    } catch (error) {
+      console.error('Error adding task:', error.message)
+    }
   }
 }
 </script>
@@ -34,12 +86,47 @@ const getRandomPosition = () => {
                 Welcome to <span class="task-text">Task</span><span class="hub-text">Hub</span>
               </h1>
               <p class="mb-3">Visually Manage Your Tasks</p>
-              <button class="create-new-btn rounded-pill">
+              <button @click="showCreateTaskModal = true" class="create-new-btn rounded-pill">
                 <i class="mdi mdi-plus"></i> Create New
               </button>
             </div>
           </v-col>
         </v-row>
+
+        <!-- Create Task Modal -->
+        <v-dialog v-model="showCreateTaskModal" max-width="500px">
+          <v-card>
+            <v-card-title>Create New Task</v-card-title>
+            <v-card-text>
+              <v-form>
+                <v-text-field v-model="newTask.title" label="Title" required></v-text-field>
+                <v-textarea v-model="newTask.description" label="Description"></v-textarea>
+                <v-text-field v-model="newTask.notes" label="Notes"></v-text-field>
+                <input
+                  type="datetime-local"
+                  v-model="newTask.deadline"
+                  label="Deadline Date/Time"
+                />
+                <input type="datetime-local" v-model="newTask.start_date" label="Start Date/Time" />
+                <input type="datetime-local" v-model="newTask.end_date" label="End Date/Time" />
+                <v-select
+                  v-model="newTask.status_name"
+                  :items="['To Do', 'In Progress', 'Done']"
+                  label="Status"
+                ></v-select>
+                <v-select
+                  v-model="newTask.priority_level"
+                  :items="['Important', 'Urgent', 'Routine']"
+                  label="Priority"
+                ></v-select>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="addTask">Add Task</v-btn>
+              <v-btn text @click="showCreateTaskModal = false">Cancel</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </div>
     </template>
   </AppLayout>

@@ -1,12 +1,12 @@
-<!-- TaskView.vue -->
 <script setup>
 import AppLayout from '../layout/AppLayout.vue'
 import { ref, onMounted } from 'vue'
 import { useTaskStore } from '@/stores/taskStore'
+import { supabase } from '@/utils/supabase' // Import Supabase for auth
 
 const isDrawerVisible = ref(true)
 
-// for the tabs part
+// For the tabs part
 const tab = ref(1)
 
 // Use the task store
@@ -28,10 +28,34 @@ const newTask = ref({
 })
 
 // Function to add a new task
-const addTask = () => {
+const addTask = async () => {
+  const { data: user } = await supabase.auth.getUser()
+
   if (newTask.value.title.trim()) {
-    taskStore.addTask({ ...newTask.value })
-    newTask.value = { title: '', description: '', notes: '', startTime: '', endTime: '' }
+    try {
+      const taskData = {
+        title: newTask.value.title,
+        description: newTask.value.description || null,
+        start_date: newTask.value.startTime ? newTask.value.startTime : null,
+        end_date: newTask.value.endTime ? newTask.value.endTime : null,
+        user_id: user?.user?.id,
+      }
+
+      // Call the store's addTask function
+      await taskStore.addTask(taskData)
+
+      // Reset form inputs
+      newTask.value = {
+        title: '',
+        description: '',
+        notes: '',
+        dueDate: '',
+        startTime: '',
+        endTime: '',
+      }
+    } catch (error) {
+      console.error('Error adding task:', error.message)
+    }
   }
 }
 
@@ -55,7 +79,54 @@ const editTask = (index) => {
         <v-card>
           <v-tabs v-model="tab" class="auth-background tabs-head"> </v-tabs>
 
-          <v-container fluid> </v-container>
+          <!-- Task Input Form -->
+          <v-form @submit.prevent="addTask">
+            <v-text-field
+              v-model="newTask.title"
+              label="Title"
+              placeholder="Task Title"
+              required
+            ></v-text-field>
+
+            <v-textarea
+              v-model="newTask.description"
+              label="Description"
+              placeholder="Task Description"
+            ></v-textarea>
+
+            <v-text-field
+              v-model="newTask.startTime"
+              label="Start Time"
+              placeholder="YYYY-MM-DD"
+              type="date"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="newTask.endTime"
+              label="End Time"
+              placeholder="YYYY-MM-DD"
+              type="date"
+            ></v-text-field>
+
+            <v-btn type="submit" color="primary" class="mt-4">Add Task</v-btn>
+          </v-form>
+
+          <v-container fluid>
+            <!-- Task List -->
+            <v-list>
+              <v-list-item
+                v-for="(task, index) in taskStore.tasks"
+                :key="index"
+                class="custom-border mb-2"
+              >
+                <v-list-item-title>{{ task.title }}</v-list-item-title>
+                <v-list-item-subtitle>{{ task.description }}</v-list-item-subtitle>
+
+                <v-btn @click="editTask(index)" color="blue">Edit</v-btn>
+                <v-btn @click="deleteTask(index)" color="red" class="ml-2">Delete</v-btn>
+              </v-list-item>
+            </v-list>
+          </v-container>
         </v-card>
       </v-container>
     </template>
@@ -71,22 +142,8 @@ const editTask = (index) => {
   flex-direction: column;
 }
 
-/* Container styling */
-.container {
-  position: relative;
-  padding: 20px;
-}
-
-/* Button positioning */
-.menu-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-}
 .auth-background {
   background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
-  /* background-image: url('@/assets/img/bg.jpg'); */
   background-size: cover;
   background-position: center;
   display: flex;
@@ -94,20 +151,14 @@ const editTask = (index) => {
   align-items: center;
   padding: 20px;
 }
-.toggle-btn {
-  background-color: rgba(0, 0, 0, 0.2);
-  color: white;
-}
+
 .tabs-head {
   color: white;
   font-family: 'Poppins', sans-serif;
 }
-.text-caption {
-  color: #777;
-  font-size: 0.9em;
-}
+
 .custom-border {
-  border: 2px solid #0097a7; /* Adjust color as needed */
-  border-radius: 8px; /* Optional: Adds rounded corners */
+  border: 2px solid #0097a7;
+  border-radius: 8px;
 }
 </style>
