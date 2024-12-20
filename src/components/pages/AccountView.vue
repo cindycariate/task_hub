@@ -5,11 +5,9 @@ import { useTaskStore } from '@/stores/taskStore'
 import { supabase } from '@/utils/supabase' // Import Supabase for auth
 
 const isDrawerVisible = ref(true)
-
-// For the tabs part
 const tab = ref(1)
 
-// Use the task store
+// For task management
 const taskStore = useTaskStore()
 
 // Fetch tasks when the component is mounted
@@ -77,7 +75,55 @@ const editTask = (index) => {
     <template #content>
       <v-container fluid>
         <v-card>
-          <v-tabs v-model="tab" class="auth-background tabs-head"> </v-tabs>
+          <v-tabs v-model="tab" class="auth-background tabs-head">
+            <!-- Add Tab Headers if needed -->
+          </v-tabs>
+
+          <!-- Profile and Task Management Sections -->
+          <v-row>
+            <!-- Profile Picture Section -->
+            <v-col cols="12" md="3" class="d-flex flex-column align-center justify-center">
+              <v-avatar color="#26C6DA" size="100" class="mt-2 mb-3">
+                <span class="text-white text-h5 font-weight-bold">CC</span>
+              </v-avatar>
+              <v-btn color="#00838f" class="change-photo-btn" prepend-icon="mdi-camera">
+                Change Photo
+              </v-btn>
+            </v-col>
+
+            <!-- Profile Information Section -->
+            <v-col cols="12" md="9">
+              <v-row>
+                <v-col cols="12">
+                  <p class="text-h6 mt-5" style="color: #00838f; font-family: 'Poppins'">
+                    <v-icon class="mr-1" color="cyan-darken-2"
+                      >mdi mdi-account-circle-outline</v-icon
+                    >
+                    <b>Profile Information</b>
+                  </p>
+                </v-col>
+
+                <!-- Email Address Field -->
+                <v-col cols="12" sm="6" md="8">
+                  <v-text-field
+                    label="Email Address"
+                    variant="outlined"
+                    value="cariatecindy@gmail.com"
+                  />
+                </v-col>
+
+                <!-- Name Field -->
+                <v-col cols="12" sm="6" md="8">
+                  <v-text-field label="Your Name" variant="outlined" value="Cindy Cariate" />
+                </v-col>
+
+                <!-- Save Changes Button -->
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn color="cyan-darken-2" class="save-btn">Save Changes</v-btn>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
 
           <!-- Task Input Form -->
           <v-form @submit.prevent="addTask">
@@ -111,8 +157,8 @@ const editTask = (index) => {
             <v-btn type="submit" color="primary" class="mt-4">Add Task</v-btn>
           </v-form>
 
+          <!-- Task List -->
           <v-container fluid>
-            <!-- Task List -->
             <v-list>
               <v-list-item
                 v-for="(task, index) in taskStore.tasks"
@@ -134,14 +180,36 @@ const editTask = (index) => {
 </template>
 
 <style scoped>
-/* Gradient background */
-.gradient-bg {
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* Profile Card */
+.profile-card {
+  color: #00838f;
+  border-radius: 12px;
 }
 
+/* Avatar */
+
+/* Change Photo Button */
+.change-photo-btn {
+  color: #00838f;
+  text-transform: none;
+  font-weight: 600;
+}
+
+/* Buttons */
+.v-btn {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.save-btn {
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+/* Typography */
+p {
+  margin: 0;
+}
 .auth-background {
   background: linear-gradient(140deg, #0a0a0b, #1ea8b0);
   background-size: cover;

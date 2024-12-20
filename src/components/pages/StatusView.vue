@@ -6,7 +6,7 @@ import { ref } from 'vue'
 const isDrawerVisible = ref(true)
 
 // for the tabs part
-const tab = ref(1)
+const tab = ref('one')
 
 // Toggle function for the sidebar
 const toggleSidebar = () => {
@@ -94,7 +94,13 @@ const deleteTask = (index) => {
                             <span>{{ task.title }}</span>
                             <div>
                               <!-- Edit Button -->
-                              <v-btn icon color="#00ACC1" @click="editTask(index)" size="small">
+                              <v-btn
+                                icon
+                                color="#00ACC1"
+                                @click="editTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
 
@@ -150,7 +156,13 @@ const deleteTask = (index) => {
                             <span>{{ task.title }}</span>
                             <div>
                               <!-- Edit Button -->
-                              <v-btn icon color="#00ACC1" @click="editTask(index)" size="small">
+                              <v-btn
+                                icon
+                                color="#00ACC1"
+                                @click="editTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
 
@@ -206,7 +218,13 @@ const deleteTask = (index) => {
                             <span>{{ task.title }}</span>
                             <div>
                               <!-- Edit Button -->
-                              <v-btn icon color="#00ACC1" @click="editTask(index)" size="small">
+                              <v-btn
+                                icon
+                                color="#00ACC1"
+                                @click="editTask(index)"
+                                size="small"
+                                class="ml-2"
+                              >
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
 
