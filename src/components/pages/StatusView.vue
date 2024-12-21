@@ -18,7 +18,16 @@ const taskStore = useTaskStore()
 
 // Fetch tasks from the database on component mount
 onMounted(async () => {
-  await taskStore.fetchTasks()
+  const { data: user, error } = await supabase.auth.getUser()
+  if (error) {
+    console.error('Error fetching user:', error.message)
+    return
+  }
+  if (user && user.user) {
+    await taskStore.fetchTasks(user.user.id) // Pass the user ID to fetchTasks
+  } else {
+    console.error('User data is not available')
+  }
 })
 
 // Computed properties to categorize tasks by priority
