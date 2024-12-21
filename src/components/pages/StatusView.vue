@@ -24,9 +24,9 @@ onMounted(async () => {
 // Computed properties to categorize tasks by priority
 const todoTasks = computed(() => taskStore.tasks.filter((task) => task.status_name === 'To Do'))
 const inprogressTasks = computed(() =>
-  taskStore.tasks.filter((task) => task.status_name === 'To Do'),
+  taskStore.tasks.filter((task) => task.status_name === 'In Progress'),
 )
-const doneTasks = computed(() => taskStore.tasks.filter((task) => task.status_name === 'To Do'))
+const doneTasks = computed(() => taskStore.tasks.filter((task) => task.status_name === 'Done'))
 
 // Function to edit a task
 const editTask = async (task) => {
