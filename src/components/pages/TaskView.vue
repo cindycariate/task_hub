@@ -34,12 +34,26 @@ const newTask = ref({
 })
 
 /// Function to edit a task
-const editTask = async (index) => {
+
+const isEditDialogVisible = ref(false)
+const editTaskData = ref({
+  id: null,
+  title: '',
+  status_name: '',
+})
+
+const openEditDialog = (index) => {
   const task = taskStore.tasks[index]
-  const updatedTitle = prompt('Edit Task Title:', task.title)
-  if (updatedTitle !== null && updatedTitle.trim()) {
-    await taskStore.editTask(task.id, { title: updatedTitle })
-  }
+  editTaskData.value = { ...task } // Pre-fill the modal with task data
+  isEditDialogVisible.value = true
+}
+
+const saveEditTask = async () => {
+  await taskStore.editTask(editTaskData.value.id, {
+    title: editTaskData.value.title,
+    status_name: editTaskData.value.status_name,
+  })
+  isEditDialogVisible.value = false
 }
 
 // // Function to edit a task
@@ -128,11 +142,54 @@ const nearingDeadlineTasks = computed(() => {
                     </v-col>
 
                     <!-- Right Side: Edit and Delete Buttons -->
+                    <v-dialog v-model="isEditDialogVisible" max-width="500">
+                      <v-card class="elevation-3 edit-dialog">
+                        <v-card-title
+                          style="font-family: 'Poppins'; font-weight: bold; color: #00838f"
+                          class="text-center"
+                          ><v-icon>mdi-pencil</v-icon> Edit Task</v-card-title
+                        >
+                        <v-card-text>
+                          <v-text-field
+                            v-model="editTaskData.title"
+                            label="Task Title"
+                            outlined
+                            dense
+                            color="cyan-darken-3"
+                          ></v-text-field>
+                          <v-select
+                            v-model="editTaskData.status_name"
+                            :items="['To Do', 'In Progress', 'Done']"
+                            label="Task Status"
+                            outlined
+                            dense
+                            color="cyan-darken-3"
+                          ></v-select>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-btn
+                            color="red lighten-1"
+                            text
+                            @click="isEditDialogVisible = false"
+                            class="cancel-btn rounded-pill"
+                            >Cancel</v-btn
+                          >
+                          <v-btn
+                            color="cyan-darken-3"
+                            text
+                            @click="saveEditTask"
+                            class="save-btn rounded-pill"
+                            >Save</v-btn
+                          >
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+
                     <v-col cols="12" md="2" class="d-flex justify-end">
                       <v-btn
                         color="cyan-darken-2"
                         size="small"
-                        @click="editTask(index)"
+                        @click="openEditDialog(index)"
                         class="mr-2 ml-2"
                       >
                         <v-icon>mdi-pencil</v-icon>
@@ -253,4 +310,23 @@ const nearingDeadlineTasks = computed(() => {
 }
 
 /* END DIALOG */
+
+/* EDIT DIALOG */
+.edit-dialog {
+  border-radius: 30px; /* Round corners */
+  border: 2px solid #0097a7; /* Adjust color as needed */
+  overflow: hidden;
+  background-color: #f7f9fa; /* Light background for contrast */
+}
+
+.cancel-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+}
+
+.save-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  border: 2px solid #0097a7; /* Adjust color as needed */
+}
 </style>
