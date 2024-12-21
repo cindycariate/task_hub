@@ -37,6 +37,18 @@ export const useTaskStore = defineStore('taskStore', {
         console.error('Error fetching tasks for user:', error.message, error)
       }
     },
+    async logout() {
+      try {
+        // Perform Supabase logout
+        const { error } = await supabase.auth.signOut()
+        if (error) throw error
+
+        // Clear the task store state
+        this.$reset()
+      } catch (error) {
+        console.error('Error logging out:', error.message)
+      }
+    },
 
     async addTask(task) {
       try {
@@ -69,35 +81,27 @@ export const useTaskStore = defineStore('taskStore', {
 
     async editTask(taskId, updatedTask) {
       try {
-        const { data, error } = await supabase
-          .from('tasks')
-          .update(updatedTask)
-          .eq('id', taskId)
-          .select()
-          .single()
+        const { data, error } = await supabase.from('tasks').update(updatedTask).eq('id', taskId)
 
         if (error) throw error
 
-        // Update the local state
         const index = this.tasks.findIndex((task) => task.id === taskId)
         if (index !== -1) {
-          this.tasks[index] = data
+          this.tasks[index] = data[0]
         }
       } catch (error) {
-        console.error('Error updating task:', error.message, error)
+        console.error('Error editing task:', error.message)
       }
     },
-
     async deleteTask(taskId) {
       try {
         const { error } = await supabase.from('tasks').delete().eq('id', taskId)
 
         if (error) throw error
 
-        // Remove the task from the local state
         this.tasks = this.tasks.filter((task) => task.id !== taskId)
       } catch (error) {
-        console.error('Error deleting task:', error.message, error)
+        console.error('Error deleting task:', error.message)
       }
     },
 
