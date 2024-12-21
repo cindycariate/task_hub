@@ -91,7 +91,7 @@ const addTask = async () => {
         <v-row>
           <!-- Responsive image column -->
           <v-col cols="12" sm="6" md="5" class="d-flex justify-center">
-            <img src="/src/assets/img/home_img.png" class="img-fluid bouncing-image" height="330" />
+            <img src="/src/assets/img/home_img.png" class="img-fluid bouncing-image" height="375" />
           </v-col>
 
           <!-- Responsive welcome message -->
