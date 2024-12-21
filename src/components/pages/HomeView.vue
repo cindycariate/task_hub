@@ -303,7 +303,8 @@ const addTask = async () => {
 }
 .welcome-message {
   padding: 0;
-  margin-left: 5px;
+
+  margin-top: 75px;
 }
 .hub-text {
   color: aqua;
