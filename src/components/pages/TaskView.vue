@@ -33,12 +33,13 @@ const newTask = ref({
   end_date: '',
 })
 
-/// Function to edit a task
-
+// Function to edit a task
 const isEditDialogVisible = ref(false)
 const editTaskData = ref({
   id: null,
   title: '',
+  description: '',
+  notes: '',
   status_name: '',
 })
 
@@ -49,18 +50,21 @@ const openEditDialog = (index) => {
 }
 
 const saveEditTask = async () => {
-  await taskStore.editTask(editTaskData.value.id, {
-    title: editTaskData.value.title,
-    status_name: editTaskData.value.status_name,
-  })
-  isEditDialogVisible.value = false
+  try {
+    await taskStore.editTask(editTaskData.value.id, {
+      title: editTaskData.value.title,
+      description: editTaskData.value.description,
+      notes: editTaskData.value.notes,
+      status_name: editTaskData.value.status_name,
+    })
+    isEditDialogVisible.value = false
+  } catch (error) {
+    console.error('Error saving task:', error.message)
+  }
 }
 
-// // Function to edit a task
-// const editTask = async (index) => {
-//   const task = taskStore.tasks[index]
-//   // Implement the logic to edit the task
-// }
+// Computed properties to categorize tasks by priority
+const tasks = computed(() => taskStore.tasks)
 
 // Function to delete a task
 const deleteTask = async (index) => {
@@ -157,6 +161,22 @@ const nearingDeadlineTasks = computed(() => {
                             dense
                             color="cyan-darken-3"
                           ></v-text-field>
+                          <v-textarea
+                            v-model="editTaskData.description"
+                            label="Task Description"
+                            outlined
+                            dense
+                            color="cyan-darken-3"
+                            rows="3"
+                          ></v-textarea>
+                          <v-textarea
+                            v-model="editTaskData.notes"
+                            label="Notes"
+                            outlined
+                            dense
+                            color="cyan-darken-3"
+                            rows="3"
+                          ></v-textarea>
                           <v-select
                             v-model="editTaskData.status_name"
                             :items="['To Do', 'In Progress', 'Done']"
@@ -306,27 +326,6 @@ const nearingDeadlineTasks = computed(() => {
 .save-btn {
   font-family: 'Poppins', sans-serif;
   font-weight: bold;
-  border: 2px solid #0097a7; /* Adjust color as needed */
-}
-
-/* END DIALOG */
-
-/* EDIT DIALOG */
-.edit-dialog {
-  border-radius: 30px; /* Round corners */
-  border: 2px solid #0097a7; /* Adjust color as needed */
-  overflow: hidden;
-  background-color: #f7f9fa; /* Light background for contrast */
-}
-
-.cancel-btn {
-  font-family: 'Poppins', sans-serif;
-  font-weight: bold;
-}
-
-.save-btn {
-  font-family: 'Poppins', sans-serif;
-  font-weight: bold;
-  border: 2px solid #0097a7; /* Adjust color as needed */
+  border: 2px solid #0097a7;
 }
 </style>
