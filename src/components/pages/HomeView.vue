@@ -109,36 +109,122 @@ const addTask = async () => {
         </v-row>
 
         <!-- Create Task Modal -->
-        <v-dialog v-model="showCreateTaskModal" max-width="500px">
-          <v-card>
-            <v-card-title>Create New Task</v-card-title>
-            <v-card-text>
+        <v-dialog v-model="showCreateTaskModal" max-width="600">
+          <v-card class="elevation-3 add-task-dialog">
+            <v-card-title class="d-flex justify-center align-center"
+              ><v-icon class="mr-2" color="cyan-darken-2">mdi mdi-pen-plus</v-icon
+              ><span
+                class="headline"
+                style="font-family: 'Poppins'; font-weight: bold; color: #00838f"
+              >
+                Add New Task
+              </span></v-card-title
+            >
+            <v-card-text class="pa-4">
               <v-form>
-                <v-text-field v-model="newTask.title" label="Title" required></v-text-field>
-                <v-textarea v-model="newTask.description" label="Description"></v-textarea>
-                <v-text-field v-model="newTask.notes" label="Notes"></v-text-field>
-                <input
-                  type="datetime-local"
-                  v-model="newTask.deadline"
-                  label="Deadline Date/Time"
-                />
-                <input type="datetime-local" v-model="newTask.start_date" label="Start Date/Time" />
-                <input type="datetime-local" v-model="newTask.end_date" label="End Date/Time" />
-                <v-select
-                  v-model="newTask.status_name"
-                  :items="['To Do', 'In Progress', 'Done']"
-                  label="Status"
-                ></v-select>
-                <v-select
-                  v-model="newTask.priority_level"
-                  :items="['Important', 'Urgent', 'Routine']"
-                  label="Priority"
-                ></v-select>
+                <v-text-field
+                  v-model="newTask.title"
+                  label="Title"
+                  required
+                  outlined
+                  dense
+                  color="cyan-darken-3"
+                  class="mb-3"
+                ></v-text-field>
+                <v-textarea
+                  v-model="newTask.description"
+                  label="Description"
+                  outlined
+                  dense
+                  color="cyan-darken-3"
+                  rows="3"
+                  class="mb-3"
+                ></v-textarea>
+                <v-text-field
+                  v-model="newTask.notes"
+                  label="Notes"
+                  outlined
+                  dense
+                  color="cyan-darken-3"
+                  rows="3"
+                  class="mb-3"
+                ></v-text-field>
+                <v-row>
+                  <v-col cols="6">
+                    <v-select
+                      v-model="newTask.status_name"
+                      :items="['To Do', 'In Progress', 'Done']"
+                      label="Status"
+                      outlined
+                      dense
+                      color="cyan-darken-3"
+                      class="mb-3"
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-select
+                      v-model="newTask.priority_level"
+                      :items="['Important', 'Urgent', 'Routine']"
+                      label="Priority"
+                      outlined
+                      dense
+                      color="cyan-darken-3"
+                      class="mb-3"
+                    ></v-select>
+                  </v-col>
+                </v-row>
+                <v-text-field>
+                  <input
+                    type="datetime-local"
+                    v-model="newTask.deadline"
+                    label="Deadline"
+                    outlined
+                    dense
+                    color="cyan-darken-3"
+                    class="mb-3"
+                  />
+                </v-text-field>
+                <v-row>
+                  <v-col>
+                    <v-text-field>
+                      <input
+                        type="datetime-local"
+                        v-model="newTask.start_date"
+                        label="Start Date"
+                        outlined
+                        dense
+                        color="cyan-darken-3"
+                        class="mb-3"
+                      />
+                    </v-text-field>
+                  </v-col>
+                  <v-col>
+                    <v-text-field>
+                      <input
+                        type="datetime-local"
+                        v-model="newTask.end_date"
+                        label="End Date"
+                        outlined
+                        dense
+                        color="cyan-darken-3"
+                        class="mb-3"
+                      />
+                    </v-text-field>
+                  </v-col>
+                </v-row>
               </v-form>
             </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="addTask">Add Task</v-btn>
-              <v-btn text @click="showCreateTaskModal = false">Cancel</v-btn>
+            <v-card-actions class="pa-3 d-flex justify-space-between">
+              <v-btn
+                color="red lighten-1"
+                text
+                @click="showCreateTaskModal = false"
+                class="cancel-btn rounded-pill"
+                >Cancel</v-btn
+              >
+              <v-btn color="cyan-darken-3" @click="addTask" class="save-btn rounded-pill"
+                >Add Task</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -222,4 +308,25 @@ const addTask = async () => {
 .hub-text {
   color: aqua;
 }
+/* DIALOG */
+
+.add-task-dialog {
+  border-radius: 30px; /* Round corners */
+  border: 2px solid #0097a7; /* Adjust color as needed */
+  overflow: hidden;
+  background-color: #f7f9fa; /* Light background for contrast */
+}
+
+.cancel-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+}
+
+.save-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  border: 2px solid #0097a7; /* Adjust color as needed */
+}
+
+/* END DIALOG */
 </style>

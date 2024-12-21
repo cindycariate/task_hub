@@ -10,63 +10,78 @@ const tab = ref(1)
 // For task management
 const taskStore = useTaskStore()
 
-// Fetch tasks when the component is mounted
-onMounted(() => {
-  taskStore.fetchTasks()
+// For user profile
+const user = ref({
+  fullName: '',
+  email: '',
+  firstname: '',
+  lastname: '',
+  avatarUrl: '', // Profile picture URL
 })
 
-// New task inputs
-const newTask = ref({
-  title: '',
-  description: '',
-  notes: '',
-  dueDate: '',
-  startTime: '',
-  endTime: '',
+onMounted(async () => {
+  // Fetch user metadata from Supabase
+  const { data: session, error: authError } = await supabase.auth.getSession()
+  if (authError) {
+    console.error('Error fetching session:', authError.message)
+    return
+  }
+
+  if (session) {
+    // Fetch user profile from the Supabase user metadata
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('firstname, lastname, email, avatar_url')
+      .eq('id', session.user.id)
+      .single()
+
+    if (error) {
+      console.error('Error fetching user profile:', error.message)
+    } else {
+      user.value = {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email,
+        avatarUrl: data.avatar_url || '',
+        fullName: `${data.firstname} ${data.lastname}`, // Combining first and last name
+      }
+    }
+  }
 })
 
-// Function to add a new task
-const addTask = async () => {
-  const { data: user } = await supabase.auth.getUser()
+// Function to update the user's profile information
+const updateUserProfile = async () => {
+  const { data: session, error: authError } = await supabase.auth.getSession()
+  if (authError) {
+    console.error('Error fetching session:', authError.message)
+    return
+  }
 
-  if (newTask.value.title.trim()) {
-    try {
-      const taskData = {
-        title: newTask.value.title,
-        description: newTask.value.description || null,
-        start_date: newTask.value.startTime ? newTask.value.startTime : null,
-        end_date: newTask.value.endTime ? newTask.value.endTime : null,
-        user_id: user?.user?.id,
-      }
+  if (session) {
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({
+        id: session.user.id,
+        firstname: user.value.firstname,
+        lastname: user.value.lastname,
+        email: user.value.email,
+        avatar_url: user.value.avatarUrl,
+      })
+      .eq('id', session.user.id)
 
-      // Call the store's addTask function
-      await taskStore.addTask(taskData)
-
-      // Reset form inputs
-      newTask.value = {
-        title: '',
-        description: '',
-        notes: '',
-        dueDate: '',
-        startTime: '',
-        endTime: '',
-      }
-    } catch (error) {
-      console.error('Error adding task:', error.message)
+    if (error) {
+      console.error('Error updating profile:', error.message)
+    } else {
+      alert('Profile updated successfully!')
     }
   }
 }
 
-// Function to delete a task
-const deleteTask = (index) => {
-  if (confirm('Are you sure you want to delete this task?')) {
-    taskStore.tasks.splice(index, 1)
-  }
-}
-
-// Function to edit task
-const editTask = (index) => {
-  alert(`Edit task: ${taskStore.tasks[index].title}`)
+// Function to change the profile picture (example functionality)
+const changeProfilePicture = async (newAvatarUrl) => {
+  // For now, assume the new avatar URL is passed
+  user.value.avatarUrl = newAvatarUrl
+  await updateUserProfile() // Save the updated avatar URL
 }
 </script>
 
@@ -84,9 +99,14 @@ const editTask = (index) => {
             <!-- Profile Picture Section -->
             <v-col cols="12" md="3" class="d-flex flex-column align-center justify-center">
               <v-avatar color="#26C6DA" size="100" class="mt-2 mb-3">
-                <span class="text-white text-h5 font-weight-bold">CC</span>
+                <img :src="user.avatarUrl || 'default-avatar-url.png'" alt="Profile" />
               </v-avatar>
-              <v-btn color="#00838f" class="change-photo-btn" prepend-icon="mdi-camera">
+              <v-btn
+                color="#00838f"
+                class="change-photo-btn"
+                prepend-icon="mdi-camera"
+                @click="changeProfilePicture('new-avatar-url.png')"
+              >
                 Change Photo
               </v-btn>
             </v-col>
@@ -108,71 +128,40 @@ const editTask = (index) => {
                   <v-text-field
                     label="Email Address"
                     variant="outlined"
-                    value="cariatecindy@gmail.com"
+                    v-model="user.email"
+                    :rules="[(val) => !!val || 'Email is required']"
                   />
                 </v-col>
 
-                <!-- Name Field -->
+                <!-- First Name Field (used for internal management) -->
                 <v-col cols="12" sm="6" md="8">
-                  <v-text-field label="Your Name" variant="outlined" value="Cindy Cariate" />
+                  <v-text-field
+                    label="First Name"
+                    variant="outlined"
+                    v-model="user.firstname"
+                    :rules="[(val) => !!val || 'First name is required']"
+                  />
+                </v-col>
+
+                <!-- Last Name Field (used for internal management) -->
+                <v-col cols="12" sm="6" md="8">
+                  <v-text-field
+                    label="Last Name"
+                    variant="outlined"
+                    v-model="user.lastname"
+                    :rules="[(val) => !!val || 'Last name is required']"
+                  />
                 </v-col>
 
                 <!-- Save Changes Button -->
                 <v-col cols="12" class="d-flex justify-end">
-                  <v-btn color="cyan-darken-2" class="save-btn">Save Changes</v-btn>
+                  <v-btn color="cyan-darken-2" @click="updateUserProfile" class="save-btn"
+                    >Save Changes</v-btn
+                  >
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
-
-          <!-- Task Input Form -->
-          <v-form @submit.prevent="addTask">
-            <v-text-field
-              v-model="newTask.title"
-              label="Title"
-              placeholder="Task Title"
-              required
-            ></v-text-field>
-
-            <v-textarea
-              v-model="newTask.description"
-              label="Description"
-              placeholder="Task Description"
-            ></v-textarea>
-
-            <v-text-field
-              v-model="newTask.startTime"
-              label="Start Time"
-              placeholder="YYYY-MM-DD"
-              type="date"
-            ></v-text-field>
-
-            <v-text-field
-              v-model="newTask.endTime"
-              label="End Time"
-              placeholder="YYYY-MM-DD"
-              type="date"
-            ></v-text-field>
-
-            <v-btn type="submit" color="primary" class="mt-4">Add Task</v-btn>
-          </v-form>
-
-          <!-- Task List -->
-          <v-container fluid>
-            <v-list>
-              <v-list-item
-                v-for="(task, index) in taskStore.tasks"
-                :key="index"
-                class="custom-border mb-2"
-              >
-                <v-list-item-title>{{ task.title }}</v-list-item-title>
-                <v-list-item-subtitle>{{ task.description }}</v-list-item-subtitle>
-
-                <v-btn @click="editTask(index)" color="blue">Edit</v-btn>
-                <v-btn @click="deleteTask(index)" color="red" class="ml-2">Delete</v-btn>
-              </v-list-item>
-            </v-list>
-          </v-container>
         </v-card>
       </v-container>
     </template>

@@ -249,12 +249,12 @@ const addTask = async () => {
             class="mb-3"
           ></v-text-field>
 
-          <!-- Start and End Time -->
+          <!-- Start and End Date -->
           <v-row>
             <v-col cols="6">
               <v-text-field
                 v-model="newTask.start_date"
-                label="Start Time"
+                label="Start Date"
                 type="datetime-local"
                 outlined
                 dense
@@ -265,7 +265,7 @@ const addTask = async () => {
             <v-col cols="6">
               <v-text-field
                 v-model="newTask.end_date"
-                label="End Time"
+                label="End Date"
                 type="datetime-local"
                 outlined
                 dense

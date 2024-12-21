@@ -4,7 +4,7 @@ import { supabase } from '@/utils/supabase'
 export const useTaskStore = defineStore('taskStore', {
   state: () => ({
     tasks: [],
-    notes: [], // Add 'notes' to state for storing fetched or added notes
+    notes: [],
   }),
   actions: {
     async fetchTasks() {
@@ -22,6 +22,34 @@ export const useTaskStore = defineStore('taskStore', {
       }
     },
 
+    async fetchTasksForUser(userId) {
+      try {
+        const { data, error } = await supabase
+          .from('tasks')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+
+        if (error) throw error
+
+        this.tasks = data
+      } catch (error) {
+        console.error('Error fetching tasks for user:', error.message, error)
+      }
+    },
+    async logout() {
+      try {
+        // Perform Supabase logout
+        const { error } = await supabase.auth.signOut()
+        if (error) throw error
+
+        // Clear the task store state
+        this.$reset()
+      } catch (error) {
+        console.error('Error logging out:', error.message)
+      }
+    },
+
     async addTask(task) {
       try {
         const cleanedTask = {
@@ -32,34 +60,57 @@ export const useTaskStore = defineStore('taskStore', {
           created_at: task.created_at || new Date().toISOString(),
           updated_at: new Date().toISOString(),
         }
-        console.log('Task to insert:', cleanedTask) // Debugging log
+        console.log('Task to insert:', cleanedTask)
 
         const { data, error } = await supabase
           .from('tasks')
           .insert([cleanedTask])
-          .select('id') // Ensure 'id' is selected
+          .select('id')
           .single()
 
         if (error) throw error
 
-        console.log('Inserted task ID:', data.id) // Debugging log
+        console.log('Inserted task ID:', data.id)
         this.tasks.push(data)
-        return data.id // Return the task ID
+        return data.id
       } catch (error) {
         console.error('Error inserting task:', error.message, error)
         throw error
       }
     },
 
-    // Add a note to the database
+    async editTask(taskId, updatedTask) {
+      try {
+        const { data, error } = await supabase.from('tasks').update(updatedTask).eq('id', taskId)
+
+        if (error) throw error
+
+        const index = this.tasks.findIndex((task) => task.id === taskId)
+        if (index !== -1) {
+          this.tasks[index] = data[0]
+        }
+      } catch (error) {
+        console.error('Error editing task:', error.message)
+      }
+    },
+    async deleteTask(taskId) {
+      try {
+        const { error } = await supabase.from('tasks').delete().eq('id', taskId)
+
+        if (error) throw error
+
+        this.tasks = this.tasks.filter((task) => task.id !== taskId)
+      } catch (error) {
+        console.error('Error deleting task:', error.message)
+      }
+    },
+
     async addNote(note) {
       try {
-        // Insert the note into Supabase
         const { data, error } = await supabase.from('notes').insert(note).select().single()
         if (error) throw error
-        console.log('Inserted note data:', data) // Debugging log
+        console.log('Inserted note data:', data)
 
-        // Add to local notes state
         if (data) this.notes.push(data)
       } catch (error) {
         console.error('Error inserting note:', error.message)

@@ -1,88 +1,76 @@
-<!-- TaskView.vue -->
 <script setup>
 import AppLayout from '../layout/AppLayout.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useTaskStore } from '@/stores/taskStore'
+import { supabase } from '@/utils/supabase'
 
 const isDrawerVisible = ref(true)
+const taskStore = useTaskStore()
 
-// Modal visibility
-const isAddTaskDialogVisible = ref(false)
+// Fetch tasks for the logged-in user when the component is mounted
+onMounted(async () => {
+  const { data: user, error } = await supabase.auth.getUser()
+  if (error) {
+    console.error('Error fetching user:', error.message)
+    return
+  }
+  if (user && user.user) {
+    await taskStore.fetchTasksForUser(user.user.id)
+  } else {
+    console.error('User data is not available')
+  }
+})
 
-// for the tabs part
-const tab = ref('one')
-
-// Task data
-const tasks = ref([
-  {
-    title: 'Web App',
-    description: 'Develop the frontend interface',
-    notes: 'Use Vuetify for UI components',
-    dueDate: '2024-12-19',
-    startTime: '08:00',
-    endTime: '10:00',
-    priority: 'High', // New field
-    status: 'In Progress', // New field
-  },
-  {
-    title: 'Database',
-    description: 'Design database schema',
-    notes: 'Focus on normalization and indexes',
-    dueDate: '2024-12-18',
-    startTime: '10:00',
-    endTime: '12:00',
-    priority: 'Medium', // New field
-    status: 'Pending', // New field
-  },
-])
-
-// New task inputs
+// New task input model
 const newTask = ref({
   title: '',
   description: '',
   notes: '',
-  dueDate: '',
-  startTime: '',
-  endTime: '',
-  priority: '', // New field
-  status: '', // New field
+  status_name: 'To Do',
+  priority_level: 'Routine',
+  deadline: '',
+  start_date: '',
+  end_date: '',
 })
 
-// Dropdown options
-const priorityOptions = ['Urgent', 'Important', 'Routine']
-const statusOptions = ['Pending', 'In Progress', 'Done']
-
-// Function to add a new task
-const addTask = () => {
-  if (newTask.value.title.trim() && newTask.value.dueDate.trim()) {
-    const formattedDueDate = newTask.value.dueDate.split('T')[0]
-    tasks.value.push({ ...newTask.value, dueDate: formattedDueDate })
-    newTask.value = {
-      title: '',
-      description: '',
-      notes: '',
-      dueDate: '',
-      startTime: '',
-      endTime: '',
-      priority: '', // Reset field
-      status: '', // Reset field
-    }
-    isAddTaskDialogVisible.value = false
-  } else {
-    alert('Please provide a title and due date!')
+/// Function to edit a task
+const editTask = async (index) => {
+  const task = taskStore.tasks[index]
+  const updatedTitle = prompt('Edit Task Title:', task.title)
+  if (updatedTitle !== null && updatedTitle.trim()) {
+    await taskStore.editTask(task.id, { title: updatedTitle })
   }
 }
 
+// // Function to edit a task
+// const editTask = async (index) => {
+//   const task = taskStore.tasks[index]
+//   // Implement the logic to edit the task
+// }
+
 // Function to delete a task
-const deleteTask = (index) => {
+const deleteTask = async (index) => {
+  const task = taskStore.tasks[index]
   if (confirm('Are you sure you want to delete this task?')) {
-    tasks.value.splice(index, 1)
+    await taskStore.deleteTask(task.id)
   }
 }
 
 // Filter tasks for "Due Today"
 const dueTodayTasks = computed(() => {
   const today = new Date().toISOString().split('T')[0]
-  return tasks.value.filter((task) => task.dueDate === today)
+  return taskStore.tasks.filter((task) => task.deadline === today)
+})
+
+// Filter tasks nearing their deadline (e.g., within 3 days)
+const nearingDeadlineTasks = computed(() => {
+  const today = new Date()
+  return taskStore.tasks.filter((task) => {
+    const deadline = new Date(task.deadline)
+    const diffTime = Math.abs(deadline - today)
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays <= 3
+  })
 })
 </script>
 
@@ -109,62 +97,53 @@ const dueTodayTasks = computed(() => {
                 >
 
                 <!-- Task List -->
-                <v-row
-                  v-for="(task, index) in tasks"
-                  :key="index"
-                  class="task-container mb-2 align-center"
-                  align="center"
-                  justify="space-between"
-                >
-                  <!-- Left Side: Task Panel -->
-                  <v-col cols="12" md="10">
-                    <v-expansion-panels>
-                      <v-expansion-panel class="custom-border">
-                        <v-expansion-panel-title>
-                          <!-- Task Title -->
-                          <strong>{{ task.title }}</strong>
-                        </v-expansion-panel-title>
+                <div v-if="taskStore.loading">Loading tasks...</div>
+                <div v-else>
+                  <v-row
+                    v-for="(task, index) in taskStore.tasks"
+                    :key="index"
+                    class="task-container mb-2 align-center"
+                    align="center"
+                    justify="space-between"
+                  >
+                    <!-- Left Side: Task Panel -->
+                    <v-col cols="12" md="10">
+                      <v-expansion-panels>
+                        <v-expansion-panel class="custom-border">
+                          <v-expansion-panel-title>
+                            <!-- Task Title -->
+                            <strong>{{ task.title }}</strong>
+                          </v-expansion-panel-title>
 
-                        <v-expansion-panel-text>
-                          <!-- Task Details -->
-                          <div><strong>Description:</strong> {{ task.description }}</div>
-                          <div><strong>Notes:</strong> {{ task.notes }}</div>
-                          <div><strong>Due Date:</strong> {{ task.dueDate }}</div>
-                          <div><strong>Priority:</strong> {{ task.priority }}</div>
-                          <div><strong>Status:</strong> {{ task.status }}</div>
-                        </v-expansion-panel-text>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                  </v-col>
+                          <v-expansion-panel-text>
+                            <!-- Task Details -->
+                            <div><strong>Description:</strong> {{ task.description }}</div>
+                            <div><strong>Notes:</strong> {{ task.notes }}</div>
+                            <div><strong>Due Date:</strong> {{ task.deadline }}</div>
+                            <div><strong>Priority:</strong> {{ task.priority_level }}</div>
+                            <div><strong>Status:</strong> {{ task.status_name }}</div>
+                          </v-expansion-panel-text>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-col>
 
-                  <!-- Right Side: Edit and Delete Buttons -->
-                  <v-col cols="12" md="2" class="d-flex justify-end">
-                    <v-btn
-                      color="cyan-darken-2"
-                      size="small"
-                      @click="editTask(index)"
-                      class="mr-2 ml-2"
-                    >
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
+                    <!-- Right Side: Edit and Delete Buttons -->
+                    <v-col cols="12" md="2" class="d-flex justify-end">
+                      <v-btn
+                        color="cyan-darken-2"
+                        size="small"
+                        @click="editTask(index)"
+                        class="mr-2 ml-2"
+                      >
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-btn>
 
-                    <v-btn color="red" size="small" @click.stop="deleteTask(index)">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-
-                <!-- Add New Task -->
-
-                <v-btn
-                  color="#00838F"
-                  style="font-family: 'Poppins'"
-                  type="submit"
-                  class="mt-2 rounded-pill"
-                  @click="isAddTaskDialogVisible = true"
-                >
-                  <v-icon left>mdi-plus</v-icon> Add Task
-                </v-btn>
+                      <v-btn color="red" size="small" @click="deleteTask(index)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </div>
               </v-col>
 
               <!-- Second Column: Due Today -->
@@ -175,7 +154,23 @@ const dueTodayTasks = computed(() => {
                 <v-card v-for="(task, index) in dueTodayTasks" :key="index" class="mb-2" outlined>
                   <v-card-text>
                     <strong>{{ task.title }}</strong>
-                    <div class="text-caption">Deadline: {{ task.dueDate || '-' }}</div>
+                    <div class="text-caption">Deadline: {{ task.deadline || '-' }}</div>
+                  </v-card-text>
+                </v-card>
+
+                <!-- Tasks Nearing Deadline -->
+                <h2 class="text-h5 mb-3" style="color: orange; font-family: 'Poppins'">
+                  <b>Nearing Deadline</b>
+                </h2>
+                <v-card
+                  v-for="(task, index) in nearingDeadlineTasks"
+                  :key="index"
+                  class="mb-2"
+                  outlined
+                >
+                  <v-card-text>
+                    <strong>{{ task.title }}</strong>
+                    <div class="text-caption">Deadline: {{ task.deadline || '-' }}</div>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -184,139 +179,6 @@ const dueTodayTasks = computed(() => {
         </v-card>
       </v-container>
       <!-- Add Task Modal -->
-      <v-dialog v-model="isAddTaskDialogVisible" max-width="600">
-        <v-card class="elevation-3 add-task-dialog">
-          <!-- Dialog Title -->
-          <v-card-title class="d-flex justify-center align-center">
-            <v-icon class="mr-2" color="cyan-darken-2">mdi mdi-pen-plus</v-icon>
-            <span
-              class="headline"
-              style="font-family: 'Poppins'; font-weight: bold; color: #00838f"
-            >
-              Add New Task
-            </span>
-          </v-card-title>
-
-          <!-- Dialog Content -->
-          <v-card-text class="pa-4">
-            <v-form>
-              <!-- Task Title -->
-              <v-text-field
-                v-model="newTask.title"
-                label="Task Title"
-                outlined
-                dense
-                color="cyan-darken-3"
-                class="mb-3"
-              ></v-text-field>
-
-              <!-- Task Description -->
-              <v-textarea
-                v-model="newTask.description"
-                label="Task Description"
-                outlined
-                dense
-                color="cyan-darken-3"
-                rows="3"
-                class="mb-3"
-              ></v-textarea>
-
-              <!-- Task Notes -->
-              <v-text-field
-                v-model="newTask.notes"
-                label="Additional Notes"
-                outlined
-                dense
-                color="cyan-darken-3"
-                class="mb-3"
-              ></v-text-field>
-
-              <!-- Row for Status and Priority -->
-              <v-row>
-                <!-- Status on the left -->
-                <v-col cols="6">
-                  <v-select
-                    v-model="newTask.status"
-                    :items="statusOptions"
-                    label="Status"
-                    outlined
-                    dense
-                    color="cyan-darken-3"
-                    class="mb-3"
-                  ></v-select>
-                </v-col>
-
-                <!-- Priority on the right -->
-                <v-col cols="6">
-                  <v-select
-                    v-model="newTask.priority"
-                    :items="priorityOptions"
-                    label="Priority"
-                    outlined
-                    dense
-                    color="cyan-darken-3"
-                    class="mb-3"
-                  ></v-select>
-                </v-col>
-              </v-row>
-
-              <!-- Task Deadline -->
-              <v-text-field
-                v-model="newTask.dueDate"
-                label="Deadline"
-                type="datetime-local"
-                outlined
-                dense
-                color="cyan-darken-3"
-                class="mb-3"
-              ></v-text-field>
-
-              <v-row>
-                <!-- Task Start Time -->
-                <v-col cols="6">
-                  <v-text-field
-                    v-model="newTask.startTime"
-                    label="Start Time"
-                    type="datetime-local"
-                    outlined
-                    dense
-                    color="cyan-darken-3"
-                    class="mb-3"
-                  ></v-text-field>
-                </v-col>
-
-                <!-- Task End Time -->
-                <v-col cols="6">
-                  <v-text-field
-                    v-model="newTask.endTime"
-                    label="End Time"
-                    type="datetime-local"
-                    outlined
-                    dense
-                    color="cyan-darken-3"
-                    class="mb-3"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-card-text>
-
-          <!-- Dialog Actions -->
-          <v-card-actions class="pa-3 d-flex justify-space-between">
-            <v-btn
-              color="red lighten-1"
-              text
-              @click="isAddTaskDialogVisible = false"
-              class="cancel-btn rounded-pill"
-            >
-              Cancel
-            </v-btn>
-            <v-btn color="cyan-darken-3" text @click="addTask" class="save-btn rounded-pill">
-              Save
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </template>
   </AppLayout>
 </template>
