@@ -1,7 +1,7 @@
-<!-- TaskView.vue -->
 <script setup>
 import AppLayout from '../layout/AppLayout.vue'
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useTaskStore } from '@/stores/taskStore'
 
 const isDrawerVisible = ref(true)
 
@@ -13,35 +13,33 @@ const toggleSidebar = () => {
   isDrawerVisible.value = !isDrawerVisible.value
 }
 
-// Task list array
-const tasks = ref([
-  { title: 'Task 1: Lorem ipsum dolor sit amet' },
-  { title: 'Task 2: Consectetur adipiscing elit' },
-])
+// Initialize the task store
+const taskStore = useTaskStore()
 
-// New task input model
-const newTask = ref('')
+// Fetch tasks from the database on component mount
+onMounted(async () => {
+  await taskStore.fetchTasks()
+})
 
-// Function to add a new task
-const addTask = () => {
-  if (newTask.value.trim()) {
-    tasks.value.push({ title: newTask.value })
-    newTask.value = ''
-  }
-}
+// Computed properties to categorize tasks by priority
+const todoTasks = computed(() => taskStore.tasks.filter((task) => task.status_name === 'To Do'))
+const inprogressTasks = computed(() =>
+  taskStore.tasks.filter((task) => task.status_name === 'To Do'),
+)
+const doneTasks = computed(() => taskStore.tasks.filter((task) => task.status_name === 'To Do'))
 
 // Function to edit a task
-const editTask = (index) => {
-  const updatedTitle = prompt('Edit Task:', tasks.value[index].title)
+const editTask = async (task) => {
+  const updatedTitle = prompt('Edit Task:', task.title)
   if (updatedTitle !== null && updatedTitle.trim()) {
-    tasks.value[index].title = updatedTitle
+    await taskStore.updateTask({ ...task, title: updatedTitle })
   }
 }
 
 // Function to delete a task
-const deleteTask = (index) => {
+const deleteTask = async (taskId) => {
   if (confirm('Are you sure you want to delete this task?')) {
-    tasks.value.splice(index, 1)
+    await taskStore.deleteTask(taskId)
   }
 }
 </script>
@@ -65,27 +63,21 @@ const deleteTask = (index) => {
                     <v-card-title style="font-family: 'Poppins'; color: #00838f">
                       <b>To Do Tasks </b>
                       <v-icon
-                        class="mdi mdi-progress-pencil"
+                        class="mdi mdi-alert-circle-outline"
                         style="font-size: 25px"
-                        color="cyan-darken-2"
+                        color="red-darken-3"
                       ></v-icon>
-                      <v-spacer></v-spacer>
                     </v-card-title>
-
                     <v-card-subtitle>Plan, Prioritize, and Complete your tasks</v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
-                    <!-- Two-column Layout -->
                     <v-row>
-                      <!-- First Column: To Do Tasks -->
                       <v-col cols="12" class="pa-4">
                         <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
-
-                        <!-- Task List (Dynamic Example) -->
                         <v-card
-                          v-for="(task, index) in tasks"
-                          :key="index"
+                          v-for="task in todoTasks"
+                          :key="task.id"
                           class="mb-5 custom-border"
                           elevation="0"
                           outlined
@@ -93,22 +85,19 @@ const deleteTask = (index) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <span>{{ task.title }}</span>
                             <div>
-                              <!-- Edit Button -->
                               <v-btn
                                 icon
                                 color="#00ACC1"
-                                @click="editTask(index)"
+                                @click="editTask(task)"
                                 size="small"
                                 class="ml-2"
                               >
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
-
-                              <!-- Delete Button -->
                               <v-btn
                                 icon
                                 color="red"
-                                @click="deleteTask(index)"
+                                @click="deleteTask(task.id)"
                                 size="small"
                                 class="ml-2"
                               >
@@ -123,93 +112,27 @@ const deleteTask = (index) => {
                 </v-card>
               </v-tabs-window-item>
 
-              <v-tabs-window-item value="two"
-                ><v-card class="mx-auto" max-width="100%" hover>
-                  <v-card-item>
-                    <v-card-title style="font-family: 'Poppins'; color: #00838f"
-                      ><b>In Progress Tasks </b>
-                      <v-icon
-                        class="mdi mdi-progress-clock"
-                        style="font-size: 25px"
-                        color="cyan-darken-2"
-                      ></v-icon>
-                    </v-card-title>
-
-                    <v-card-subtitle> Plan, Prioritize, and Complete your tasks </v-card-subtitle>
-                  </v-card-item>
-
-                  <v-card-text>
-                    <v-row>
-                      <!-- First Column: To Do Tasks -->
-                      <v-col cols="12" class="pa-4">
-                        <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
-
-                        <!-- Task List (Dynamic Example) -->
-                        <v-card
-                          v-for="(task, index) in tasks"
-                          :key="index"
-                          class="mb-5 custom-border"
-                          elevation="0"
-                          outlined
-                        >
-                          <v-card-text class="d-flex justify-space-between align-center">
-                            <span>{{ task.title }}</span>
-                            <div>
-                              <!-- Edit Button -->
-                              <v-btn
-                                icon
-                                color="#00ACC1"
-                                @click="editTask(index)"
-                                size="small"
-                                class="ml-2"
-                              >
-                                <v-icon>mdi-pencil</v-icon>
-                              </v-btn>
-
-                              <!-- Delete Button -->
-                              <v-btn
-                                icon
-                                color="red"
-                                @click="deleteTask(index)"
-                                size="small"
-                                class="ml-2"
-                              >
-                                <v-icon>mdi-delete</v-icon>
-                              </v-btn>
-                            </div>
-                          </v-card-text>
-                        </v-card>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
-              </v-tabs-window-item>
-
-              <v-tabs-window-item value="three"
-                ><v-card class="mx-auto" max-width="100%" hover>
+              <v-tabs-window-item value="two">
+                <v-card class="mx-auto" max-width="100%" hover>
                   <v-card-item>
                     <v-card-title style="font-family: 'Poppins'; color: #00838f">
-                      <b>Done Tasks </b>
+                      <b>In Progress Tasks </b>
                       <v-icon
-                        class="mdi mdi-check-circle-outline"
+                        class="mdi mdi-alert-octagon-outline"
                         style="font-size: 25px"
-                        color="cyan-darken-2"
+                        color="red-darken-3"
                       ></v-icon>
                     </v-card-title>
-
                     <v-card-subtitle> Plan, Prioritize, and Complete your tasks </v-card-subtitle>
                   </v-card-item>
 
                   <v-card-text>
                     <v-row>
-                      <!-- First Column: To Do Tasks -->
                       <v-col cols="12" class="pa-4">
                         <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
-
-                        <!-- Task List (Dynamic Example) -->
                         <v-card
-                          v-for="(task, index) in tasks"
-                          :key="index"
+                          v-for="task in inprogressTasks"
+                          :key="task.id"
                           class="mb-5 custom-border"
                           elevation="0"
                           outlined
@@ -217,22 +140,74 @@ const deleteTask = (index) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <span>{{ task.title }}</span>
                             <div>
-                              <!-- Edit Button -->
                               <v-btn
                                 icon
                                 color="#00ACC1"
-                                @click="editTask(index)"
+                                @click="editTask(task)"
                                 size="small"
                                 class="ml-2"
                               >
                                 <v-icon>mdi-pencil</v-icon>
                               </v-btn>
-
-                              <!-- Delete Button -->
                               <v-btn
                                 icon
                                 color="red"
-                                @click="deleteTask(index)"
+                                @click="deleteTask(task.id)"
+                                size="small"
+                                class="ml-2"
+                              >
+                                <v-icon>mdi-delete</v-icon>
+                              </v-btn>
+                            </div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+              </v-tabs-window-item>
+
+              <v-tabs-window-item value="three">
+                <v-card class="mx-auto" max-width="100%" hover>
+                  <v-card-item>
+                    <v-card-title style="font-family: 'Poppins'; color: #00838f">
+                      <b>Done Tasks</b>
+                      <v-icon
+                        class="mdi mdi-clipboard-text-clock-outline"
+                        style="font-size: 25px"
+                        color="cyan-darken-2"
+                      ></v-icon>
+                    </v-card-title>
+                    <v-card-subtitle> Plan, Prioritize, and Complete your tasks </v-card-subtitle>
+                  </v-card-item>
+
+                  <v-card-text>
+                    <v-row>
+                      <v-col cols="12" class="pa-4">
+                        <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
+                        <v-card
+                          v-for="task in doneTasks"
+                          :key="task.id"
+                          class="mb-5 custom-border"
+                          elevation="0"
+                          outlined
+                        >
+                          <v-card-text class="d-flex justify-space-between align-center">
+                            <span>{{ task.title }}</span>
+                            <div>
+                              <v-btn
+                                icon
+                                color="#00ACC1"
+                                @click="editTask(task)"
+                                size="small"
+                                class="ml-2"
+                              >
+                                <v-icon>mdi-pencil</v-icon>
+                              </v-btn>
+                              <v-btn
+                                icon
+                                color="red"
+                                @click="deleteTask(task.id)"
                                 size="small"
                                 class="ml-2"
                               >
