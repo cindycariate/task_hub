@@ -88,7 +88,7 @@ const deleteTask = async (taskId) => {
                         >
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
-                              <div><strong>Title</strong>{{ task.title }}</div>
+                              <div><strong>Title:</strong>{{ task.title }}</div>
                               <div><strong>Description:</strong> {{ task.description }}</div>
                               <div><strong>Notes:</strong> {{ task.notes }}</div>
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
@@ -150,7 +150,7 @@ const deleteTask = async (taskId) => {
                         >
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
-                              <div><strong>Title</strong>{{ task.title }}</div>
+                              <div><strong>Title:</strong>{{ task.title }}</div>
                               <div><strong>Description:</strong> {{ task.description }}</div>
                               <div><strong>Notes:</strong> {{ task.notes }}</div>
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
@@ -212,7 +212,7 @@ const deleteTask = async (taskId) => {
                         >
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
-                              <div><strong>Title</strong>{{ task.title }}</div>
+                              <div><strong>Title:</strong>{{ task.title }}</div>
                               <div><strong>Description:</strong> {{ task.description }}</div>
                               <div><strong>Notes:</strong> {{ task.notes }}</div>
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>

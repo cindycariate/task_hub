@@ -5,28 +5,48 @@ import { isAuthenticated } from '@/utils/supabase'
 import BackgroundLayout from '../auth/BackgroundLayout.vue'
 import ProfileHeader from './ProfileHeader.vue'
 import SideNav from './navigation/SideNav.vue'
+import LoadingScreen from '../auth/LoadingScreen.vue'
 
+//for the Loading screen
+const loading = ref(true)
+
+// Simulated loading delay function
+const showLoadingScreen = (delay = 2000) => {
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+  }, delay)
+}
+
+// Simulated logout function
+const logout = async () => {
+  showLoadingScreen() // Show loading screen during logout
+  // Simulate logout process (replace with your real logout logic)
+  setTimeout(() => {
+    isLoggedIn.value = false
+  }, 2000)
+}
 // for the navbar
 const props = defineProps(['isWithAppBarNavIcon'])
 const emit = defineEmits(['isDrawerVisible'])
 
 const isLoggedIn = ref(false)
 
-// Get authentication from Supabase
+/// Check if the user is authenticated on component mount
 const getLoggedStatus = async () => {
+  showLoadingScreen() // Show loading screen during initial check
   isLoggedIn.value = await isAuthenticated()
 }
-
-// Load functions during component rendering
-onMounted(() => {
-  getLoggedStatus()
-})
-
 // Get the current route to determine if it's the login/signup or dashboard
 const route = useRoute()
 
 // Check if we are on the login or signup route
 const isLoginOrSignup = computed(() => route.name === 'login' || route.name === 'signUp')
+
+// Load functions during component rendering
+onMounted(() => {
+  getLoggedStatus()
+})
 
 // For managing the side navigation (drawer)
 const isDrawerVisible = ref(false) // Controls drawer visibility
@@ -36,6 +56,8 @@ const isDrawerVisible = ref(false) // Controls drawer visibility
   <!-- Apply BackgroundLayout only for the login/signup route -->
   <template v-if="isLoginOrSignup">
     <BackgroundLayout>
+      <!-- Loading Screen -->
+      <LoadingScreen v-if="loading" />
       <v-responsive>
         <v-app :theme="theme" class="transparent-app">
           <v-app-bar class="px-3" color="transparent">
