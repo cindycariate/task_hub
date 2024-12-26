@@ -49,22 +49,28 @@ const openEditDialog = (index) => {
   isEditDialogVisible.value = true
 }
 
+// Remove the unused computed property
+// const tasks = computed(() => taskStore.tasks)
+
 const saveEditTask = async () => {
   try {
+    // Update the task with all relevant fields
     await taskStore.editTask(editTaskData.value.id, {
       title: editTaskData.value.title,
       description: editTaskData.value.description,
-      notes: editTaskData.value.notes,
+      deadline: editTaskData.value.deadline,
       status_name: editTaskData.value.status_name,
+      priority_level: editTaskData.value.priority_level,
+      notes: editTaskData.value.notes, // Ensure notes are included in the update
     })
+
     isEditDialogVisible.value = false
   } catch (error) {
     console.error('Error saving task:', error.message)
   }
 }
-
 // Computed properties to categorize tasks by priority
-const tasks = computed(() => taskStore.tasks)
+// const tasks = computed(() => taskStore.tasks)
 
 // Function to delete a task
 const deleteTask = async (index) => {

@@ -81,13 +81,13 @@ export const useTaskStore = defineStore('taskStore', {
 
     async editTask(taskId, updatedTask) {
       try {
-        const { data, error } = await supabase.from('tasks').update(updatedTask).eq('id', taskId)
+        const { error } = await supabase.from('tasks').update(updatedTask).eq('id', taskId)
 
         if (error) throw error
 
         const index = this.tasks.findIndex((task) => task.id === taskId)
         if (index !== -1) {
-          this.tasks[index] = data[0]
+          this.tasks[index] = { ...this.tasks[index], ...updatedTask }
         }
       } catch (error) {
         console.error('Error editing task:', error.message)
@@ -114,6 +114,18 @@ export const useTaskStore = defineStore('taskStore', {
         if (data) this.notes.push(data)
       } catch (error) {
         console.error('Error inserting note:', error.message)
+      }
+    },
+    // Ensure this function is defined in your taskStore.js
+    async updateNoteForTask(taskId, note) {
+      try {
+        const { data, error } = await supabase.from('notes').update({ note }).eq('task_id', taskId)
+
+        if (error) throw error
+
+        // Optionally update the note in the local store if needed
+      } catch (error) {
+        console.error('Error updating note:', error.message)
       }
     },
   },
