@@ -32,14 +32,6 @@ const routineTasks = computed(() =>
   taskStore.tasks.filter((task) => task.priority_level === 'Routine'),
 )
 
-// Function to edit a task
-const editTask = async (task) => {
-  const updatedTitle = prompt('Edit Task:', task.title)
-  if (updatedTitle !== null && updatedTitle.trim()) {
-    await taskStore.updateTask({ ...task, title: updatedTitle })
-  }
-}
-
 // Function to delete a task
 const deleteTask = async (taskId) => {
   if (confirm('Are you sure you want to delete this task?')) {
@@ -96,15 +88,6 @@ const deleteTask = async (taskId) => {
                               <div><strong>Status:</strong> {{ task.status_name }}</div>
                             </div>
                             <div>
-                              <v-btn
-                                icon
-                                color="#00ACC1"
-                                @click="editTask(task)"
-                                size="small"
-                                class="ml-2"
-                              >
-                                <v-icon>mdi-pencil</v-icon>
-                              </v-btn>
                               <v-btn
                                 icon
                                 color="red"
