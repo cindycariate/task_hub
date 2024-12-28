@@ -87,7 +87,7 @@ const deleteTask = async (taskId) => {
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
                               <div><strong>Description:</strong> {{ task.description }}</div>
-                              <div><strong>Notes:</strong> {{ task.notes }}</div>
+
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
                               <div><strong>Priority:</strong> {{ task.priority_level }}</div>
                               <div><strong>Status:</strong> {{ task.status_name }}</div>
@@ -140,7 +140,7 @@ const deleteTask = async (taskId) => {
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
                               <div><strong>Description:</strong> {{ task.description }}</div>
-                              <div><strong>Notes:</strong> {{ task.notes }}</div>
+
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
                               <div><strong>Priority:</strong> {{ task.priority_level }}</div>
                               <div><strong>Status:</strong> {{ task.status_name }}</div>
@@ -202,7 +202,7 @@ const deleteTask = async (taskId) => {
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
                               <div><strong>Description:</strong> {{ task.description }}</div>
-                              <div><strong>Notes:</strong> {{ task.notes }}</div>
+
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
                               <div><strong>Priority:</strong> {{ task.priority_level }}</div>
                               <div><strong>Status:</strong> {{ task.status_name }}</div>
