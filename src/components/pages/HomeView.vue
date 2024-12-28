@@ -111,15 +111,15 @@ const addTask = async () => {
         <!-- Create Task Modal -->
         <v-dialog v-model="showCreateTaskModal" max-width="600">
           <v-card class="elevation-3 add-task-dialog">
-            <v-card-title class="d-flex justify-center align-center"
-              ><v-icon class="mr-2" color="cyan-darken-2">mdi mdi-pen-plus</v-icon
-              ><span
+            <v-card-title class="d-flex justify-center align-center">
+              <v-icon class="mr-2" color="cyan-darken-2">mdi mdi-pen-plus</v-icon>
+              <span
                 class="headline"
                 style="font-family: 'Poppins'; font-weight: bold; color: #00838f"
               >
                 Add New Task
-              </span></v-card-title
-            >
+              </span>
+            </v-card-title>
             <v-card-text class="pa-4">
               <v-form>
                 <v-text-field
@@ -146,7 +146,6 @@ const addTask = async () => {
                   outlined
                   dense
                   color="cyan-darken-3"
-                  rows="3"
                   class="mb-3"
                 ></v-text-field>
                 <v-row>
@@ -173,43 +172,37 @@ const addTask = async () => {
                     ></v-select>
                   </v-col>
                 </v-row>
-                <v-text-field>
-                  <input
-                    type="datetime-local"
-                    v-model="newTask.deadline"
-                    label="Deadline"
-                    outlined
-                    dense
-                    color="cyan-darken-3"
-                    class="mb-3"
-                  />
-                </v-text-field>
+                <v-text-field
+                  v-model="newTask.deadline"
+                  label="Deadline"
+                  type="datetime-local"
+                  outlined
+                  dense
+                  color="cyan-darken-3"
+                  class="mb-3"
+                />
                 <v-row>
                   <v-col>
-                    <v-text-field>
-                      <input
-                        type="datetime-local"
-                        v-model="newTask.start_date"
-                        label="Start Date"
-                        outlined
-                        dense
-                        color="cyan-darken-3"
-                        class="mb-3"
-                      />
-                    </v-text-field>
+                    <v-text-field
+                      v-model="newTask.start_date"
+                      label="Start Date"
+                      type="datetime-local"
+                      outlined
+                      dense
+                      color="cyan-darken-3"
+                      class="mb-3"
+                    />
                   </v-col>
                   <v-col>
-                    <v-text-field>
-                      <input
-                        type="datetime-local"
-                        v-model="newTask.end_date"
-                        label="End Date"
-                        outlined
-                        dense
-                        color="cyan-darken-3"
-                        class="mb-3"
-                      />
-                    </v-text-field>
+                    <v-text-field
+                      v-model="newTask.end_date"
+                      label="End Date"
+                      type="datetime-local"
+                      outlined
+                      dense
+                      color="cyan-darken-3"
+                      class="mb-3"
+                    />
                   </v-col>
                 </v-row>
               </v-form>
@@ -220,11 +213,12 @@ const addTask = async () => {
                 text
                 @click="showCreateTaskModal = false"
                 class="cancel-btn rounded-pill"
-                >Cancel</v-btn
               >
-              <v-btn color="cyan-darken-3" @click="addTask" class="save-btn rounded-pill"
-                >Add Task</v-btn
-              >
+                Cancel
+              </v-btn>
+              <v-btn color="cyan-darken-3" @click="addTask" class="save-btn rounded-pill">
+                Add Task
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
