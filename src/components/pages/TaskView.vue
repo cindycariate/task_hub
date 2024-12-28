@@ -82,18 +82,23 @@ const deleteTask = async (index) => {
 
 // Filter tasks for "Due Today"
 const dueTodayTasks = computed(() => {
-  const today = new Date().toISOString().split('T')[0]
-  return taskStore.tasks.filter((task) => task.deadline === today)
+  const today = new Date()
+  const todayString = today.toISOString().split('T')[0]
+  return taskStore.tasks.filter((task) => {
+    const taskDeadline = new Date(task.deadline).toISOString().split('T')[0]
+    return taskDeadline === todayString
+  })
 })
 
-// Filter tasks nearing their deadline (e.g., within 3 days)
+// Filter tasks nearing their deadline (e.g., within 3 days) but not due today
 const nearingDeadlineTasks = computed(() => {
   const today = new Date()
+  const todayString = today.toISOString().split('T')[0]
   return taskStore.tasks.filter((task) => {
     const deadline = new Date(task.deadline)
     const diffTime = Math.abs(deadline - today)
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays <= 3
+    return diffDays <= 3 && task.deadline !== todayString
   })
 })
 </script>
@@ -231,31 +236,41 @@ const nearingDeadlineTasks = computed(() => {
 
               <!-- Second Column: Due Today -->
               <v-col :cols="12" md="4">
-                <h2 class="text-h5 mb-3" style="color: red; font-family: 'Poppins'">
-                  <b>Due Today</b>
-                </h2>
-                <v-card v-for="(task, index) in dueTodayTasks" :key="index" class="mb-2" outlined>
-                  <v-card-text>
-                    <strong>{{ task.title }}</strong>
-                    <div class="text-caption">Deadline: {{ task.deadline || '-' }}</div>
-                  </v-card-text>
-                </v-card>
-
-                <!-- Tasks Nearing Deadline -->
-                <h2 class="text-h5 mb-3" style="color: orange; font-family: 'Poppins'">
-                  <b>Nearing Deadline</b>
-                </h2>
-                <v-card
-                  v-for="(task, index) in nearingDeadlineTasks"
-                  :key="index"
-                  class="mb-2"
-                  outlined
-                >
-                  <v-card-text>
-                    <strong>{{ task.title }}</strong>
-                    <div class="text-caption">Deadline: {{ task.deadline || '-' }}</div>
-                  </v-card-text>
-                </v-card>
+                <v-row>
+                  <v-col>
+                    <h2 class="text-h5 mb-3" style="color: red; font-family: 'Poppins'">
+                      <b>Due Today</b>
+                    </h2>
+                    <v-card
+                      v-for="(task, index) in dueTodayTasks"
+                      :key="index"
+                      class="mb-2"
+                      outlined
+                    >
+                      <v-card-text>
+                        <strong>{{ task.title }}</strong>
+                        <div class="text-caption">Deadline: {{ task.deadline || '-' }}</div>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                  <v-col
+                    ><!-- Tasks Nearing Deadline -->
+                    <h2 class="text-h5 mb-3" style="color: orange; font-family: 'Poppins'">
+                      <b>Nearing Deadline</b>
+                    </h2>
+                    <v-card
+                      v-for="(task, index) in nearingDeadlineTasks"
+                      :key="index"
+                      class="mb-2"
+                      outlined
+                    >
+                      <v-card-text>
+                        <strong>{{ task.title }}</strong>
+                        <div class="text-caption">Deadline: {{ task.deadline || '-' }}</div>
+                      </v-card-text>
+                    </v-card></v-col
+                  >
+                </v-row>
               </v-col>
             </v-row>
           </v-container>
