@@ -32,7 +32,7 @@ const addTask = () => {
   isAddTaskDialogVisible.value = false
 }
 // Options for select inputs
-const statusOptions = ['To Do', 'In Progress', 'Completed']
+const statusOptions = ['To Do', 'In Progress', 'Done']
 const priorityOptions = ['Urgent', 'Important', 'Routine']
 
 // Props for controlling dialog visibility and task data

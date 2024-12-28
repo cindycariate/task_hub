@@ -76,27 +76,41 @@ const handleUpdateUserProfile = async () => {
           </v-tabs>
 
           <!-- Profile Information Section -->
-          <v-col cols="12" md="9">
-            <v-row>
+          <!-- Profile Information Section -->
+          <v-container class="pa-4">
+            <!-- Section Header -->
+            <v-row class="mb-4">
               <v-col cols="12">
-                <p class="text-h6 mt-5" style="color: #00838f; font-family: 'Poppins'">
-                  <v-icon class="mr-1" color="cyan-darken-2">mdi mdi-account-circle-outline</v-icon>
-                  <b>Profile Information</b>
+                <p
+                  class="text-h5 mb-2"
+                  style="color: #00838f; font-family: 'Poppins', sans-serif; font-weight: bold"
+                >
+                  <v-icon class="mr-2" color="cyan-darken-2" size="24"
+                    >mdi-account-circle-outline</v-icon
+                  >
+                  Profile Information
+                </p>
+                <p style="font-size: 14px; color: #757575; font-family: 'Poppins', sans-serif">
+                  Update your email and password below.
                 </p>
               </v-col>
+            </v-row>
 
+            <!-- Form Fields -->
+            <v-row>
               <!-- Email Address Field -->
-              <v-col cols="12" sm="6" md="8">
+              <v-col cols="12" sm="6" md="8" class="mb-3">
                 <v-text-field
                   label="Email Address"
                   variant="outlined"
                   v-model="user.email"
                   :rules="[(val) => !!val || 'Email is required']"
+                  color="cyan-darken-3"
                 />
               </v-col>
 
               <!-- New Password Field -->
-              <v-col cols="12" sm="6" md="8">
+              <v-col cols="12" sm="6" md="8" class="mb-3">
                 <v-text-field
                   label="New Password"
                   variant="outlined"
@@ -105,17 +119,27 @@ const handleUpdateUserProfile = async () => {
                   :rules="[(val) => val.length >= 6 || 'Password must be at least 6 characters']"
                   :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                   @click:append-inner="showPassword = !showPassword"
+                  color="cyan-darken-3"
                 />
               </v-col>
+            </v-row>
 
-              <!-- Save Changes Button -->
+            <!-- Save Changes Button -->
+            <v-row>
               <v-col cols="12" class="d-flex justify-end">
-                <v-btn color="cyan-darken-2" @click="handleUpdateUserProfile" class="save-btn"
-                  >Save Changes</v-btn
+                <v-btn
+                  color="cyan-darken-2"
+                  dark
+                  class="px-6 py-2"
+                  style="font-family: 'Poppins', sans-serif; font-weight: bold"
+                  @click="handleUpdateUserProfile"
                 >
+                  Save Changes
+                </v-btn>
               </v-col>
             </v-row>
-          </v-col>
+          </v-container>
+
           <!-- Snackbar for Feedback -->
           <v-snackbar v-model="snackbar" timeout="3000" top>
             {{ snackbarMessage }}
