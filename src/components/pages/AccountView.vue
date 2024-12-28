@@ -5,6 +5,7 @@ import { supabase } from '@/utils/supabase'
 
 const isDrawerVisible = ref(true)
 const tab = ref(1)
+const showPassword = ref(false) // Correct variable name for password visibility
 
 // For user profile
 const user = ref({
@@ -12,6 +13,10 @@ const user = ref({
   password: '',
   newPassword: '',
 })
+
+// Snackbar for feedback
+const snackbar = ref(false) // Controls the visibility of the snackbar
+const snackbarMessage = ref('') // Message displayed in the snackbar
 
 onMounted(async () => {
   try {
@@ -46,11 +51,17 @@ const handleUpdateUserProfile = async () => {
 
     if (updateError) {
       console.error('Error updating user profile:', updateError.message)
+      snackbarMessage.value = 'Failed to save changes. Please try again.' // Error feedback
     } else {
       console.log('User profile updated successfully')
+      snackbarMessage.value = 'Profile updated successfully!' // Success feedback
     }
+
+    snackbar.value = true // Show the snackbar
   } catch (error) {
     console.error('Unexpected error:', error)
+    snackbarMessage.value = 'An unexpected error occurred. Please try again.'
+    snackbar.value = true // Show the snackbar
   }
 }
 </script>
@@ -90,8 +101,10 @@ const handleUpdateUserProfile = async () => {
                   label="New Password"
                   variant="outlined"
                   v-model="user.newPassword"
-                  type="password"
+                  :type="showPassword ? 'text' : 'password'"
                   :rules="[(val) => val.length >= 6 || 'Password must be at least 6 characters']"
+                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                  @click:append-inner="showPassword = !showPassword"
                 />
               </v-col>
 
@@ -103,6 +116,13 @@ const handleUpdateUserProfile = async () => {
               </v-col>
             </v-row>
           </v-col>
+          <!-- Snackbar for Feedback -->
+          <v-snackbar v-model="snackbar" timeout="3000" top>
+            {{ snackbarMessage }}
+            <template #actions>
+              <v-btn text color="white" @click="snackbar = false">Close</v-btn>
+            </template>
+          </v-snackbar>
         </v-card>
       </v-container>
     </template>

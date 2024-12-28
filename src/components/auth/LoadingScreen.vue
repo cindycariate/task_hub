@@ -2,7 +2,7 @@
   <div id="loading-screen" v-if="loading">
     <div class="background"></div>
     <div class="logo-container">
-      <img src="/public/logo_icon.png" alt="Logo" class="logo" />
+      <img src="/logo_icon.png" alt="Logo" class="logo" />
       <div class="loading-text">{{ loadingText }}</div>
     </div>
     <canvas id="particles"></canvas>

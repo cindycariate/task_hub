@@ -25,7 +25,7 @@ const newTask = ref({
 })
 
 // Options for select inputs
-const statusOptions = ['To Do', 'In Progress', 'Completed']
+const statusOptions = ['To Do', 'In Progress', 'Done']
 const priorityOptions = ['Urgent', 'Important', 'Routine']
 
 // Task store instance
