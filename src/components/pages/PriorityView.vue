@@ -143,15 +143,6 @@ const deleteTask = async (taskId) => {
                             <div>
                               <v-btn
                                 icon
-                                color="#00ACC1"
-                                @click="editTask(task)"
-                                size="small"
-                                class="ml-2"
-                              >
-                                <v-icon>mdi-pencil</v-icon>
-                              </v-btn>
-                              <v-btn
-                                icon
                                 color="red"
                                 @click="deleteTask(task.id)"
                                 size="small"
@@ -203,15 +194,6 @@ const deleteTask = async (taskId) => {
                               <div><strong>Status:</strong> {{ task.status_name }}</div>
                             </div>
                             <div>
-                              <v-btn
-                                icon
-                                color="#00ACC1"
-                                @click="editTask(task)"
-                                size="small"
-                                class="ml-2"
-                              >
-                                <v-icon>mdi-pencil</v-icon>
-                              </v-btn>
                               <v-btn
                                 icon
                                 color="red"
