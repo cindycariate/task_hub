@@ -108,6 +108,7 @@ onMounted(() => {
   margin-top: 10px;
   font-size: 1.5em;
   animation: fade 2s infinite;
+  font-family: 'Poppins';
 }
 
 @keyframes pulse {
