@@ -184,7 +184,6 @@ const deleteTask = async (taskId) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
-
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
                             </div>
                             <div>
