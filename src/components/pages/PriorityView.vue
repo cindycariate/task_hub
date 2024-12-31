@@ -183,7 +183,6 @@ const deleteTask = async (taskId) => {
                               <div><strong>Title:</strong>{{ task.title }}</div>
 
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
-                              >
                             </div>
                             <div>
                               <v-btn
