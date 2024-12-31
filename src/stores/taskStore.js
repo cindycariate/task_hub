@@ -80,6 +80,9 @@ export const useTaskStore = defineStore('taskStore', {
     },
 
     async editTask(taskId, updatedTask) {
+      console.log('Editing task with ID: ', taskId)
+      console.log('Updated task: ', updatedTask)
+
       try {
         const { error } = await supabase.from('tasks').update(updatedTask).eq('id', taskId)
 
