@@ -81,11 +81,8 @@ const deleteTask = async (taskId) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
-                              <div><strong>Description:</strong> {{ task.description }}</div>
-                              <div><strong>Notes:</strong> {{ task.notes }}</div>
+
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
-                              <div><strong>Priority:</strong> {{ task.priority_level }}</div>
-                              <div><strong>Status:</strong> {{ task.status_name }}</div>
                             </div>
                             <div>
                               <v-btn
@@ -134,22 +131,10 @@ const deleteTask = async (taskId) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
-                              <div><strong>Description:</strong> {{ task.description }}</div>
-                              <div><strong>Notes:</strong> {{ task.notes }}</div>
+
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
-                              <div><strong>Priority:</strong> {{ task.priority_level }}</div>
-                              <div><strong>Status:</strong> {{ task.status_name }}</div>
                             </div>
                             <div>
-                              <v-btn
-                                icon
-                                color="#00ACC1"
-                                @click="editTask(task)"
-                                size="small"
-                                class="ml-2"
-                              >
-                                <v-icon>mdi-pencil</v-icon>
-                              </v-btn>
                               <v-btn
                                 icon
                                 color="red"
@@ -196,22 +181,11 @@ const deleteTask = async (taskId) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
-                              <div><strong>Description:</strong> {{ task.description }}</div>
-                              <div><strong>Notes:</strong> {{ task.notes }}</div>
+
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
-                              <div><strong>Priority:</strong> {{ task.priority_level }}</div>
-                              <div><strong>Status:</strong> {{ task.status_name }}</div>
+                              >
                             </div>
                             <div>
-                              <v-btn
-                                icon
-                                color="#00ACC1"
-                                @click="editTask(task)"
-                                size="small"
-                                class="ml-2"
-                              >
-                                <v-icon>mdi-pencil</v-icon>
-                              </v-btn>
                               <v-btn
                                 icon
                                 color="red"

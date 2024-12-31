@@ -102,9 +102,10 @@ const handleUpdateUserProfile = async () => {
               <v-col cols="12" sm="6" md="8" class="mb-3">
                 <v-text-field
                   label="Email Address"
-                  variant="outlined"
                   v-model="user.email"
                   :rules="[(val) => !!val || 'Email is required']"
+                  outlined
+                  dense
                   color="cyan-darken-3"
                 />
               </v-col>

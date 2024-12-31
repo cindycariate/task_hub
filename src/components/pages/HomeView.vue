@@ -163,7 +163,7 @@ const addTask = async () => {
                   <v-col cols="6">
                     <v-select
                       v-model="newTask.priority_level"
-                      :items="['Important', 'Urgent', 'Routine']"
+                      :items="['Urgent', 'Important', 'Routine']"
                       label="Priority"
                       outlined
                       dense
