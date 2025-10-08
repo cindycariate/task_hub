@@ -1,0 +1,252 @@
+# 📧 Forgot Password Feature
+
+A complete password reset system that allows users to securely reset their passwords via email.
+
+## ✨ Features
+
+### 🔐 **Security Features:**
+- **Email verification** before password reset
+- **Secure token-based** password reset links
+- **Time-limited links** (1 hour expiration)
+- **Strong password requirements** with validation
+- **Password strength indicator** for new passwords
+- **Confirm password** to prevent typos
+
+### 📱 **User Experience:**
+- **Seamless integration** with login form
+- **Clear success/error messages** throughout the flow
+- **Loading states** for better feedback
+- **Mobile-responsive design** with Vuetify components
+- **Easy navigation** between forms
+
+### 🛡️ **Anti-Abuse Protection:**
+- **Rate limiting** through existing login attempt system
+- **Secure redirect URLs** to prevent phishing
+- **Token validation** before allowing password changes
+
+## 🚀 How It Works
+
+### 1. **User Initiates Reset**
+```javascript
+// User clicks "Forgot Password?" on login form
+// Shows ForgotPasswordForm component
+<ForgotPasswordForm @back-to-login="toggleForgotPassword" />
+```
+
+### 2. **Email Sent**
+```javascript
+// Supabase sends password reset email
+const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: `${window.location.origin}/auth/reset-password`
+})
+```
+
+### 3. **User Clicks Email Link**
+- Email contains secure link to `/auth/reset-password`
+- Token embedded in URL for verification
+- Redirects to ResetPasswordView component
+
+### 4. **Password Updated**
+```javascript
+// User sets new password
+const { error } = await supabase.auth.updateUser({
+  password: newPassword
+})
+```
+
+## 🔧 Supabase Configuration Required
+
+### **1. Enable Email Authentication**
+1. Go to **Supabase Dashboard** → Your Project
+2. Navigate to **Authentication** → **Settings**
+3. Ensure **Enable email confirmations** is ON
+
+### **2. Configure Site URL**
+1. Go to **Authentication** → **Settings** → **Site URL**
+2. Set for development: `http://localhost:5174`
+3. Set for production: `https://yourdomain.com`
+
+### **3. Email Templates (Optional)**
+1. Go to **Authentication** → **Email Templates**
+2. Customize **"Reset Password"** template
+3. You can modify:
+   - Subject line
+   - Email body HTML
+   - Styling and branding
+
+### **4. SMTP Configuration (Optional)**
+1. Go to **Settings** → **Email**
+2. Either use **Supabase's built-in email** (default)
+3. Or configure **custom SMTP** settings for production
+
+## 📁 File Structure
+
+```
+src/
+├── components/auth/
+│   ├── ForgotPasswordForm.vue     # Forgot password form
+│   └── LoginForm.vue              # Updated with forgot password link
+├── views/auth/
+│   └── ResetPasswordView.vue      # Password reset page
+└── router/
+    └── index.js                   # Added reset password route
+```
+
+## 🧪 Testing the Feature
+
+### **Manual Testing Steps:**
+
+1. **Navigate to Login Page**
+   - Go to `http://localhost:5174`
+
+2. **Click "Forgot Password?"**
+   - Should show forgot password form
+   - Form should have email input and "Send Reset Link" button
+
+3. **Enter Email and Submit**
+   - Use a real email address you can access
+   - Click "Send Reset Link"
+   - Should show success message
+
+4. **Check Email**
+   - Look for email from Supabase (check spam folder)
+   - Email should contain reset link
+
+5. **Click Reset Link**
+   - Should redirect to reset password page
+   - Should show password form with strength indicator
+
+6. **Set New Password**
+   - Enter strong password (see requirements below)
+   - Confirm password
+   - Click "Update Password"
+
+7. **Login with New Password**
+   - Return to login page
+   - Use new password to log in
+
+### **Testing with Different Scenarios:**
+
+```javascript
+// Test invalid email
+// Enter: "invalid-email" → Should show validation error
+
+// Test expired token
+// Use old reset link → Should show "Invalid or Expired Link"
+
+// Test weak password
+// Use: "123" → Should show strength indicator as weak
+
+// Test password mismatch
+// Different passwords → Should show "Passwords do not match"
+```
+
+## 🎨 UI Components
+
+### **ForgotPasswordForm Features:**
+- **Email input** with validation
+- **Success state** with sent confirmation
+- **Error handling** with clear messages
+- **Back to login** navigation
+- **Loading states** during processing
+
+### **ResetPasswordView Features:**
+- **Token verification** with loading state
+- **Password strength indicator** (visual progress bar)
+- **Confirm password** field
+- **Success confirmation** message
+- **Error states** for invalid/expired tokens
+
+### **LoginForm Integration:**
+- **"Forgot Password?"** link below login button
+- **Seamless toggle** between login and forgot password
+- **Disabled during lockout** (security feature)
+
+## 🔒 Security Considerations
+
+### **✅ Built-in Security:**
+- **Secure tokens** generated by Supabase
+- **Time-limited links** (1 hour expiration)
+- **Email verification** required
+- **HTTPS enforcement** in production
+- **No password exposed** in URLs or logs
+
+### **✅ Password Requirements:**
+- Minimum **8 characters**
+- At least **1 uppercase** letter
+- At least **1 lowercase** letter
+- At least **1 number**
+- At least **1 special** character
+- **Strength score ≥ 4/5** required for submission
+
+### **✅ Rate Limiting:**
+- Inherits protection from login attempt system
+- Prevents spam password reset requests
+- Account lockout applies to forgot password too
+
+## 🛠️ Customization Options
+
+### **Email Template Customization:**
+```html
+<!-- In Supabase Dashboard → Email Templates -->
+<h2>Reset Your Password</h2>
+<p>Click the link below to reset your password:</p>
+<a href="{{ .ConfirmationURL }}">Reset Password</a>
+<p>This link will expire in 1 hour.</p>
+```
+
+### **Redirect URL Customization:**
+```javascript
+// In ForgotPasswordForm.vue
+const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: `${window.location.origin}/auth/reset-password`
+  // Change to your preferred reset page URL
+})
+```
+
+### **Password Requirements:**
+```javascript
+// In ResetPasswordView.vue - modify passwordRules array
+const passwordRules = [
+  v => !!v || 'Password is required',
+  v => v.length >= 8 || 'Password must be at least 8 characters long',
+  // Add or modify rules as needed
+]
+```
+
+## 🐛 Troubleshooting
+
+### **Email Not Received?**
+1. Check spam/junk folder
+2. Verify email address is correct
+3. Check Supabase email settings
+4. Try with different email provider
+
+### **Reset Link Not Working?**
+1. Check if link has expired (1 hour limit)
+2. Verify Site URL is set correctly in Supabase
+3. Make sure you're accessing the correct domain
+4. Check browser console for errors
+
+### **Password Requirements Too Strict?**
+1. Modify `passwordRules` in ResetPasswordView.vue
+2. Adjust `passwordStrength` computation
+3. Update minimum score requirement
+
+### **Styling Issues?**
+1. Check Vuetify theme configuration
+2. Verify CSS imports are correct
+3. Use browser dev tools to inspect styles
+
+## 🎯 Future Enhancements
+
+- [ ] **Password history** - prevent reusing recent passwords
+- [ ] **Additional verification** - SMS or 2FA options
+- [ ] **Admin notifications** - alert on password resets
+- [ ] **Analytics tracking** - monitor reset request patterns
+- [ ] **Custom email templates** - better branding
+- [ ] **Multiple email providers** - backup email services
+
+---
+
+**🔐 Your users can now securely reset their passwords!** The system provides enterprise-level security while maintaining an excellent user experience.

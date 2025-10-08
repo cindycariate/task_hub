@@ -27,4 +27,9 @@ app.use(createPinia())
 app.use(router)
 app.use(vuetify)
 
+// Import admin tools for testing (remove in production)
+if (import.meta.env.DEV) {
+  import('./utils/loginAttemptsAdmin.js')
+}
+
 app.mount('#app')

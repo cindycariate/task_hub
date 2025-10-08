@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/auth/LoginView.vue'
 import SignUpView from '@/views/auth/SignUpView.vue'
+import ResetPasswordView from '@/views/auth/ResetPasswordView.vue'
 import DashboardView from '@/views/system/DashboardView.vue'
 import PageNotFoundView from '@/views/errors/PageNotFoundView.vue'
 import { supabase } from '@/utils/supabase'
@@ -33,6 +34,18 @@ const routes = [
     name: 'signUp',
     component: SignUpView,
     meta: { requiresGuest: true }, // Meta field for guest-only routes
+  },
+  {
+    path: '/auth/login',
+    name: 'login-alt',
+    component: LoginView,
+    meta: { requiresGuest: true },
+  },
+  {
+    path: '/auth/reset-password',
+    name: 'reset-password',
+    component: ResetPasswordView,
+    meta: { requiresGuest: true },
   },
   {
     path: '/system/dashboard',
