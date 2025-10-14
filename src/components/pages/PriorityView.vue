@@ -2,6 +2,7 @@
 import AppLayout from '../layout/AppLayout.vue'
 import { ref, onMounted, computed } from 'vue'
 import { useTaskStore } from '@/stores/taskStore'
+import { supabase } from '@/utils/supabase'
 
 const isDrawerVisible = ref(true)
 
@@ -18,7 +19,16 @@ const taskStore = useTaskStore()
 
 // Fetch tasks from the database on component mount
 onMounted(async () => {
-  await taskStore.fetchTasks()
+  const { data: user, error } = await supabase.auth.getUser()
+  if (error) {
+    console.error('Error fetching user:', error.message)
+    return
+  }
+  if (user && user.user) {
+    await taskStore.fetchTasksForUser(user.user.id)
+  } else {
+    console.error('User data is not available')
+  }
 })
 
 // Computed properties to categorize tasks by priority
@@ -81,8 +91,8 @@ const deleteTask = async (taskId) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
-
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
+                              <div v-if="task.notes"><strong>Notes: </strong>{{ task.notes }}</div>
                             </div>
                             <div>
                               <v-btn
@@ -131,8 +141,8 @@ const deleteTask = async (taskId) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
-
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
+                              <div v-if="task.notes"><strong>Notes: </strong>{{ task.notes }}</div>
                             </div>
                             <div>
                               <v-btn
@@ -181,8 +191,8 @@ const deleteTask = async (taskId) => {
                           <v-card-text class="d-flex justify-space-between align-center">
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
-
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
+                              <div v-if="task.notes"><strong>Notes: </strong>{{ task.notes }}</div>
                             </div>
                             <div>
                               <v-btn

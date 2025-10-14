@@ -2,6 +2,7 @@
 import AppLayout from '../layout/AppLayout.vue'
 import { ref, onMounted, computed } from 'vue'
 import { useTaskStore } from '@/stores/taskStore'
+import { supabase } from '@/utils/supabase'
 
 const isDrawerVisible = ref(true)
 
@@ -24,7 +25,7 @@ onMounted(async () => {
     return
   }
   if (user && user.user) {
-    await taskStore.fetchTasks(user.user.id) // Pass the user ID to fetchTasks
+    await taskStore.fetchTasksForUser(user.user.id) // Pass the user ID to fetchTasksForUser
   } else {
     console.error('User data is not available')
   }
@@ -87,6 +88,7 @@ const deleteTask = async (taskId) => {
                             <div>
                               <div><strong>Title: </strong>{{ task.title }}</div>
                               <div><strong>Due Date: </strong> {{ task.deadline }}</div>
+                              <div v-if="task.notes"><strong>Notes: </strong>{{ task.notes }}</div>
                             </div>
                             <div>
                               <v-btn
@@ -136,6 +138,7 @@ const deleteTask = async (taskId) => {
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
+                              <div v-if="task.notes"><strong>Notes: </strong>{{ task.notes }}</div>
                             </div>
                             <div>
                               <v-btn
@@ -185,6 +188,7 @@ const deleteTask = async (taskId) => {
                             <div>
                               <div><strong>Title:</strong>{{ task.title }}</div>
                               <div><strong>Due Date:</strong> {{ task.deadline }}</div>
+                              <div v-if="task.notes"><strong>Notes: </strong>{{ task.notes }}</div>
                             </div>
                             <div>
                               <v-btn

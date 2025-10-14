@@ -45,7 +45,22 @@ const editTaskData = ref({
 
 const openEditDialog = (index) => {
   const task = taskStore.tasks[index]
-  editTaskData.value = { ...task } // Pre-fill the modal with task data
+  console.log('Opening edit dialog for task:', task)
+  console.log('Task notes:', task.notes)
+  
+  editTaskData.value = { 
+    id: task.id,
+    title: task.title || '',
+    description: task.description || '',
+    notes: task.notes || '',
+    status_name: task.status_name || '',
+    priority_level: task.priority_level || '',
+    deadline: task.deadline || '',
+    start_date: task.start_date || '',
+    end_date: task.end_date || ''
+  }
+  
+  console.log('Edit task data initialized:', editTaskData.value)
   isEditDialogVisible.value = true
 }
 
@@ -54,6 +69,9 @@ const openEditDialog = (index) => {
 
 const saveEditTask = async () => {
   try {
+    console.log('Saving task with data:', editTaskData.value)
+    console.log('Notes to save:', editTaskData.value.notes)
+    
     // Update the task with all relevant fields
     await taskStore.editTask(editTaskData.value.id, {
       title: editTaskData.value.title,
@@ -62,8 +80,11 @@ const saveEditTask = async () => {
       status_name: editTaskData.value.status_name,
       priority_level: editTaskData.value.priority_level,
       notes: editTaskData.value.notes, // Ensure notes are included in the update
+      start_date: editTaskData.value.start_date,
+      end_date: editTaskData.value.end_date
     })
 
+    console.log('Task saved successfully')
     isEditDialogVisible.value = false
   } catch (error) {
     console.error('Error saving task:', error.message)
@@ -147,7 +168,7 @@ const nearingDeadlineTasks = computed(() => {
                           <v-expansion-panel-text>
                             <!-- Task Details -->
                             <div><strong>Description:</strong> {{ task.description }}</div>
-                            <div><strong>Notes:</strong> {{ task.notes }}</div>
+                            <div><strong>Notes:</strong> {{ task.notes || 'No notes added' }}</div>
                             <div><strong>Due Date:</strong> {{ task.deadline }}</div>
                             <div><strong>Priority:</strong> {{ task.priority_level }}</div>
                             <div><strong>Status:</strong> {{ task.status_name }}</div>

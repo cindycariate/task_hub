@@ -67,6 +67,7 @@ const addTask = async () => {
       const taskId = await taskStore.addTask({
         title: newTask.value.title,
         description: newTask.value.description,
+        notes: newTask.value.notes,
         deadline: newTask.value.deadline,
         start_date: newTask.value.start_date,
         end_date: newTask.value.end_date,
