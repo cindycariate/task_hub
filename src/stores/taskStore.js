@@ -102,6 +102,9 @@ export const useTaskStore = defineStore('taskStore', {
 
     async addTask(task) {
       try {
+        console.log('=== TASKSTORE: Starting addTask ===')
+        console.log('Raw task data received:', JSON.stringify(task, null, 2))
+        
         // Validate required fields
         if (!task.title || !task.title.trim()) {
           throw new Error('Task title is required')
@@ -109,6 +112,8 @@ export const useTaskStore = defineStore('taskStore', {
         if (!task.user_id) {
           throw new Error('User ID is required')
         }
+
+        console.log('✅ Task validation passed')
 
         // Format dates properly - only include if they have values
         const formatDate = (dateString) => {
@@ -134,8 +139,9 @@ export const useTaskStore = defineStore('taskStore', {
           user_id: task.user_id,
         }
 
-        console.log('Task to insert (cleaned):', cleanedTask)
+        console.log('Task to insert (cleaned):', JSON.stringify(cleanedTask, null, 2))
         console.log('User ID:', task.user_id)
+        console.log('🚀 Inserting task into Supabase...')
 
         const { data, error } = await supabase
           .from('tasks')
@@ -144,14 +150,20 @@ export const useTaskStore = defineStore('taskStore', {
           .single()
 
         if (error) {
-          console.error('Supabase insert error:', error)
+          console.error('❌ Supabase insert error:', error)
+          console.error('Error code:', error.code)
+          console.error('Error details:', error.details)
+          console.error('Error hint:', error.hint)
           throw error
         }
 
-        console.log('Successfully inserted task:', data)
+        console.log('✅ Task inserted successfully into database')
+
+        console.log('Successfully inserted task:', JSON.stringify(data, null, 2))
 
         // Handle notes separately if provided
         if (task.notes && task.notes.trim()) {
+          console.log('📝 Processing notes for task...')
           try {
             const noteData = {
               task_id: data.id,
@@ -159,27 +171,40 @@ export const useTaskStore = defineStore('taskStore', {
               user_id: task.user_id,
             }
 
+            console.log('Note data to insert:', JSON.stringify(noteData, null, 2))
             const { error: noteError } = await supabase.from('notes').insert([noteData])
 
             if (noteError) {
-              console.error('Error inserting note:', noteError)
+              console.error('❌ Error inserting note:', noteError)
               // Don't throw error for notes - task was created successfully
             } else {
-              console.log('Successfully inserted note for task:', data.id)
+              console.log('✅ Successfully inserted note for task:', data.id)
             }
           } catch (noteError) {
-            console.error('Error handling note insert:', noteError)
+            console.error('❌ Error handling note insert:', noteError)
             // Continue - task was created successfully
           }
+        } else {
+          console.log('ℹ️ No notes provided for this task')
         }
 
-        // Add to local state
-        this.tasks.unshift(data) // Add to beginning for latest first
+        // Add to local state with notes included for UI consistency
+        const taskWithNotes = {
+          ...data,
+          notes: task.notes && task.notes.trim() ? task.notes.trim() : null
+        }
+        console.log('📥 Adding task to local state:', JSON.stringify(taskWithNotes, null, 2))
+        this.tasks.unshift(taskWithNotes) // Add to beginning for latest first
+        console.log('✅ Task added to local state. Total tasks:', this.tasks.length)
+        console.log('=== TASKSTORE: addTask completed successfully ===')
 
         return data.id
       } catch (error) {
-        console.error('Error inserting task:', error.message, error)
-        console.error('Task data that failed:', task)
+        console.error('❌ TASKSTORE: addTask failed ❌')
+        console.error('Error message:', error.message)
+        console.error('Full error:', error)
+        console.error('Task data that failed:', JSON.stringify(task, null, 2))
+        console.error('=== TASKSTORE: addTask failed ===')
         throw error
       }
     },
@@ -277,10 +302,14 @@ export const useTaskStore = defineStore('taskStore', {
           }
         }
 
-        // Update the local state
+        // Update the local state including notes for UI consistency
         const index = this.tasks.findIndex((task) => task.id === taskId)
         if (index !== -1) {
-          this.tasks[index] = { ...this.tasks[index], ...taskUpdate }
+          this.tasks[index] = { 
+            ...this.tasks[index], 
+            ...taskUpdate,
+            notes: updatedTask.notes || null // Include notes in local state
+          }
           console.log('Local task updated: ', this.tasks[index])
         }
       } catch (error) {

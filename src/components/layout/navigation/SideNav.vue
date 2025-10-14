@@ -72,29 +72,32 @@ onMounted(async () => {
 // Add task function
 const addTask = async () => {
   try {
+    console.log('=== STARTING TASK CREATION ===')
     console.log('Starting task creation...')
 
     const { data: user, error } = await supabase.auth.getUser()
 
     if (error) {
-      console.error('Error fetching user:', error.message)
+      console.error('Error fetching user:', error.message, error)
       alert('Error: Unable to get user information. Please try logging in again.')
       return
     }
 
     if (!user?.user?.id) {
-      console.error('No user ID found')
+      console.error('No user ID found. User data:', user)
       alert('Error: No user session found. Please log in again.')
       return
     }
 
     if (!newTask.value.title.trim()) {
+      console.warn('No task title provided')
       alert('Please enter a task title')
       return
     }
 
     console.log('User authenticated:', user.user.id)
-    console.log('Task data to create:', newTask.value)
+    console.log('Task data to create:', JSON.stringify(newTask.value, null, 2))
+    console.log('Calling taskStore.addTask...')
 
     // Add the task and retrieve its ID
     const taskId = await taskStore.addTask({
@@ -109,7 +112,12 @@ const addTask = async () => {
       user_id: user.user.id,
     })
 
-    console.log('Successfully created task with ID:', taskId)
+    console.log('✅ Successfully created task with ID:', taskId)
+
+    // Refresh tasks to ensure UI is updated
+    console.log('Refreshing tasks for user:', user.user.id)
+    await taskStore.fetchTasksForUser(user.user.id)
+    console.log('✅ Tasks refreshed. Current task count:', taskStore.tasks.length)
 
     // Reset form and close modal
     newTask.value = {
@@ -126,9 +134,13 @@ const addTask = async () => {
     isAddTaskDialogVisible.value = false
 
     // Show success message
-    console.log('Task created successfully!')
+    console.log('✅ Task created successfully! Total tasks:', taskStore.tasks.length)
+    console.log('=== TASK CREATION COMPLETE ===')
   } catch (error) {
-    console.error('Error adding task:', error.message, error)
+    console.error('❌ TASK CREATION FAILED ❌')
+    console.error('Error details:', error)
+    console.error('Error message:', error.message)
+    console.error('Error stack:', error.stack)
     alert(`Error creating task: ${error.message}`)
   }
 }

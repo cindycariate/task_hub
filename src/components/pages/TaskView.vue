@@ -85,6 +85,13 @@ const saveEditTask = async () => {
     })
 
     console.log('Task saved successfully')
+    
+    // Refresh tasks to ensure UI shows updated data
+    const { data: user, error: userError } = await supabase.auth.getUser()
+    if (!userError && user?.user?.id) {
+      await taskStore.fetchTasksForUser(user.user.id)
+    }
+    
     isEditDialogVisible.value = false
   } catch (error) {
     console.error('Error saving task:', error.message)
