@@ -32,8 +32,20 @@ const priorityOptions = ['Urgent', 'Important', 'Routine']
 const taskStore = useTaskStore()
 
 // Fetch tasks when the component is mounted
-onMounted(() => {
-  taskStore.fetchTasks()
+onMounted(async () => {
+  try {
+    const { data: user, error } = await supabase.auth.getUser()
+    if (error) {
+      console.error('SideNav: Error fetching user:', error.message)
+      return
+    }
+    if (user?.user?.id) {
+      console.log('SideNav: Fetching tasks for user:', user.user.id)
+      await taskStore.fetchTasksForUser(user.user.id)
+    }
+  } catch (error) {
+    console.error('SideNav: Error in onMounted:', error.message)
+  }
 })
 // User data
 const user = ref(null)
@@ -59,59 +71,66 @@ onMounted(async () => {
 
 // Add task function
 const addTask = async () => {
-  const { data: user, error } = await supabase.auth.getUser() // Get the authenticated user
+  try {
+    console.log('Starting task creation...')
 
-  if (newTask.value.title.trim()) {
-    try {
-      // Add the task and retrieve its ID
-      const taskId = await taskStore.addTask({
-        title: newTask.value.title,
-        description: newTask.value.description,
-        notes: newTask.value.notes,
-        deadline: newTask.value.deadline,
-        start_date: newTask.value.start_date,
-        end_date: newTask.value.end_date,
-        status_name: newTask.value.status_name,
-        priority_level: newTask.value.priority_level,
-        user_id: user?.user?.id, // Pass the user ID
-      })
+    const { data: user, error } = await supabase.auth.getUser()
 
-      console.log('Newly added task ID:', taskId) // Debugging log
-
-      // Add a note referencing the task
-      if (newTask.value.notes.trim()) {
-        if (taskId) {
-          await taskStore.addNote({
-            task_id: taskId, // Link the note to the task
-            notes: newTask.value.notes,
-          })
-        } else {
-          console.error('Task ID is null or undefined. Cannot add note.')
-        }
-      }
-
-      // Reset form and close modal
-      newTask.value = {
-        title: '',
-        description: '',
-        notes: '',
-        status_name: 'To Do',
-        priority_level: 'Routine',
-        deadline: '',
-        start_date: '',
-        end_date: '',
-      }
-      isAddTaskDialogVisible.value = false
-    } catch (error) {
-      console.error('Error adding task:', error.message)
+    if (error) {
+      console.error('Error fetching user:', error.message)
+      alert('Error: Unable to get user information. Please try logging in again.')
+      return
     }
-  }
-  if (error) {
-    console.error('Error fetching user:', error.message)
-    return // Stop execution if there's an error
-  }
 
-  console.log('Authenticated user:', user) // Debugging log
+    if (!user?.user?.id) {
+      console.error('No user ID found')
+      alert('Error: No user session found. Please log in again.')
+      return
+    }
+
+    if (!newTask.value.title.trim()) {
+      alert('Please enter a task title')
+      return
+    }
+
+    console.log('User authenticated:', user.user.id)
+    console.log('Task data to create:', newTask.value)
+
+    // Add the task and retrieve its ID
+    const taskId = await taskStore.addTask({
+      title: newTask.value.title,
+      description: newTask.value.description,
+      notes: newTask.value.notes,
+      deadline: newTask.value.deadline,
+      start_date: newTask.value.start_date,
+      end_date: newTask.value.end_date,
+      status_name: newTask.value.status_name || 'To Do',
+      priority_level: newTask.value.priority_level || 'Routine',
+      user_id: user.user.id,
+    })
+
+    console.log('Successfully created task with ID:', taskId)
+
+    // Reset form and close modal
+    newTask.value = {
+      title: '',
+      description: '',
+      notes: '',
+      status_name: 'To Do',
+      priority_level: 'Routine',
+      deadline: '',
+      start_date: '',
+      end_date: '',
+    }
+
+    isAddTaskDialogVisible.value = false
+
+    // Show success message
+    console.log('Task created successfully!')
+  } catch (error) {
+    console.error('Error adding task:', error.message, error)
+    alert(`Error creating task: ${error.message}`)
+  }
 }
 </script>
 

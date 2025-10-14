@@ -47,8 +47,8 @@ const openEditDialog = (index) => {
   const task = taskStore.tasks[index]
   console.log('Opening edit dialog for task:', task)
   console.log('Task notes:', task.notes)
-  
-  editTaskData.value = { 
+
+  editTaskData.value = {
     id: task.id,
     title: task.title || '',
     description: task.description || '',
@@ -57,9 +57,9 @@ const openEditDialog = (index) => {
     priority_level: task.priority_level || '',
     deadline: task.deadline || '',
     start_date: task.start_date || '',
-    end_date: task.end_date || ''
+    end_date: task.end_date || '',
   }
-  
+
   console.log('Edit task data initialized:', editTaskData.value)
   isEditDialogVisible.value = true
 }
@@ -71,7 +71,7 @@ const saveEditTask = async () => {
   try {
     console.log('Saving task with data:', editTaskData.value)
     console.log('Notes to save:', editTaskData.value.notes)
-    
+
     // Update the task with all relevant fields
     await taskStore.editTask(editTaskData.value.id, {
       title: editTaskData.value.title,
@@ -81,7 +81,7 @@ const saveEditTask = async () => {
       priority_level: editTaskData.value.priority_level,
       notes: editTaskData.value.notes, // Ensure notes are included in the update
       start_date: editTaskData.value.start_date,
-      end_date: editTaskData.value.end_date
+      end_date: editTaskData.value.end_date,
     })
 
     console.log('Task saved successfully')

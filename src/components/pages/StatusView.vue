@@ -19,15 +19,22 @@ const taskStore = useTaskStore()
 
 // Fetch tasks from the database on component mount
 onMounted(async () => {
-  const { data: user, error } = await supabase.auth.getUser()
-  if (error) {
-    console.error('Error fetching user:', error.message)
-    return
-  }
-  if (user && user.user) {
-    await taskStore.fetchTasksForUser(user.user.id) // Pass the user ID to fetchTasksForUser
-  } else {
-    console.error('User data is not available')
+  try {
+    console.log('StatusView: Fetching user and tasks...')
+    const { data: user, error } = await supabase.auth.getUser()
+    if (error) {
+      console.error('StatusView: Error fetching user:', error.message)
+      return
+    }
+    if (user?.user?.id) {
+      console.log('StatusView: User found, fetching tasks for user:', user.user.id)
+      await taskStore.fetchTasksForUser(user.user.id)
+      console.log('StatusView: Tasks fetched, count:', taskStore.tasks.length)
+    } else {
+      console.error('StatusView: No user data available')
+    }
+  } catch (error) {
+    console.error('StatusView: Error in onMounted:', error.message)
   }
 })
 

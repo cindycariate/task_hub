@@ -42,7 +42,7 @@ const saveAttempts = (attempts) => {
 const cleanExpiredLockouts = (attempts) => {
   const now = Date.now()
   const cleaned = {}
-  
+
   for (const [email, data] of Object.entries(attempts)) {
     if (data.lockedUntil && now >= data.lockedUntil) {
       // Lockout has expired, reset attempts
@@ -50,7 +50,7 @@ const cleanExpiredLockouts = (attempts) => {
     }
     cleaned[email] = data
   }
-  
+
   return cleaned
 }
 
@@ -61,32 +61,32 @@ const cleanExpiredLockouts = (attempts) => {
  */
 export const checkLockoutStatus = (email) => {
   if (!email) return { isLocked: false, remainingTime: 0, attemptsLeft: MAX_ATTEMPTS }
-  
+
   const attempts = cleanExpiredLockouts(getStoredAttempts())
   const emailData = attempts[email.toLowerCase()]
-  
+
   if (!emailData) {
     return { isLocked: false, remainingTime: 0, attemptsLeft: MAX_ATTEMPTS }
   }
-  
+
   const now = Date.now()
-  
+
   // Check if currently locked
   if (emailData.lockedUntil && now < emailData.lockedUntil) {
     return {
       isLocked: true,
       remainingTime: emailData.lockedUntil - now,
       attemptsLeft: 0,
-      lockoutTime: emailData.lockedUntil
+      lockoutTime: emailData.lockedUntil,
     }
   }
-  
+
   // Not locked, return remaining attempts
   const attemptsLeft = Math.max(0, MAX_ATTEMPTS - (emailData.attempts || 0))
   return {
     isLocked: false,
     remainingTime: 0,
-    attemptsLeft
+    attemptsLeft,
   }
 }
 
@@ -97,29 +97,29 @@ export const checkLockoutStatus = (email) => {
  */
 export const recordFailedAttempt = (email) => {
   if (!email) return { isLocked: false, remainingTime: 0, attemptsLeft: MAX_ATTEMPTS }
-  
+
   const attempts = cleanExpiredLockouts(getStoredAttempts())
   const emailKey = email.toLowerCase()
   const now = Date.now()
-  
+
   // Initialize or update attempt data
   if (!attempts[emailKey]) {
     attempts[emailKey] = {
       attempts: 0,
       firstAttempt: now,
-      lastAttempt: now
+      lastAttempt: now,
     }
   }
-  
+
   attempts[emailKey].attempts += 1
   attempts[emailKey].lastAttempt = now
-  
+
   // Check if we need to lock the account
   if (attempts[emailKey].attempts >= MAX_ATTEMPTS) {
     attempts[emailKey].lockedUntil = now + LOCKOUT_DURATION
     attempts[emailKey].attempts = 0 // Reset for next cycle
   }
-  
+
   saveAttempts(attempts)
   return checkLockoutStatus(email)
 }
@@ -130,10 +130,10 @@ export const recordFailedAttempt = (email) => {
  */
 export const recordSuccessfulLogin = (email) => {
   if (!email) return
-  
+
   const attempts = getStoredAttempts()
   const emailKey = email.toLowerCase()
-  
+
   // Remove the email's attempt data
   if (attempts[emailKey]) {
     delete attempts[emailKey]
@@ -148,11 +148,11 @@ export const recordSuccessfulLogin = (email) => {
  */
 export const formatRemainingTime = (milliseconds) => {
   const minutes = Math.ceil(milliseconds / (60 * 1000))
-  
+
   if (minutes === 1) {
     return '1 minute'
   }
-  
+
   return `${minutes} minutes`
 }
 
@@ -162,7 +162,7 @@ export const formatRemainingTime = (milliseconds) => {
  */
 export const getLockoutConfig = () => ({
   maxAttempts: MAX_ATTEMPTS,
-  lockoutDurationMinutes: LOCKOUT_DURATION / (60 * 1000)
+  lockoutDurationMinutes: LOCKOUT_DURATION / (60 * 1000),
 })
 
 /**
