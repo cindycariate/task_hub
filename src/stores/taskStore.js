@@ -9,29 +9,43 @@ export const useTaskStore = defineStore('taskStore', {
   actions: {
     async fetchTasks() {
       try {
-        // Fetch tasks with their associated notes using a LEFT JOIN
-        const { data, error } = await supabase
+        // Fetch tasks first
+        const { data: tasksData, error: tasksError } = await supabase
           .from('tasks')
-          .select(
-            `
-            *,
-            notes (
-              id,
-              note,
-              created_at,
-              updated_at
-            )
-          `,
-          )
+          .select('*')
           .order('created_at', { ascending: false })
 
-        if (error) throw error
+        if (tasksError) throw tasksError
 
-        // Transform the data to include notes as a single field for compatibility
-        const tasksWithNotes = (data || []).map((task) => ({
-          ...task,
-          notes: task.notes && task.notes.length > 0 ? task.notes[0].note : null,
-        }))
+        console.log('✅ Tasks fetched successfully:', tasksData?.length)
+
+        // Fetch notes for all tasks
+        let tasksWithNotes = tasksData || []
+        
+        if (tasksData && tasksData.length > 0) {
+          const taskIds = tasksData.map(task => task.id)
+          
+          const { data: notesData, error: notesError } = await supabase
+            .from('notes')
+            .select('*')
+            .in('task_id', taskIds)
+
+          if (notesError) {
+            console.error('Warning: Error fetching notes:', notesError)
+            // Continue without notes rather than failing completely
+          } else {
+            console.log('✅ Notes fetched successfully:', notesData?.length)
+          }
+
+          // Combine tasks with their notes
+          tasksWithNotes = tasksData.map(task => {
+            const taskNote = notesData?.find(note => note.task_id === task.id)
+            return {
+              ...task,
+              notes: taskNote ? taskNote.note : null
+            }
+          })
+        }
 
         console.log('Fetched tasks with notes:', tasksWithNotes)
         this.tasks = tasksWithNotes
@@ -48,33 +62,47 @@ export const useTaskStore = defineStore('taskStore', {
           throw new Error('User ID is required to fetch tasks')
         }
 
-        // Fetch tasks with their associated notes using a LEFT JOIN
-        const { data, error } = await supabase
+        // Fetch tasks first
+        const { data: tasksData, error: tasksError } = await supabase
           .from('tasks')
-          .select(
-            `
-            *,
-            notes (
-              id,
-              note,
-              created_at,
-              updated_at
-            )
-          `,
-          )
+          .select('*')
           .eq('user_id', userId)
           .order('created_at', { ascending: false })
 
-        if (error) {
-          console.error('Supabase error fetching tasks:', error)
-          throw error
+        if (tasksError) {
+          console.error('Supabase error fetching tasks:', tasksError)
+          throw tasksError
         }
 
-        // Transform the data to include notes as a single field for compatibility
-        const tasksWithNotes = (data || []).map((task) => ({
-          ...task,
-          notes: task.notes && task.notes.length > 0 ? task.notes[0].note : null,
-        }))
+        console.log('✅ Tasks fetched successfully:', tasksData?.length)
+
+        // Fetch notes for all tasks
+        let tasksWithNotes = tasksData || []
+        
+        if (tasksData && tasksData.length > 0) {
+          const taskIds = tasksData.map(task => task.id)
+          
+          const { data: notesData, error: notesError } = await supabase
+            .from('notes')
+            .select('*')
+            .in('task_id', taskIds)
+
+          if (notesError) {
+            console.error('Warning: Error fetching notes:', notesError)
+            // Continue without notes rather than failing completely
+          } else {
+            console.log('✅ Notes fetched successfully:', notesData?.length)
+          }
+
+          // Combine tasks with their notes
+          tasksWithNotes = tasksData.map(task => {
+            const taskNote = notesData?.find(note => note.task_id === task.id)
+            return {
+              ...task,
+              notes: taskNote ? taskNote.note : null
+            }
+          })
+        }
 
         console.log('Successfully fetched tasks with notes for user:', tasksWithNotes)
         console.log('Number of tasks fetched:', tasksWithNotes?.length || 0)
