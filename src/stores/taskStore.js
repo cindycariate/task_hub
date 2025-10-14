@@ -125,7 +125,7 @@ export const useTaskStore = defineStore('taskStore', {
             }
             return {
               ...task,
-              notes: taskNote ? (taskNote.note || taskNote.content || taskNote.text || taskNote.description || taskNote.body) : null,
+              notes: taskNote ? (taskNote.notes || taskNote.note || taskNote.content || taskNote.text || taskNote.description || taskNote.body) : null,
             }
           })
           
@@ -227,29 +227,11 @@ export const useTaskStore = defineStore('taskStore', {
               user_id: task.user_id,
             }
             
-            // Add the note content using possible column names
-            // We'll try 'note' first, then fall back to others if it fails
-            noteData.note = task.notes.trim()  // Try 'note' first
+            // Use the correct column name - 'notes' (plural) based on schema discovery
+            noteData.notes = task.notes.trim()  // Use 'notes' column
             
-            console.log('Note data to insert (trying "note" column):', JSON.stringify(noteData, null, 2))
-            let { error: noteError } = await supabase.from('notes').insert([noteData])
-            
-            // If 'note' column fails, try other common column names
-            if (noteError && noteError.message.includes("Could not find the 'note' column")) {
-              console.log('⚠️ "note" column failed, trying "content" column...')
-              delete noteData.note
-              noteData.content = task.notes.trim()
-              const { error: contentError } = await supabase.from('notes').insert([noteData])
-              noteError = contentError
-              
-              if (noteError && noteError.message.includes("Could not find the 'content' column")) {
-                console.log('⚠️ "content" column failed, trying "text" column...')
-                delete noteData.content
-                noteData.text = task.notes.trim()
-                const { error: textError } = await supabase.from('notes').insert([noteData])
-                noteError = textError
-              }
-            }
+            console.log('Note data to insert (using "notes" column):', JSON.stringify(noteData, null, 2))
+            const { error: noteError } = await supabase.from('notes').insert([noteData])
 
             if (noteError) {
               console.error('❌ Error inserting note:', noteError)
@@ -333,37 +315,11 @@ export const useTaskStore = defineStore('taskStore', {
               }
 
               if (existingNote) {
-                // Update existing note - try different column names
-                let updateError
-                
-                // Try 'note' column first
-                const { error: noteUpdateError } = await supabase
+                // Update existing note using correct 'notes' column
+                const { error: updateError } = await supabase
                   .from('notes')
-                  .update({ note: updatedTask.notes.trim() })
+                  .update({ notes: updatedTask.notes.trim() })
                   .eq('task_id', taskId)
-                
-                updateError = noteUpdateError
-                
-                // If 'note' fails, try other column names
-                if (updateError && updateError.message.includes("Could not find the 'note' column")) {
-                  console.log('⚠️ Trying "content" column for update...')
-                  const { error: contentUpdateError } = await supabase
-                    .from('notes')
-                    .update({ content: updatedTask.notes.trim() })
-                    .eq('task_id', taskId)
-                  
-                  updateError = contentUpdateError
-                  
-                  if (updateError && updateError.message.includes("Could not find the 'content' column")) {
-                    console.log('⚠️ Trying "text" column for update...')
-                    const { error: textUpdateError } = await supabase
-                      .from('notes')
-                      .update({ text: updatedTask.notes.trim() })
-                      .eq('task_id', taskId)
-                    
-                    updateError = textUpdateError
-                  }
-                }
 
                 if (updateError) {
                   console.error('Error updating note:', updateError)
@@ -371,32 +327,14 @@ export const useTaskStore = defineStore('taskStore', {
                   console.log('Successfully updated note for task:', taskId)
                 }
               } else {
-                // Create new note - try different column names
+                // Create new note using correct 'notes' column
                 const noteData = {
                   task_id: taskId,
                   user_id: data[0]?.user_id || updatedTask.user_id,
+                  notes: updatedTask.notes.trim()
                 }
                 
-                // Try 'note' column first
-                noteData.note = updatedTask.notes.trim()
-                let { error: insertError } = await supabase.from('notes').insert([noteData])
-                
-                // If 'note' fails, try other column names
-                if (insertError && insertError.message.includes("Could not find the 'note' column")) {
-                  console.log('⚠️ Trying "content" column for insert...')
-                  delete noteData.note
-                  noteData.content = updatedTask.notes.trim()
-                  const { error: contentInsertError } = await supabase.from('notes').insert([noteData])
-                  insertError = contentInsertError
-                  
-                  if (insertError && insertError.message.includes("Could not find the 'content' column")) {
-                    console.log('⚠️ Trying "text" column for insert...')
-                    delete noteData.content
-                    noteData.text = updatedTask.notes.trim()
-                    const { error: textInsertError } = await supabase.from('notes').insert([noteData])
-                    insertError = textInsertError
-                  }
-                }
+                const { error: insertError } = await supabase.from('notes').insert([noteData])
 
                 if (insertError) {
                   console.error('Error inserting new note:', insertError)
@@ -464,7 +402,7 @@ export const useTaskStore = defineStore('taskStore', {
     // Ensure this function is defined in your taskStore.js
     async updateNoteForTask(taskId, note) {
       try {
-        const { error } = await supabase.from('notes').update({ note }).eq('task_id', taskId)
+        const { error } = await supabase.from('notes').update({ notes: note }).eq('task_id', taskId)
 
         if (error) throw error
 

@@ -33,7 +33,7 @@ BEGIN
     t.user_id,
     t.created_at,
     t.updated_at,
-    n.note as notes
+    n.notes as notes
   FROM tasks t
   LEFT JOIN notes n ON t.id = n.task_id
   WHERE t.user_id = p_user_id
@@ -63,7 +63,7 @@ BEGIN
       'user_id', t.user_id,
       'created_at', t.created_at,
       'updated_at', t.updated_at,
-      'notes', n.note
+      'notes', n.notes
     ) ORDER BY t.created_at DESC
   )
   INTO result

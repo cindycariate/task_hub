@@ -81,7 +81,7 @@ export const useTaskStoreParams = defineStore('taskStoreParams', {
         const taskIds = tasksData.map(task => task.id)
         const { data: notesData, error: notesError } = await supabase
           .from('notes')
-          .select('task_id, note, created_at, updated_at')
+          .select('task_id, notes, created_at, updated_at')
           .in('task_id', taskIds)
           .eq('user_id', userId) // Additional filter for security
 
@@ -92,7 +92,7 @@ export const useTaskStoreParams = defineStore('taskStoreParams', {
         // Combine data
         const combinedTasks = tasksData.map(task => ({
           ...task,
-          notes: notesData?.find(note => note.task_id === task.id)?.note || null
+          notes: notesData?.find(note => note.task_id === task.id)?.notes || null
         }))
 
         console.log('✅ Separate queries method successful:', combinedTasks)
