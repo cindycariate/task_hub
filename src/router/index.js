@@ -85,6 +85,11 @@ const routes = [
     component: AccountView,
   },
   {
+    path: '/test/params',
+    name: 'params-test',
+    component: () => import('@/components/test/ParamsTest.vue'),
+  },
+  {
     // Catch-all route for undefined paths
     path: '/:catchAll(.*)',
     name: 'notfound',
