@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia'
 import { supabase } from '@/utils/supabase'
+import { InputValidator, RateLimiter } from '@/utils/security'
 
 export const useTaskStore = defineStore('taskStore', {
   state: () => ({
     tasks: [],
     notes: [],
-  }),
-  actions: {
+  }        // Add to local state with notes included for UI consistency
+        const taskWithNotes = {
+          ...data,
+          notes: validatedTask.notes && validatedTask.notes.trim() ? validatedTask.notes.trim() : null
+        } actions: {
     async fetchTasks() {
       try {
         // Fetch tasks first
@@ -69,7 +73,7 @@ export const useTaskStore = defineStore('taskStore', {
           .from('notes')
           .select('*')
           .limit(1)
-        
+
         if (!schemaError && sampleNotes && sampleNotes.length > 0) {
           console.log('📋 Notes table columns:', Object.keys(sampleNotes[0]))
           console.log('📋 Sample note data:', sampleNotes[0])
@@ -128,7 +132,7 @@ export const useTaskStore = defineStore('taskStore', {
               notes: taskNote ? (taskNote.notes || taskNote.note || taskNote.content || taskNote.text || taskNote.description || taskNote.body) : null,
             }
           })
-          
+
           console.log('🔍 Final tasks with notes:', tasksWithNotes.map(t => ({ id: t.id, title: t.title, notes: t.notes })))
         }
 
@@ -158,41 +162,40 @@ export const useTaskStore = defineStore('taskStore', {
 
     async addTask(task) {
       try {
-        console.log('=== TASKSTORE: Starting addTask ===')
+        console.log('=== TASKSTORE: Starting addTask with security validation ===')
         console.log('Raw task data received:', JSON.stringify(task, null, 2))
 
-        // Validate required fields
-        if (!task.title || !task.title.trim()) {
-          throw new Error('Task title is required')
+        // Rate limiting check
+        const userId = task.user_id
+        if (RateLimiter.isRateLimited(`task_creation_${userId}`, 20, 60000)) {
+          throw new Error('Too many task creation attempts. Please wait a moment.')
         }
-        if (!task.user_id) {
-          throw new Error('User ID is required')
+
+        // Input validation and sanitization
+        const validatedTask = {
+          title: InputValidator.validateTaskTitle(task.title),
+          description: InputValidator.validateTaskDescription(task.description),
+          notes: InputValidator.validateTaskNotes(task.notes),
+          status_name: InputValidator.validateStatus(task.status_name || 'To Do'),
+          priority_level: InputValidator.validatePriority(task.priority_level || 'Routine'),
+          deadline: InputValidator.validateDate(task.deadline),
+          start_date: InputValidator.validateDate(task.start_date),
+          end_date: InputValidator.validateDate(task.end_date),
+          user_id: InputValidator.validateUUID(task.user_id)
         }
 
         console.log('✅ Task validation passed')
-
-        // Format dates properly - only include if they have values
-        const formatDate = (dateString) => {
-          if (!dateString || dateString === '') return null
-          try {
-            // Check if it's already a valid ISO string
-            const date = new Date(dateString)
-            if (isNaN(date.getTime())) return null
-            return date.toISOString()
-          } catch {
-            return null
-          }
-        }
+        console.log('Validated task data:', JSON.stringify(validatedTask, null, 2))
 
         const cleanedTask = {
-          title: task.title.trim(),
-          description: task.description && task.description.trim() ? task.description.trim() : null,
-          status_name: task.status_name || 'To Do',
-          priority_level: task.priority_level || 'Routine',
-          deadline: formatDate(task.deadline),
-          start_date: formatDate(task.start_date),
-          end_date: formatDate(task.end_date),
-          user_id: task.user_id,
+          title: validatedTask.title,
+          description: validatedTask.description,
+          status_name: validatedTask.status_name,
+          priority_level: validatedTask.priority_level,
+          deadline: validatedTask.deadline,
+          start_date: validatedTask.start_date,
+          end_date: validatedTask.end_date,
+          user_id: validatedTask.user_id,
         }
 
         console.log('Task to insert (cleaned):', JSON.stringify(cleanedTask, null, 2))
@@ -218,18 +221,18 @@ export const useTaskStore = defineStore('taskStore', {
         console.log('Successfully inserted task:', JSON.stringify(data, null, 2))
 
         // Handle notes separately if provided
-        if (task.notes && task.notes.trim()) {
+        if (validatedTask.notes && validatedTask.notes.trim()) {
           console.log('📝 Processing notes for task...')
           try {
             // Try different possible column names for the note content
             const noteData = {
               task_id: data.id,
-              user_id: task.user_id,
+              user_id: validatedTask.user_id,
             }
-            
+
             // Use the correct column name - 'notes' (plural) based on schema discovery
-            noteData.notes = task.notes.trim()  // Use 'notes' column
-            
+            noteData.notes = validatedTask.notes.trim()  // Use 'notes' column
+
             console.log('Note data to insert (using "notes" column):', JSON.stringify(noteData, null, 2))
             const { error: noteError } = await supabase.from('notes').insert([noteData])
 
@@ -318,7 +321,7 @@ export const useTaskStore = defineStore('taskStore', {
                 // Update existing note using correct 'notes' column
                 const { error: updateError } = await supabase
                   .from('notes')
-                  .update({ notes: updatedTask.notes.trim() })
+                  .update({ note: updatedTask.notes.trim() })
                   .eq('task_id', taskId)
 
                 if (updateError) {
@@ -327,13 +330,13 @@ export const useTaskStore = defineStore('taskStore', {
                   console.log('Successfully updated note for task:', taskId)
                 }
               } else {
-                // Create new note using correct 'notes' column
+                // Create new note
                 const noteData = {
                   task_id: taskId,
+                  note: updatedTask.notes.trim(),
                   user_id: data[0]?.user_id || updatedTask.user_id,
-                  notes: updatedTask.notes.trim()
                 }
-                
+
                 const { error: insertError } = await supabase.from('notes').insert([noteData])
 
                 if (insertError) {
@@ -402,7 +405,7 @@ export const useTaskStore = defineStore('taskStore', {
     // Ensure this function is defined in your taskStore.js
     async updateNoteForTask(taskId, note) {
       try {
-        const { error } = await supabase.from('notes').update({ notes: note }).eq('task_id', taskId)
+        const { error } = await supabase.from('notes').update({ note }).eq('task_id', taskId)
 
         if (error) throw error
 

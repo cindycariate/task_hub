@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.46.2",
+    "isomorphic-dompurify": "^2.29.0",
     "pinia": "^2.3.0",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5",
