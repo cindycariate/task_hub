@@ -13,8 +13,8 @@ export class SecurityMiddleware {
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
       "frame-src 'none'",
       "object-src 'none'",
-      "base-uri 'self'"
-    ].join('; ')
+      "base-uri 'self'",
+    ].join('; '),
   }
 
   // Rate limiting for different operations
@@ -22,7 +22,7 @@ export class SecurityMiddleware {
     task_creation: { max: 20, window: 60000 },
     task_update: { max: 50, window: 60000 },
     login_attempts: { max: 5, window: 300000 },
-    api_requests: { max: 100, window: 60000 }
+    api_requests: { max: 100, window: 60000 },
   }
 
   /**
@@ -30,25 +30,28 @@ export class SecurityMiddleware {
    */
   static async validateSession() {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession()
-      
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession()
+
       if (error) {
         console.error('Session validation error:', error)
         return null
       }
-      
+
       if (!session) {
         console.warn('No active session found')
         return null
       }
-      
+
       // Check if session is expired
       if (session.expires_at && new Date(session.expires_at * 1000) < new Date()) {
         console.warn('Session expired')
         await supabase.auth.signOut()
         return null
       }
-      
+
       return session
     } catch (error) {
       console.error('Session validation failed:', error)
@@ -62,7 +65,7 @@ export class SecurityMiddleware {
   static async validateResourceOwnership(resourceType, resourceId, userId) {
     try {
       let query
-      
+
       switch (resourceType) {
         case 'task':
           query = supabase
@@ -72,7 +75,7 @@ export class SecurityMiddleware {
             .eq('user_id', userId)
             .single()
           break
-          
+
         case 'note':
           query = supabase
             .from('notes')
@@ -81,18 +84,18 @@ export class SecurityMiddleware {
             .eq('user_id', userId)
             .single()
           break
-          
+
         default:
           throw new Error('Unknown resource type')
       }
-      
+
       const { data, error } = await query
-      
+
       if (error || !data) {
         console.warn(`Resource ownership validation failed for ${resourceType}:${resourceId}`)
         return false
       }
-      
+
       return true
     } catch (error) {
       console.error('Resource ownership validation error:', error)
@@ -110,16 +113,16 @@ export class SecurityMiddleware {
       if (!session) {
         throw new Error('Authentication required')
       }
-      
+
       // Apply rate limiting
       const userId = session.user.id
       if (this.isRateLimited(userId, 'api_requests')) {
         throw new Error('Rate limit exceeded. Please slow down.')
       }
-      
+
       // Execute the operation
       const result = await operation(...args)
-      
+
       return result
     } catch (error) {
       console.error('Secure request failed:', error)
@@ -133,25 +136,25 @@ export class SecurityMiddleware {
   static isRateLimited(identifier, operationType) {
     const limits = this.RATE_LIMITS[operationType]
     if (!limits) return false
-    
+
     const key = `${operationType}_${identifier}`
     const now = Date.now()
-    
+
     // Get or create attempt history
     let attempts = JSON.parse(localStorage.getItem(key) || '[]')
-    
+
     // Remove expired attempts
-    attempts = attempts.filter(timestamp => now - timestamp < limits.window)
-    
+    attempts = attempts.filter((timestamp) => now - timestamp < limits.window)
+
     // Check if limit exceeded
     if (attempts.length >= limits.max) {
       return true
     }
-    
+
     // Add current attempt
     attempts.push(now)
     localStorage.setItem(key, JSON.stringify(attempts))
-    
+
     return false
   }
 
@@ -172,7 +175,7 @@ export class SecurityMiddleware {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'X-XSS-Protection': '1; mode=block',
-      'Referrer-Policy': 'strict-origin-when-cross-origin'
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
     }
   }
 }
@@ -182,5 +185,5 @@ export default {
   install(app) {
     app.config.globalProperties.$security = SecurityMiddleware
     app.provide('security', SecurityMiddleware)
-  }
+  },
 }

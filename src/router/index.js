@@ -90,6 +90,11 @@ const routes = [
     component: () => import('@/components/test/ParamsTest.vue'),
   },
   {
+    path: '/test/logging',
+    name: 'logging-demo',
+    component: () => import('@/components/test/LoggingDemo.vue'),
+  },
+  {
     // Catch-all route for undefined paths
     path: '/:catchAll(.*)',
     name: 'notfound',
