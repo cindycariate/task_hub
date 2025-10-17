@@ -1,264 +1,278 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Production-Safe Logging Test</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .test-section {
-            background: white;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .environment {
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-        .dev-env {
-            background-color: #e3f2fd;
-            color: #1976d2;
-        }
-        .prod-env {
-            background-color: #f3e5f5;
-            color: #7b1fa2;
-        }
-        button {
-            background-color: #4caf50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .console-output {
-            background-color: #263238;
-            color: #00e676;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            margin: 10px 0;
-            min-height: 100px;
-            overflow-y: auto;
-        }
-        .warning {
-            background-color: #fff3e0;
-            color: #ef6c00;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .test-section {
+        background: white;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .environment {
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+        font-weight: bold;
+      }
+      .dev-env {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+      .prod-env {
+        background-color: #f3e5f5;
+        color: #7b1fa2;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .console-output {
+        background-color: #263238;
+        color: #00e676;
+        padding: 15px;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        margin: 10px 0;
+        min-height: 100px;
+        overflow-y: auto;
+      }
+      .warning {
+        background-color: #fff3e0;
+        color: #ef6c00;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>🔒 Production-Safe Logging System Test</h1>
-    
+
     <div class="warning">
-        <strong>Note:</strong> Open Developer Tools (F12) → Console to see the logging behavior differences.
+      <strong>Note:</strong> Open Developer Tools (F12) → Console to see the logging behavior
+      differences.
     </div>
 
     <div class="test-section">
-        <h2>Environment Detection</h2>
-        <div id="current-env" class="environment"></div>
-        <p>The logging system automatically detects the environment and adjusts output accordingly.</p>
+      <h2>Environment Detection</h2>
+      <div id="current-env" class="environment"></div>
+      <p>
+        The logging system automatically detects the environment and adjusts output accordingly.
+      </p>
     </div>
 
     <div class="test-section">
-        <h2>Logging Tests</h2>
-        <button onclick="testDevLogging()">Test Development Logging</button>
-        <button onclick="testProductionLogging()">Simulate Production Logging</button>
-        <button onclick="testErrorHandling()">Test Error Handling</button>
-        <button onclick="testSensitiveData()">Test Sensitive Data Protection</button>
-        
-        <div class="console-output" id="console-output">
-            Console output will appear here...
-        </div>
+      <h2>Logging Tests</h2>
+      <button onclick="testDevLogging()">Test Development Logging</button>
+      <button onclick="testProductionLogging()">Simulate Production Logging</button>
+      <button onclick="testErrorHandling()">Test Error Handling</button>
+      <button onclick="testSensitiveData()">Test Sensitive Data Protection</button>
+
+      <div class="console-output" id="console-output">Console output will appear here...</div>
     </div>
 
     <div class="test-section">
-        <h2>User-Friendly vs Developer Info</h2>
-        <p><strong>In Development:</strong> Detailed logs, stack traces, and debugging information are shown.</p>
-        <p><strong>In Production:</strong> Only user-friendly messages are shown. Detailed logs are stored securely for developers.</p>
+      <h2>User-Friendly vs Developer Info</h2>
+      <p>
+        <strong>In Development:</strong> Detailed logs, stack traces, and debugging information are
+        shown.
+      </p>
+      <p>
+        <strong>In Production:</strong> Only user-friendly messages are shown. Detailed logs are
+        stored securely for developers.
+      </p>
     </div>
 
     <script type="module">
-        // Mock environment variables for testing
-        window.mockEnvironment = 'development'; // Change to 'production' to test production mode
-        
-        // Import and setup logger (simplified version for testing)
-        const logger = {
-            isDevelopment() {
-                return window.mockEnvironment === 'development';
-            },
-            
-            dev(message, data = null) {
-                if (this.isDevelopment()) {
-                    console.log(`[DEV] ${message}`, data || '');
-                    this.addToOutput(`[DEV] ${message} ${data ? JSON.stringify(data, null, 2) : ''}`);
-                }
-                // In production, this would be silent
-            },
-            
-            devError(message, error = null) {
-                if (this.isDevelopment()) {
-                    console.error(`[DEV-ERROR] ${message}`, error || '');
-                    this.addToOutput(`[DEV-ERROR] ${message} ${error ? error.toString() : ''}`);
-                }
-                // In production, this would be silent
-            },
-            
-            error(message, error = null, context = {}) {
-                // Always show user-friendly error messages
-                console.error(`[USER] ${message}`);
-                this.addToOutput(`[USER] ${message}`);
-                
-                // Store detailed error info for developers (would be secure storage in real app)
-                if (error) {
-                    const errorDetails = {
-                        message: error.message,
-                        stack: this.isDevelopment() ? error.stack : '[HIDDEN IN PRODUCTION]',
-                        context: this.isDevelopment() ? context : '[HIDDEN IN PRODUCTION]',
-                        timestamp: new Date().toISOString()
-                    };
-                    
-                    if (this.isDevelopment()) {
-                        console.error('[FULL-ERROR]', errorDetails);
-                        this.addToOutput(`[FULL-ERROR] ${JSON.stringify(errorDetails, null, 2)}`);
-                    } else {
-                        // In production, store in secure location for developers
-                        sessionStorage.setItem(`error_${Date.now()}`, JSON.stringify(errorDetails));
-                        this.addToOutput('[ERROR DETAILS STORED SECURELY FOR DEVELOPERS]');
-                    }
-                }
-            },
-            
-            sanitizeForLogging(data) {
-                if (!this.isDevelopment()) {
-                    return '[HIDDEN IN PRODUCTION]';
-                }
-                
-                // In development, show sanitized version
-                if (typeof data === 'object') {
-                    const sanitized = { ...data };
-                    // Remove sensitive fields
-                    ['password', 'token', 'secret', 'key'].forEach(field => {
-                        if (sanitized[field]) {
-                            sanitized[field] = '[REDACTED]';
-                        }
-                    });
-                    return sanitized;
-                }
-                return data;
-            },
-            
-            addToOutput(message) {
-                const output = document.getElementById('console-output');
-                output.innerHTML += message + '\n\n';
-                output.scrollTop = output.scrollHeight;
+      // Mock environment variables for testing
+      window.mockEnvironment = 'development' // Change to 'production' to test production mode
+
+      // Import and setup logger (simplified version for testing)
+      const logger = {
+        isDevelopment() {
+          return window.mockEnvironment === 'development'
+        },
+
+        dev(message, data = null) {
+          if (this.isDevelopment()) {
+            console.log(`[DEV] ${message}`, data || '')
+            this.addToOutput(`[DEV] ${message} ${data ? JSON.stringify(data, null, 2) : ''}`)
+          }
+          // In production, this would be silent
+        },
+
+        devError(message, error = null) {
+          if (this.isDevelopment()) {
+            console.error(`[DEV-ERROR] ${message}`, error || '')
+            this.addToOutput(`[DEV-ERROR] ${message} ${error ? error.toString() : ''}`)
+          }
+          // In production, this would be silent
+        },
+
+        error(message, error = null, context = {}) {
+          // Always show user-friendly error messages
+          console.error(`[USER] ${message}`)
+          this.addToOutput(`[USER] ${message}`)
+
+          // Store detailed error info for developers (would be secure storage in real app)
+          if (error) {
+            const errorDetails = {
+              message: error.message,
+              stack: this.isDevelopment() ? error.stack : '[HIDDEN IN PRODUCTION]',
+              context: this.isDevelopment() ? context : '[HIDDEN IN PRODUCTION]',
+              timestamp: new Date().toISOString(),
             }
-        };
 
-        // Mock ErrorHandler
-        const ErrorHandler = {
-            handleApiError(error, operation) {
-                return {
-                    userMessage: `Unable to ${operation}. Please try again.`,
-                    developerMessage: error.message,
-                    code: error.code || 'UNKNOWN'
-                };
+            if (this.isDevelopment()) {
+              console.error('[FULL-ERROR]', errorDetails)
+              this.addToOutput(`[FULL-ERROR] ${JSON.stringify(errorDetails, null, 2)}`)
+            } else {
+              // In production, store in secure location for developers
+              sessionStorage.setItem(`error_${Date.now()}`, JSON.stringify(errorDetails))
+              this.addToOutput('[ERROR DETAILS STORED SECURELY FOR DEVELOPERS]')
             }
-        };
+          }
+        },
 
-        // Test functions
-        window.testDevLogging = function() {
-            logger.addToOutput('=== TESTING DEVELOPMENT LOGGING ===');
-            logger.dev('This is a development log message');
-            logger.dev('Task data received', { id: 123, title: 'Test Task', password: 'secret123' });
-            logger.dev('Processing completed successfully');
-        };
+        sanitizeForLogging(data) {
+          if (!this.isDevelopment()) {
+            return '[HIDDEN IN PRODUCTION]'
+          }
 
-        window.testProductionLogging = function() {
-            // Temporarily switch to production mode
-            const originalEnv = window.mockEnvironment;
-            window.mockEnvironment = 'production';
-            
-            logger.addToOutput('=== TESTING PRODUCTION LOGGING ===');
-            logger.dev('This development message should NOT appear in production');
-            logger.dev('Sensitive data', { userId: 123, apiKey: 'sk-abc123', email: 'user@example.com' });
-            logger.error('Something went wrong', new Error('Database connection failed'));
-            
-            // Restore environment
-            window.mockEnvironment = originalEnv;
-        };
+          // In development, show sanitized version
+          if (typeof data === 'object') {
+            const sanitized = { ...data }
+            // Remove sensitive fields
+            ;['password', 'token', 'secret', 'key'].forEach((field) => {
+              if (sanitized[field]) {
+                sanitized[field] = '[REDACTED]'
+              }
+            })
+            return sanitized
+          }
+          return data
+        },
 
-        window.testErrorHandling = function() {
-            logger.addToOutput('=== TESTING ERROR HANDLING ===');
-            try {
-                throw new Error('Simulated API error with sensitive details');
-            } catch (error) {
-                const errorInfo = ErrorHandler.handleApiError(error, 'create task');
-                logger.error(errorInfo.userMessage, error, { 
-                    operation: 'addTask', 
-                    userId: 123,
-                    sensitiveData: 'This should be hidden in production'
-                });
-            }
-        };
+        addToOutput(message) {
+          const output = document.getElementById('console-output')
+          output.innerHTML += message + '\n\n'
+          output.scrollTop = output.scrollHeight
+        },
+      }
 
-        window.testSensitiveData = function() {
-            logger.addToOutput('=== TESTING SENSITIVE DATA PROTECTION ===');
-            const userData = {
-                id: 123,
-                name: 'John Doe',
-                email: 'john@example.com',
-                password: 'mySecretPassword123',
-                apiKey: 'sk-1234567890abcdef',
-                token: 'jwt-token-here'
-            };
-            
-            logger.dev('User data (sanitized):', logger.sanitizeForLogging(userData));
-            
-            // Switch to production and test again
-            const originalEnv = window.mockEnvironment;
-            window.mockEnvironment = 'production';
-            logger.dev('User data in production:', logger.sanitizeForLogging(userData));
-            window.mockEnvironment = originalEnv;
-        };
+      // Mock ErrorHandler
+      const ErrorHandler = {
+        handleApiError(error, operation) {
+          return {
+            userMessage: `Unable to ${operation}. Please try again.`,
+            developerMessage: error.message,
+            code: error.code || 'UNKNOWN',
+          }
+        },
+      }
 
-        // Initialize environment display
-        function updateEnvironmentDisplay() {
-            const envDiv = document.getElementById('current-env');
-            const env = window.mockEnvironment;
-            envDiv.className = `environment ${env === 'development' ? 'dev-env' : 'prod-env'}`;
-            envDiv.textContent = `Current Environment: ${env.toUpperCase()}`;
+      // Test functions
+      window.testDevLogging = function () {
+        logger.addToOutput('=== TESTING DEVELOPMENT LOGGING ===')
+        logger.dev('This is a development log message')
+        logger.dev('Task data received', { id: 123, title: 'Test Task', password: 'secret123' })
+        logger.dev('Processing completed successfully')
+      }
+
+      window.testProductionLogging = function () {
+        // Temporarily switch to production mode
+        const originalEnv = window.mockEnvironment
+        window.mockEnvironment = 'production'
+
+        logger.addToOutput('=== TESTING PRODUCTION LOGGING ===')
+        logger.dev('This development message should NOT appear in production')
+        logger.dev('Sensitive data', {
+          userId: 123,
+          apiKey: 'sk-abc123',
+          email: 'user@example.com',
+        })
+        logger.error('Something went wrong', new Error('Database connection failed'))
+
+        // Restore environment
+        window.mockEnvironment = originalEnv
+      }
+
+      window.testErrorHandling = function () {
+        logger.addToOutput('=== TESTING ERROR HANDLING ===')
+        try {
+          throw new Error('Simulated API error with sensitive details')
+        } catch (error) {
+          const errorInfo = ErrorHandler.handleApiError(error, 'create task')
+          logger.error(errorInfo.userMessage, error, {
+            operation: 'addTask',
+            userId: 123,
+            sensitiveData: 'This should be hidden in production',
+          })
+        }
+      }
+
+      window.testSensitiveData = function () {
+        logger.addToOutput('=== TESTING SENSITIVE DATA PROTECTION ===')
+        const userData = {
+          id: 123,
+          name: 'John Doe',
+          email: 'john@example.com',
+          password: 'mySecretPassword123',
+          apiKey: 'sk-1234567890abcdef',
+          token: 'jwt-token-here',
         }
 
-        updateEnvironmentDisplay();
-        
-        // Add environment toggle
-        const toggleButton = document.createElement('button');
-        toggleButton.textContent = 'Toggle Environment';
-        toggleButton.onclick = function() {
-            window.mockEnvironment = window.mockEnvironment === 'development' ? 'production' : 'development';
-            updateEnvironmentDisplay();
-            logger.addToOutput(`=== ENVIRONMENT SWITCHED TO ${window.mockEnvironment.toUpperCase()} ===`);
-        };
-        document.querySelector('.test-section h2').after(toggleButton);
+        logger.dev('User data (sanitized):', logger.sanitizeForLogging(userData))
+
+        // Switch to production and test again
+        const originalEnv = window.mockEnvironment
+        window.mockEnvironment = 'production'
+        logger.dev('User data in production:', logger.sanitizeForLogging(userData))
+        window.mockEnvironment = originalEnv
+      }
+
+      // Initialize environment display
+      function updateEnvironmentDisplay() {
+        const envDiv = document.getElementById('current-env')
+        const env = window.mockEnvironment
+        envDiv.className = `environment ${env === 'development' ? 'dev-env' : 'prod-env'}`
+        envDiv.textContent = `Current Environment: ${env.toUpperCase()}`
+      }
+
+      updateEnvironmentDisplay()
+
+      // Add environment toggle
+      const toggleButton = document.createElement('button')
+      toggleButton.textContent = 'Toggle Environment'
+      toggleButton.onclick = function () {
+        window.mockEnvironment =
+          window.mockEnvironment === 'development' ? 'production' : 'development'
+        updateEnvironmentDisplay()
+        logger.addToOutput(
+          `=== ENVIRONMENT SWITCHED TO ${window.mockEnvironment.toUpperCase()} ===`,
+        )
+      }
+      document.querySelector('.test-section h2').after(toggleButton)
     </script>
-</body>
+  </body>
 </html>

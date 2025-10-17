@@ -126,16 +126,31 @@ export const useTaskStore = defineStore('taskStore', {
             if (taskNote) {
               logger.dev(`📝 Task ${task.id}: Note object:`, taskNote)
               // Try different possible column names
-              const noteText = taskNote.note || taskNote.content || taskNote.text || taskNote.description || taskNote.body
+              const noteText =
+                taskNote.note ||
+                taskNote.content ||
+                taskNote.text ||
+                taskNote.description ||
+                taskNote.body
               logger.dev(`📝 Task ${task.id}: Note text:`, noteText)
             }
             return {
               ...task,
-              notes: taskNote ? (taskNote.notes || taskNote.note || taskNote.content || taskNote.text || taskNote.description || taskNote.body) : null,
+              notes: taskNote
+                ? taskNote.notes ||
+                  taskNote.note ||
+                  taskNote.content ||
+                  taskNote.text ||
+                  taskNote.description ||
+                  taskNote.body
+                : null,
             }
           })
 
-          logger.dev('🔍 Final tasks with notes:', tasksWithNotes.map(t => ({ id: t.id, title: t.title, notes: t.notes })))
+          logger.dev(
+            '🔍 Final tasks with notes:',
+            tasksWithNotes.map((t) => ({ id: t.id, title: t.title, notes: t.notes })),
+          )
         }
 
         logger.success('Tasks loaded successfully', `${tasksWithNotes?.length || 0} tasks found`)
@@ -184,7 +199,7 @@ export const useTaskStore = defineStore('taskStore', {
           deadline: InputValidator.validateDate(task.deadline),
           start_date: InputValidator.validateDate(task.start_date),
           end_date: InputValidator.validateDate(task.end_date),
-          user_id: InputValidator.validateUUID(task.user_id)
+          user_id: InputValidator.validateUUID(task.user_id),
         }
 
         logger.dev('✅ Task validation passed')
@@ -212,10 +227,10 @@ export const useTaskStore = defineStore('taskStore', {
 
         if (error) {
           const errorInfo = ErrorHandler.handleApiError(error, 'create task')
-          logger.error(errorInfo.userMessage, error, { 
-            operation: 'addTask', 
+          logger.error(errorInfo.userMessage, error, {
+            operation: 'addTask',
             userId: validatedTask.user_id,
-            title: validatedTask.title 
+            title: validatedTask.title,
           })
           throw new Error(errorInfo.userMessage)
         }
@@ -234,9 +249,12 @@ export const useTaskStore = defineStore('taskStore', {
             }
 
             // Use the correct column name - 'notes' (plural) based on schema discovery
-            noteData.notes = validatedTask.notes.trim()  // Use 'notes' column
+            noteData.notes = validatedTask.notes.trim() // Use 'notes' column
 
-            logger.dev('Note data to insert (using "notes" column):', logger.sanitizeForLogging(noteData))
+            logger.dev(
+              'Note data to insert (using "notes" column):',
+              logger.sanitizeForLogging(noteData),
+            )
             const { error: noteError } = await supabase.from('notes').insert([noteData])
 
             if (noteError) {
@@ -302,10 +320,10 @@ export const useTaskStore = defineStore('taskStore', {
 
         if (error) {
           const errorInfo = ErrorHandler.handleApiError(error, 'update task')
-          logger.error(errorInfo.userMessage, error, { 
-            operation: 'editTask', 
+          logger.error(errorInfo.userMessage, error, {
+            operation: 'editTask',
             taskId: taskId,
-            title: validatedUpdate.title 
+            title: validatedUpdate.title,
           })
           throw new Error(errorInfo.userMessage)
         }
@@ -333,7 +351,7 @@ export const useTaskStore = defineStore('taskStore', {
                 // Update existing note using correct 'notes' column
                 const { error: updateError } = await supabase
                   .from('notes')
-                  .update({ notes: updatedTask.notes.trim() })  // Use 'notes' column
+                  .update({ notes: updatedTask.notes.trim() }) // Use 'notes' column
                   .eq('task_id', taskId)
 
                 if (updateError) {
@@ -345,7 +363,7 @@ export const useTaskStore = defineStore('taskStore', {
                 // Create new note
                 const noteData = {
                   task_id: taskId,
-                  notes: updatedTask.notes.trim(),  // Use 'notes' column
+                  notes: updatedTask.notes.trim(), // Use 'notes' column
                   user_id: data[0]?.user_id || updatedTask.user_id,
                 }
 
@@ -396,7 +414,7 @@ export const useTaskStore = defineStore('taskStore', {
     async deleteTask(taskId) {
       try {
         logger.dev('🗑️ Deleting task with ID:', taskId)
-        
+
         // Rate limiting check for delete operations
         if (RateLimiter.isRateLimited(`task_deletion_${taskId}`, 10, 60000)) {
           throw new Error('Too many deletion attempts. Please wait a moment.')
@@ -406,9 +424,9 @@ export const useTaskStore = defineStore('taskStore', {
 
         if (error) {
           const errorInfo = ErrorHandler.handleApiError(error, 'delete task')
-          logger.error(errorInfo.userMessage, error, { 
-            operation: 'deleteTask', 
-            taskId: taskId 
+          logger.error(errorInfo.userMessage, error, {
+            operation: 'deleteTask',
+            taskId: taskId,
           })
           throw new Error(errorInfo.userMessage)
         }
@@ -428,19 +446,19 @@ export const useTaskStore = defineStore('taskStore', {
         const validatedNote = {
           task_id: note.task_id,
           notes: InputValidator.validateTaskNotes(note.notes || note.note), // Handle both column names
-          user_id: note.user_id
+          user_id: note.user_id,
         }
 
         const { data, error } = await supabase.from('notes').insert(validatedNote).select().single()
         if (error) {
           const errorInfo = ErrorHandler.handleApiError(error, 'add note')
-          logger.error(errorInfo.userMessage, error, { 
-            operation: 'addNote', 
-            taskId: note.task_id 
+          logger.error(errorInfo.userMessage, error, {
+            operation: 'addNote',
+            taskId: note.task_id,
           })
           throw new Error(errorInfo.userMessage)
         }
-        
+
         logger.dev('Inserted note data:', logger.sanitizeForLogging(data))
 
         if (data) this.notes.push(data)
@@ -455,17 +473,17 @@ export const useTaskStore = defineStore('taskStore', {
       try {
         // Input validation
         const validatedNote = InputValidator.validateTaskNotes(note)
-        
+
         const { error } = await supabase
           .from('notes')
-          .update({ notes: validatedNote })  // Use 'notes' column
+          .update({ notes: validatedNote }) // Use 'notes' column
           .eq('task_id', taskId)
 
         if (error) {
           const errorInfo = ErrorHandler.handleApiError(error, 'update note')
-          logger.error(errorInfo.userMessage, error, { 
-            operation: 'updateNoteForTask', 
-            taskId: taskId 
+          logger.error(errorInfo.userMessage, error, {
+            operation: 'updateNoteForTask',
+            taskId: taskId,
           })
           throw new Error(errorInfo.userMessage)
         }

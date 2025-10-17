@@ -9,12 +9,16 @@
 
     <div class="demo-section">
       <h3>Current Environment Detection</h3>
-      <p>Environment: <strong>{{ currentEnvironment }}</strong></p>
+      <p>
+        Environment: <strong>{{ currentEnvironment }}</strong>
+      </p>
       <p>
         <em>
-          {{ currentEnvironment === 'development' 
-             ? 'Full logging and debugging information visible' 
-             : 'Production mode - sensitive information hidden from users' }}
+          {{
+            currentEnvironment === 'development'
+              ? 'Full logging and debugging information visible'
+              : 'Production mode - sensitive information hidden from users'
+          }}
         </em>
       </p>
     </div>
@@ -57,13 +61,13 @@ export default {
   data() {
     return {
       outputText: '',
-      currentEnvironment: import.meta.env.MODE || 'development'
+      currentEnvironment: import.meta.env.MODE || 'development',
     }
   },
   computed: {
     environmentClass() {
       return this.currentEnvironment === 'development' ? 'env-dev' : 'env-prod'
-    }
+    },
   },
   methods: {
     addToOutput(message) {
@@ -76,38 +80,40 @@ export default {
     testDevLogging() {
       this.addToOutput('=== TESTING DEVELOPMENT LOGGING ===')
       logger.dev('This is a development log message')
-      
+
       const sampleTaskData = {
         id: 123,
         title: 'Sample Task',
         description: 'Testing logging functionality',
         user_id: 456,
         apiKey: 'sk-secret123', // This should be sanitized
-        password: 'userPassword' // This should be hidden
+        password: 'userPassword', // This should be hidden
       }
-      
+
       logger.dev('Task data received:', logger.sanitizeForLogging(sampleTaskData))
       logger.dev('Processing completed successfully')
-      
+
       this.addToOutput('✅ Development logging test completed')
       this.addToOutput('Check browser console for detailed logs')
     },
 
     testErrorHandling() {
       this.addToOutput('=== TESTING ERROR HANDLING ===')
-      
+
       try {
         // Simulate an API error
-        throw new Error('Simulated database connection error with sensitive details: API_KEY=sk-123456')
+        throw new Error(
+          'Simulated database connection error with sensitive details: API_KEY=sk-123456',
+        )
       } catch (error) {
         const errorInfo = ErrorHandler.handleApiError(error, 'create task')
         logger.error(errorInfo.userMessage, error, {
           operation: 'addTask',
           userId: 123,
           sensitiveData: 'This should be hidden in production',
-          databaseUrl: 'postgresql://user:pass@localhost:5432/db'
+          databaseUrl: 'postgresql://user:pass@localhost:5432/db',
         })
-        
+
         this.addToOutput('❌ Error handled gracefully')
         this.addToOutput('User sees: ' + errorInfo.userMessage)
         this.addToOutput('Developer details stored securely')
@@ -116,7 +122,7 @@ export default {
 
     testSensitiveData() {
       this.addToOutput('=== TESTING SENSITIVE DATA PROTECTION ===')
-      
+
       const sensitiveUserData = {
         id: 789,
         name: 'Test User',
@@ -125,12 +131,12 @@ export default {
         apiKey: 'sk-1234567890abcdef',
         token: 'jwt-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
         creditCard: '4111-1111-1111-1111',
-        ssn: '123-45-6789'
+        ssn: '123-45-6789',
       }
-      
+
       logger.dev('Raw user data:', sensitiveUserData)
       logger.dev('Sanitized user data:', logger.sanitizeForLogging(sensitiveUserData))
-      
+
       this.addToOutput('🛡️ Sensitive data protection test completed')
       this.addToOutput('In production: sensitive fields are hidden')
       this.addToOutput('In development: sensitive fields are redacted but structure shown')
@@ -138,8 +144,8 @@ export default {
 
     clearOutput() {
       this.outputText = ''
-    }
-  }
+    },
+  },
 }
 </script>
 

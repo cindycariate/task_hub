@@ -47,7 +47,7 @@ class Logger {
     if (this.isProduction) {
       // Only show generic message to users
       console.error(userMessage)
-      
+
       // Send detailed errors to monitoring service (not console)
       this.sendToMonitoring({
         userMessage,
@@ -55,7 +55,7 @@ class Logger {
         context,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
-        url: window.location.href
+        url: window.location.href,
       })
     } else {
       // Show full details in development
@@ -80,7 +80,7 @@ class Logger {
         type: 'security',
         event,
         details,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })
     } else {
       console.warn('[SECURITY]', event, details || '')
@@ -110,7 +110,7 @@ class Logger {
       // - LogRocket
       // - DataDog
       // - Custom logging endpoint
-      
+
       // For now, we'll store in a secure way that users can't easily access
       this.storeSecureLog(data)
     }
@@ -124,12 +124,12 @@ class Logger {
       // Use sessionStorage instead of localStorage (cleared on tab close)
       const logs = JSON.parse(sessionStorage.getItem('__app_monitoring') || '[]')
       logs.push(data)
-      
+
       // Keep only last 50 logs to prevent memory issues
       if (logs.length > 50) {
         logs.splice(0, logs.length - 50)
       }
-      
+
       sessionStorage.setItem('__app_monitoring', JSON.stringify(logs))
     } catch (error) {
       // Fail silently in production
@@ -165,7 +165,7 @@ class Logger {
 
     const sanitized = { ...data }
     const sensitiveFields = ['password', 'token', 'secret', 'key', 'auth', 'session']
-    
+
     for (const field of sensitiveFields) {
       if (sanitized[field]) {
         sanitized[field] = '[REDACTED]'
@@ -187,26 +187,26 @@ export class ErrorHandler {
   static handleApiError(error, operation = 'operation') {
     const userMessages = {
       // Database errors
-      'PGRST301': 'Access denied. Please check your permissions.',
-      'PGRST204': 'The requested data was not found.',
-      'PGRST116': 'No data found.',
-      
+      PGRST301: 'Access denied. Please check your permissions.',
+      PGRST204: 'The requested data was not found.',
+      PGRST116: 'No data found.',
+
       // Auth errors
-      'invalid_grant': 'Invalid credentials provided.',
-      'access_denied': 'Access denied. Please log in again.',
-      'token_expired': 'Your session has expired. Please log in again.',
-      
+      invalid_grant: 'Invalid credentials provided.',
+      access_denied: 'Access denied. Please log in again.',
+      token_expired: 'Your session has expired. Please log in again.',
+
       // Rate limiting
-      'rate_limit_exceeded': 'Too many requests. Please wait a moment.',
-      
+      rate_limit_exceeded: 'Too many requests. Please wait a moment.',
+
       // Validation errors
-      'validation_error': 'Please check your input and try again.',
-      'invalid_input': 'Invalid data provided. Please check your input.',
-      
+      validation_error: 'Please check your input and try again.',
+      invalid_input: 'Invalid data provided. Please check your input.',
+
       // Generic fallbacks
-      'network_error': 'Network error. Please check your connection.',
-      'server_error': 'Server error. Please try again later.',
-      'unknown_error': 'An unexpected error occurred. Please try again.'
+      network_error: 'Network error. Please check your connection.',
+      server_error: 'Server error. Please try again later.',
+      unknown_error: 'An unexpected error occurred. Please try again.',
     }
 
     // Determine error type and user message
@@ -231,16 +231,12 @@ export class ErrorHandler {
     }
 
     // Log appropriately
-    logger.error(
-      `${operation} failed: ${userMessage}`,
-      error,
-      { operation, errorCode }
-    )
+    logger.error(`${operation} failed: ${userMessage}`, error, { operation, errorCode })
 
     return {
       userMessage,
       errorCode,
-      shouldRetry: ['network_error', 'server_error'].includes(errorCode)
+      shouldRetry: ['network_error', 'server_error'].includes(errorCode),
     }
   }
 
@@ -251,7 +247,7 @@ export class ErrorHandler {
     return {
       message,
       canRetry,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
   }
 }
@@ -260,7 +256,7 @@ export class ErrorHandler {
 export const Environment = {
   isDev: import.meta.env.DEV || import.meta.env.NODE_ENV === 'development',
   isProd: import.meta.env.PROD || import.meta.env.NODE_ENV === 'production',
-  isTest: import.meta.env.NODE_ENV === 'test'
+  isTest: import.meta.env.NODE_ENV === 'test',
 }
 
 export default logger
