@@ -1,0 +1,29 @@
+%% C4-style diagram (high level)
+%% Using a simple Mermaid flowchart to represent C4 Container view
+flowchart LR
+  subgraph Browser
+    User["User (browser)"]
+  end
+
+  subgraph App["task_hub (Vue SPA)"]
+    Frontend["Frontend - Vue components & views"]
+    Store["State - Pinia stores"]
+    Router["Router & Guards"]
+  end
+
+  subgraph Supabase["Supabase (BaaS)"]
+    Auth["Auth (sessions, JWT)"]
+    DB["Postgres DB (tables: tasks, notes, users)"]
+    Storage["Storage (avatars)"]
+  end
+
+  User -->|interacts| Frontend
+  Frontend -->|dispatch / read| Store
+  Router -->|protects routes via session| Auth
+  Store -->|auth CRUD| Auth
+  Store -->|CRUD tasks & notes| DB
+  Frontend -->|file upload / avatar| Storage
+
+  %% Notes
+  classDef app fill:#eef,stroke:#333
+  class App,Frontend,Store,Router app

@@ -1,0 +1,23 @@
+%% Context diagram (Mermaid)
+graph LR
+  User["User (browser)"]
+  Admin["Admin (dev tools)"]
+  App["task_hub (Vue + Pinia)"]
+  Router["Router / Views"]
+  Components["Components & Stores"]
+  SupabaseAuth["Supabase Auth"]
+  SupabaseDB["Supabase Database (tasks, notes, users)"]
+  SupabaseStorage["Supabase Storage (avatars)"]
+
+  User -->|visit / login / use UI| App
+  Admin -->|dev-time scripts / testing tools| App
+
+  App --> Router
+  Router --> Components
+  Components -->|reads/writes session| SupabaseAuth
+  Components -->|CRUD tasks / read notes| SupabaseDB
+  Components -->|upload avatar / get public URL| SupabaseStorage
+
+  SupabaseAuth -->|session token| App
+  SupabaseDB -->|task+note records| App
+  SupabaseStorage -->|avatar URLs| App
