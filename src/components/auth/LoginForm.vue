@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { requiredValidator, emailValidator, passwordValidator } from '@/utils/validators'
 import { supabase, formActionDefault } from '@/utils/supabase'
+import SocialSignIn from './SocialSignIn.vue'
 import { useRouter } from 'vue-router'
 import AlertNotification from '@/components/common/AlertNotification.vue'
 import ForgotPasswordForm from './ForgotPasswordForm.vue'
@@ -10,7 +11,7 @@ import {
   recordFailedAttempt,
   recordSuccessfulLogin,
   formatRemainingTime,
-  getLockoutConfig
+  getLockoutConfig,
 } from '@/utils/loginAttempts'
 
 // Load variables
@@ -46,7 +47,7 @@ const toggleForgotPassword = () => {
 const checkEmailLockout = () => {
   if (formData.value.email) {
     lockoutStatus.value = checkLockoutStatus(formData.value.email)
-    
+
     if (lockoutStatus.value.isLocked) {
       startCountdown()
     } else {
@@ -58,10 +59,10 @@ const checkEmailLockout = () => {
 // Start countdown timer
 const startCountdown = () => {
   stopCountdown() // Clear any existing countdown
-  
+
   countdownInterval.value = setInterval(() => {
     lockoutStatus.value = checkLockoutStatus(formData.value.email)
-    
+
     if (!lockoutStatus.value.isLocked) {
       stopCountdown()
     }
@@ -88,7 +89,7 @@ const onSubmit = async () => {
   formAction.value = { ...formActionDefault }
   // Turn on processing
   formAction.value.formProcess = true
-  
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email: formData.value.email,
     password: formData.value.password,
@@ -97,10 +98,10 @@ const onSubmit = async () => {
   // Add error message and status code
   if (error) {
     console.error(error)
-    
+
     // Record failed attempt
     lockoutStatus.value = recordFailedAttempt(formData.value.email)
-    
+
     if (lockoutStatus.value.isLocked) {
       formAction.value.formErrorMessage = `Too many failed attempts. Account locked for ${lockoutConfig.lockoutDurationMinutes} minutes.`
       startCountdown()
@@ -108,13 +109,17 @@ const onSubmit = async () => {
       const attemptsLeft = lockoutStatus.value.attemptsLeft
       formAction.value.formErrorMessage = `${error.message} (${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining)`
     }
-    
+
     formAction.value.formStatus = error.status
   } else if (data) {
     // Record successful login
     recordSuccessfulLogin(formData.value.email)
-    lockoutStatus.value = { isLocked: false, remainingTime: 0, attemptsLeft: lockoutConfig.maxAttempts }
-    
+    lockoutStatus.value = {
+      isLocked: false,
+      remainingTime: 0,
+      attemptsLeft: lockoutConfig.maxAttempts,
+    }
+
     // Add success message
     formAction.value.formSuccessMessage = 'Successfully Logged In.'
     router.replace('/pages/home')
@@ -142,11 +147,13 @@ const onFormSubmit = () => {
     formAction.value.formErrorMessage = `Account temporarily locked. Try again in ${formatRemainingTime(lockoutStatus.value.remainingTime)}.`
     return
   }
-  
+
   refVform.value?.validate().then(({ valid }) => {
     if (valid) onSubmit()
   })
 }
+
+// Google sign-in handled by SocialSignIn component
 </script>
 <template>
   <!-- Show Forgot Password Form -->
@@ -157,104 +164,118 @@ const onFormSubmit = () => {
   <!-- Show Login Form -->
   <div v-else>
     <!-- Lockout Warning Banner -->
-  <v-alert
-    v-if="lockoutStatus.isLocked"
-    type="warning"
-    variant="tonal"
-    class="mb-4"
-    prominent
-    border="start"
-  >
-    <v-alert-title class="font-weight-bold">
-      <v-icon class="mr-2">mdi-lock-clock</v-icon>
-      Account Temporarily Locked
-    </v-alert-title>
-    <div class="mt-2">
-      Too many failed login attempts. Please try again in:
-      <strong class="text-error">{{ formatRemainingTime(lockoutStatus.remainingTime) }}</strong>
-    </div>
-    <div class="text-caption mt-1">
-      For security purposes, accounts are locked for {{ lockoutConfig.lockoutDurationMinutes }} minutes after {{ lockoutConfig.maxAttempts }} failed attempts.
-    </div>
-  </v-alert>
-
-  <!-- Attempt Warning -->
-  <v-alert
-    v-else-if="!lockoutStatus.isLocked && lockoutStatus.attemptsLeft < lockoutConfig.maxAttempts && formData.email"
-    type="warning"
-    variant="tonal"
-    class="mb-4"
-    density="compact"
-  >
-    <div class="d-flex align-center">
-      <v-icon class="mr-2">mdi-alert</v-icon>
-      <span>
-        {{ lockoutStatus.attemptsLeft }} login attempt{{ lockoutStatus.attemptsLeft !== 1 ? 's' : '' }} remaining
-      </span>
-    </div>
-  </v-alert>
-
-  <AlertNotification
-    :form-success-message="formAction.formSuccessMessage"
-    :form-error-message="formAction.formErrorMessage"
-  />
-  
-  <v-form ref="refVform" @submit.prevent="onFormSubmit">
-    <v-text-field
-      v-model="formData.email"
-      label="Email"
-      variant="outlined"
-      prepend-inner-icon="mdi-email"
-      :rules="[requiredValidator, emailValidator]"
-      :disabled="lockoutStatus.isLocked"
-      @input="checkEmailLockout"
-      @blur="checkEmailLockout"
-    ></v-text-field>
-
-    <v-text-field
-      v-model="formData.password"
-      variant="outlined"
-      prepend-inner-icon="mdi-lock-outline"
-      label="Password"
-      :type="visible ? 'text' : 'password'"
-      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-      @click:append-inner="visible = !visible"
-      :rules="[requiredValidator, passwordValidator]"
-      :disabled="lockoutStatus.isLocked"
-    ></v-text-field>
-
-    <v-btn
-      class="mt-2 text-white"
-      type="submit"
-      color="cyan-lighten-2"
-      rounded="xl"
-      block
-      prepend-icon="mdi-login"
-      :disabled="isFormDisabled"
-      :loading="formAction.formProcess"
+    <v-alert
+      v-if="lockoutStatus.isLocked"
+      type="warning"
+      variant="tonal"
+      class="mb-4"
+      prominent
+      border="start"
     >
-      {{ lockoutStatus.isLocked ? 'Account Locked' : 'Log in' }}
-    </v-btn>
+      <v-alert-title class="font-weight-bold">
+        <v-icon class="mr-2">mdi-lock-clock</v-icon>
+        Account Temporarily Locked
+      </v-alert-title>
+      <div class="mt-2">
+        Too many failed login attempts. Please try again in:
+        <strong class="text-error">{{ formatRemainingTime(lockoutStatus.remainingTime) }}</strong>
+      </div>
+      <div class="text-caption mt-1">
+        For security purposes, accounts are locked for
+        {{ lockoutConfig.lockoutDurationMinutes }} minutes after
+        {{ lockoutConfig.maxAttempts }} failed attempts.
+      </div>
+    </v-alert>
 
-    <!-- Forgot Password Link -->
-    <div class="text-center mt-3">
-      <v-btn
-        variant="text"
-        color="cyan-darken-2"
-        size="small"
-        @click="toggleForgotPassword"
+    <!-- Attempt Warning -->
+    <v-alert
+      v-else-if="
+        !lockoutStatus.isLocked &&
+        lockoutStatus.attemptsLeft < lockoutConfig.maxAttempts &&
+        formData.email
+      "
+      type="warning"
+      variant="tonal"
+      class="mb-4"
+      density="compact"
+    >
+      <div class="d-flex align-center">
+        <v-icon class="mr-2">mdi-alert</v-icon>
+        <span>
+          {{ lockoutStatus.attemptsLeft }} login attempt{{
+            lockoutStatus.attemptsLeft !== 1 ? 's' : ''
+          }}
+          remaining
+        </span>
+      </div>
+    </v-alert>
+
+    <AlertNotification
+      :form-success-message="formAction.formSuccessMessage"
+      :form-error-message="formAction.formErrorMessage"
+    />
+
+    <v-form ref="refVform" @submit.prevent="onFormSubmit">
+      <v-text-field
+        v-model="formData.email"
+        label="Email"
+        variant="outlined"
+        prepend-inner-icon="mdi-email"
+        :rules="[requiredValidator, emailValidator]"
         :disabled="lockoutStatus.isLocked"
+        @input="checkEmailLockout"
+        @blur="checkEmailLockout"
+      ></v-text-field>
+
+      <v-text-field
+        v-model="formData.password"
+        variant="outlined"
+        prepend-inner-icon="mdi-lock-outline"
+        label="Password"
+        :type="visible ? 'text' : 'password'"
+        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+        @click:append-inner="visible = !visible"
+        :rules="[requiredValidator, passwordValidator]"
+        :disabled="lockoutStatus.isLocked"
+      ></v-text-field>
+
+      <v-btn
+        class="mt-2 text-white"
+        type="submit"
+        color="cyan-lighten-2"
+        rounded="xl"
+        block
+        prepend-icon="mdi-login"
+        :disabled="isFormDisabled"
+        :loading="formAction.formProcess"
       >
-        <v-icon left size="small" class="mr-1">mdi-lock-question</v-icon>
-        Forgot Password?
+        {{ lockoutStatus.isLocked ? 'Account Locked' : 'Log in' }}
       </v-btn>
-    </div>
-    
-    <!-- Security Information -->
-    <div class="text-caption text-center mt-3 text-grey-darken-1">
-      <v-icon size="small" class="mr-1">mdi-shield-check</v-icon>
-      For security, accounts are temporarily locked after {{ lockoutConfig.maxAttempts }} failed attempts
-    </div>
-  </v-form>
-  </div> <!-- End of login form container -->
+
+      <!-- Social sign-in buttons -->
+      <SocialSignIn :disabled="isFormDisabled" />
+
+      <!-- Forgot Password Link -->
+      <div class="text-center mt-3">
+        <v-btn
+          variant="text"
+          color="cyan-darken-2"
+          size="small"
+          @click="toggleForgotPassword"
+          :disabled="lockoutStatus.isLocked"
+        >
+          <v-icon left size="small" class="mr-1">mdi-lock-question</v-icon>
+          Forgot Password?
+        </v-btn>
+      </div>
+
+      <!-- Security Information -->
+      <div class="text-caption text-center mt-3 text-grey-darken-1">
+        <v-icon size="small" class="mr-1">mdi-shield-check</v-icon>
+        For security, accounts are temporarily locked after {{ lockoutConfig.maxAttempts }} failed
+        attempts
+      </div>
+    </v-form>
+  </div>
+  <!-- End of login form container -->
 </template>

@@ -67,3 +67,23 @@ export const deleteUserAccount = async () => {
     throw error
   }
 }
+
+// Function to initiate Google OAuth sign-in via Supabase
+export const signInWithGoogle = async (options = {}) => {
+  try {
+    // Supabase will redirect the user to Google for OAuth flow
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options,
+    })
+
+    if (error) {
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Error initiating Google sign-in:', error.message || error)
+    throw error
+  }
+}

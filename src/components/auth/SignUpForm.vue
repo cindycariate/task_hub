@@ -8,6 +8,7 @@ import {
 } from '@/utils/validators'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import AlertNotification from '@/components/common/AlertNotification.vue'
+import SocialSignIn from './SocialSignIn.vue'
 import { useRouter } from 'vue-router'
 
 // Load variables
@@ -140,5 +141,8 @@ const onFormSubmit = () => {
     >
       Sign up
     </v-btn>
+
+    <!-- Social Sign-in (Google) -->
+    <SocialSignIn :disabled="formAction.formProcess" />
   </v-form>
 </template>

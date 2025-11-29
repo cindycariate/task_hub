@@ -2,6 +2,8 @@
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { supabase } from '@/utils/supabase'
+import { useAuthStore } from '@/stores/authStore'
 
 // Vuetify
 import '@mdi/font/css/materialdesignicons.css'
@@ -23,7 +25,8 @@ const vuetify = createVuetify({
   directives,
 })
 
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
 app.use(router)
 app.use(vuetify)
 
@@ -33,3 +36,30 @@ if (import.meta.env.DEV) {
 }
 
 app.mount('#app')
+
+// Initialize auth store and subscribe to auth state changes
+try {
+  const authStore = useAuthStore()
+
+  // Set initial session if present
+  ;(async () => {
+    try {
+      const { data } = await supabase.auth.getSession()
+      authStore.setSession(data.session)
+    } catch (err) {
+      console.warn('Failed to get initial Supabase session:', err)
+    }
+  })()
+
+  // Listen for auth state changes and update the store
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      authStore.setSession(session)
+    } else {
+      authStore.clearSession()
+    }
+  })
+} catch (err) {
+  // If something fails here, don't block app startup
+  console.error('Auth listener setup error:', err)
+}
