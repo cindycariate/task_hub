@@ -15,7 +15,7 @@ export const sendDeadlineEmail = async (taskId, userId, taskTitle, deadline) => 
     const projectUrl = supabase.supabaseUrl
     const functionName = 'send_deadline_email'
 
-    // Get current session for auth token
+    // Get current session for auth token and user email
     const {
       data: { session },
       error: sessionError,
@@ -23,6 +23,11 @@ export const sendDeadlineEmail = async (taskId, userId, taskTitle, deadline) => 
 
     if (sessionError || !session?.access_token) {
       throw new Error('No active session')
+    }
+
+    const userEmail = session.user?.email
+    if (!userEmail) {
+      throw new Error('User email not found in session')
     }
 
     // Call the Edge Function
@@ -37,6 +42,7 @@ export const sendDeadlineEmail = async (taskId, userId, taskTitle, deadline) => 
         userId,
         taskTitle,
         deadline,
+        userEmail,
       }),
     })
 

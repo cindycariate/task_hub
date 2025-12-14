@@ -175,7 +175,10 @@ export const useTaskStore = defineStore('taskStore', {
     async checkDeadlineNotifications() {
       try {
         // Get current session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession()
         if (sessionError || !session?.user?.id) {
           console.warn('No authenticated user for email notifications')
           return
@@ -195,7 +198,7 @@ export const useTaskStore = defineStore('taskStore', {
           if (hoursUntil > 0 && hoursUntil <= 24) {
             const notificationKey = `deadline-email-${task.id}`
             const storedNotifications = JSON.parse(
-              localStorage.getItem('deadlineEmailNotifications') || '{}'
+              localStorage.getItem('deadlineEmailNotifications') || '{}',
             )
 
             const lastNotified = storedNotifications[notificationKey]
@@ -209,7 +212,10 @@ export const useTaskStore = defineStore('taskStore', {
 
                 // Mark as sent today
                 storedNotifications[notificationKey] = today
-                localStorage.setItem('deadlineEmailNotifications', JSON.stringify(storedNotifications))
+                localStorage.setItem(
+                  'deadlineEmailNotifications',
+                  JSON.stringify(storedNotifications),
+                )
               } catch (error) {
                 console.error(`❌ Failed to send email for task ${task.id}:`, error)
               }
@@ -219,7 +225,7 @@ export const useTaskStore = defineStore('taskStore', {
       } catch (error) {
         console.error('Error checking deadline notifications:', error)
       }
-    }
+    },
 
     async addTask(task) {
       try {
