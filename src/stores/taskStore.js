@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { supabase } from '@/utils/supabase'
+import { sendDeadlineEmail } from '@/utils/emailNotifier'
 
 export const useTaskStore = defineStore('taskStore', {
   state: () => ({
@@ -170,6 +171,55 @@ export const useTaskStore = defineStore('taskStore', {
         console.error('Error logging out:', error.message)
       }
     },
+
+    async checkDeadlineNotifications() {
+      try {
+        // Get current session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        if (sessionError || !session?.user?.id) {
+          console.warn('No authenticated user for email notifications')
+          return
+        }
+
+        const userId = session.user.id
+
+        // Check each task for near deadlines
+        this.tasks.forEach(async (task) => {
+          if (!task.deadline) return
+
+          const now = new Date()
+          const deadlineDate = new Date(task.deadline)
+          const hoursUntil = (deadlineDate - now) / (1000 * 60 * 60)
+
+          // If deadline is within 24 hours and not already passed
+          if (hoursUntil > 0 && hoursUntil <= 24) {
+            const notificationKey = `deadline-email-${task.id}`
+            const storedNotifications = JSON.parse(
+              localStorage.getItem('deadlineEmailNotifications') || '{}'
+            )
+
+            const lastNotified = storedNotifications[notificationKey]
+            const today = new Date().toDateString()
+
+            // Only send email once per day per task
+            if (lastNotified !== today) {
+              try {
+                await sendDeadlineEmail(task.id, userId, task.title, task.deadline)
+                console.log(`✅ Deadline email sent for task: ${task.title}`)
+
+                // Mark as sent today
+                storedNotifications[notificationKey] = today
+                localStorage.setItem('deadlineEmailNotifications', JSON.stringify(storedNotifications))
+              } catch (error) {
+                console.error(`❌ Failed to send email for task ${task.id}:`, error)
+              }
+            }
+          }
+        })
+      } catch (error) {
+        console.error('Error checking deadline notifications:', error)
+      }
+    }
 
     async addTask(task) {
       try {
