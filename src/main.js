@@ -2,8 +2,6 @@
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { supabase } from '@/utils/supabase'
-import { useAuthStore } from '@/stores/authStore'
 
 // Vuetify
 import '@mdi/font/css/materialdesignicons.css'
@@ -37,29 +35,21 @@ if (import.meta.env.DEV) {
 
 app.mount('#app')
 
-// Initialize auth store and subscribe to auth state changes
-try {
-  const authStore = useAuthStore()
-
-  // Set initial session if present
-  ;(async () => {
-    try {
-      const { data } = await supabase.auth.getSession()
-      authStore.setSession(data.session)
-    } catch (err) {
-      console.warn('Failed to get initial Supabase session:', err)
-    }
-  })()
-
-  // Listen for auth state changes and update the store
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (session) {
-      authStore.setSession(session)
-    } else {
-      authStore.clearSession()
-    }
-  })
-} catch (err) {
-  // If something fails here, don't block app startup
-  console.error('Auth listener setup error:', err)
+// Request browser notification permission
+if ('Notification' in window && Notification.permission === 'default') {
+  Notification.requestPermission()
 }
+
+// Check for deadline notifications on app load
+;(async () => {
+  try {
+    // Wait a bit for stores to be ready
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    const { useTaskStore } = await import('@/stores/taskStore')
+    const taskStore = useTaskStore()
+    await taskStore.checkDeadlineNotifications()
+  } catch (err) {
+    console.warn('Deadline check failed on app load:', err)
+  }
+})()
