@@ -3,14 +3,14 @@
 import { supabase } from '@/utils/supabase'
 
 /**
- * Send deadline email notification via Supabase Edge Function
+ * Send deadline email notification via Supabase Edge Function (Manual Trigger)
+ * Used as a fallback if the scheduled edge function fails
  * @param {string} taskId - Task ID
- * @param {string} userId - User ID
  * @param {string} taskTitle - Task title
  * @param {string|Date} deadline - Task deadline
  * @returns {Promise<Object>} Response from function
  */
-export const sendDeadlineEmail = async (taskId, userId, taskTitle, deadline) => {
+export const sendDeadlineEmail = async (taskId, taskTitle, deadline) => {
   try {
     const projectUrl = supabase.supabaseUrl
     const functionName = 'send_deadline_email'
@@ -30,6 +30,11 @@ export const sendDeadlineEmail = async (taskId, userId, taskTitle, deadline) => 
       throw new Error('User email not found in session')
     }
 
+    // Calculate hours until deadline
+    const deadlineDate = new Date(deadline)
+    const now = Date.now()
+    const hoursLeft = Math.floor((deadlineDate.getTime() - now) / (1000 * 60 * 60))
+
     // Call the Edge Function
     const response = await fetch(`${projectUrl}/functions/v1/${functionName}`, {
       method: 'POST',
@@ -39,10 +44,10 @@ export const sendDeadlineEmail = async (taskId, userId, taskTitle, deadline) => 
       },
       body: JSON.stringify({
         taskId,
-        userId,
         taskTitle,
         deadline,
         userEmail,
+        hoursLeft,
       }),
     })
 
