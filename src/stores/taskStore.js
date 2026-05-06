@@ -375,6 +375,14 @@ export const useTaskStore = defineStore('taskStore', {
         // Handle notes separately if provided
         if (Object.prototype.hasOwnProperty.call(updatedTask, 'notes')) {
           try {
+            // Get the current user's ID for RLS policy compliance
+            const { data: userData, error: userError } = await supabase.auth.getUser()
+            if (userError || !userData?.user?.id) {
+              console.error('Error getting current user for note operations')
+              return
+            }
+            const currentUserId = userData.user.id
+
             if (updatedTask.notes && updatedTask.notes.trim()) {
               // Check if note exists for this task
               const { data: existingNote, error: fetchError } = await supabase
@@ -404,7 +412,7 @@ export const useTaskStore = defineStore('taskStore', {
                 // Create new note using correct 'notes' column
                 const noteData = {
                   task_id: taskId,
-                  user_id: data[0]?.user_id || updatedTask.user_id,
+                  user_id: currentUserId,
                   notes: updatedTask.notes.trim(),
                 }
 
