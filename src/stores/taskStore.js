@@ -452,13 +452,35 @@ export const useTaskStore = defineStore('taskStore', {
     },
     async deleteTask(taskId) {
       try {
-        const { error } = await supabase.from('tasks').delete().eq('id', taskId)
+        // First, check if we're authenticated
+        const { data: user, error: authError } = await supabase.auth.getUser()
+        if (authError || !user?.user) {
+          throw new Error('You must be logged in to delete a task')
+        }
 
-        if (error) throw error
+        // Delete associated notes first (to avoid foreign key constraint violation)
+        const { error: notesError } = await supabase.from('notes').delete().eq('task_id', taskId)
 
+        if (notesError) {
+          console.warn('Warning deleting notes:', notesError.message)
+          // Continue with task deletion even if notes deletion fails
+        }
+
+        // Delete the task from the database
+        const { error: taskError } = await supabase.from('tasks').delete().eq('id', taskId)
+
+        if (taskError) throw taskError
+
+        // Remove from local state immediately
         this.tasks = this.tasks.filter((task) => task.id !== taskId)
+
+        // Refetch tasks to verify deletion and ensure UI is in sync
+        await this.fetchTasksForUser(user.user.id)
+
+        return { success: true, message: 'Task deleted successfully' }
       } catch (error) {
         console.error('Error deleting task:', error.message)
+        return { success: false, message: error.message || 'Failed to delete task' }
       }
     },
 

@@ -85,13 +85,13 @@ const saveEditTask = async () => {
     })
 
     console.log('Task saved successfully')
-    
+
     // Refresh tasks to ensure UI shows updated data
     const { data: user, error: userError } = await supabase.auth.getUser()
     if (!userError && user?.user?.id) {
       await taskStore.fetchTasksForUser(user.user.id)
     }
-    
+
     isEditDialogVisible.value = false
   } catch (error) {
     console.error('Error saving task:', error.message)
@@ -100,11 +100,36 @@ const saveEditTask = async () => {
 // Computed properties to categorize tasks by priority
 // const tasks = computed(() => taskStore.tasks)
 
+// State for notifications
+const deleteNotification = ref({
+  success: false,
+  error: false,
+  message: '',
+})
+
 // Function to delete a task
 const deleteTask = async (index) => {
   const task = taskStore.tasks[index]
   if (confirm('Are you sure you want to delete this task?')) {
-    await taskStore.deleteTask(task.id)
+    const result = await taskStore.deleteTask(task.id)
+
+    if (result.success) {
+      deleteNotification.value.success = true
+      deleteNotification.value.error = false
+      deleteNotification.value.message = result.message
+      // Clear notification after 3 seconds
+      setTimeout(() => {
+        deleteNotification.value.success = false
+      }, 3000)
+    } else {
+      deleteNotification.value.success = false
+      deleteNotification.value.error = true
+      deleteNotification.value.message = result.message
+      // Clear notification after 5 seconds
+      setTimeout(() => {
+        deleteNotification.value.error = false
+      }, 5000)
+    }
   }
 }
 
@@ -138,6 +163,31 @@ const nearingDeadlineTasks = computed(() => {
         <v-card>
           <v-tabs v-model="tab" class="auth-background tabs-head"> </v-tabs>
           <v-container fluid>
+            <!-- Notification Alerts -->
+            <v-alert
+              v-if="deleteNotification.success"
+              :text="deleteNotification.message"
+              title="Success!"
+              type="success"
+              variant="tonal"
+              density="compact"
+              border="start"
+              closable
+              class="mb-4"
+            >
+            </v-alert>
+            <v-alert
+              v-if="deleteNotification.error"
+              :text="deleteNotification.message"
+              title="Error!"
+              type="error"
+              variant="tonal"
+              density="compact"
+              border="start"
+              closable
+              class="mb-4"
+            ></v-alert>
+
             <v-row>
               <!-- First Column: My Tasks -->
               <v-col :cols="12" md="8">
