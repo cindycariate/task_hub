@@ -121,7 +121,8 @@ onMounted(async () => {
 
     // Get avatar URL from user metadata
     user.value.avatarUrl = session.session.user.user_metadata?.avatar_url || ''
-    return false
+  } catch (error) {
+    console.error('Unexpected error:', error)
   }
 }
 

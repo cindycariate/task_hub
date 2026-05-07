@@ -10,11 +10,6 @@ const searchQuery = ref('')
 // for the tabs part
 const tab = ref('one')
 
-// Toggle function for the sidebar
-const toggleSidebar = () => {
-  isDrawerVisible.value = !isDrawerVisible.value
-}
-
 // Initialize the task store
 const taskStore = useTaskStore()
 
