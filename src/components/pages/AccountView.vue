@@ -12,6 +12,7 @@ const isLoading = ref(false)
 
 // For user profile
 const user = ref({
+  username: '',
   email: '',
   currentPassword: '',
   newPassword: '',
@@ -89,6 +90,15 @@ const confirmPasswordRules = [
   (v) => v === user.value.newPassword || 'Passwords do not match',
 ]
 
+const usernameRules = [
+  (v) => !!v || 'Username is required',
+  (v) => v.length >= 3 || 'Username must be at least 3 characters',
+  (v) => v.length <= 20 || 'Username must not exceed 20 characters',
+  (v) =>
+    /^[a-zA-Z0-9_-]*$/.test(v) ||
+    'Username can only contain letters, numbers, underscore, and hyphen',
+]
+
 onMounted(async () => {
   try {
     const { data: session, error: authError } = await supabase.auth.getSession()
@@ -99,6 +109,9 @@ onMounted(async () => {
 
     // Get user email from auth
     user.value.email = session.session.user.email || ''
+
+    // Get username from user metadata
+    user.value.username = session.session.user.user_metadata?.username || ''
   } catch (error) {
     console.error('Unexpected error:', error)
   }
@@ -138,6 +151,11 @@ const handleUpdateUserProfile = async () => {
 
     // Update user profile
     const updates = {}
+
+    // Update username in metadata
+    if (user.value.username) {
+      updates.data = { username: user.value.username }
+    }
 
     // Update email if changed
     if (user.value.email) {
@@ -215,8 +233,71 @@ const handleUpdateUserProfile = async () => {
             </v-row>
 
             <v-form>
+              <!-- Username Settings Section -->
+              <v-row class="mb-2">
+                <v-col cols="12">
+                  <p
+                    class="text-h6 mb-2"
+                    style="color: #00838f; font-family: 'Poppins', sans-serif; font-weight: bold"
+                  >
+                    <v-icon class="mr-2" color="cyan-darken-2" size="20"
+                      >mdi-account-outline</v-icon
+                    >
+                    Username Settings
+                  </p>
+                  <p
+                    style="
+                      font-size: 12px;
+                      color: #757575;
+                      font-family: 'Poppins', sans-serif;
+                      margin-bottom: 16px;
+                    "
+                  >
+                    Choose a unique username for your profile.
+                  </p>
+                </v-col>
+              </v-row>
+
+              <!-- Username Field -->
+              <v-row class="mb-6">
+                <v-col cols="12" md="8" class="mb-3">
+                  <v-text-field
+                    label="Username"
+                    v-model="user.username"
+                    :rules="usernameRules"
+                    variant="outlined"
+                    color="cyan-darken-3"
+                    prepend-inner-icon="mdi-account"
+                    placeholder="e.g., john_doe"
+                  />
+                </v-col>
+              </v-row>
+
+              <!-- Email Settings Section -->
+              <v-row class="mb-2">
+                <v-col cols="12">
+                  <p
+                    class="text-h6 mb-2"
+                    style="color: #00838f; font-family: 'Poppins', sans-serif; font-weight: bold"
+                  >
+                    <v-icon class="mr-2" color="cyan-darken-2" size="20">mdi-email-outline</v-icon>
+                    Email Settings
+                  </p>
+                  <p
+                    style="
+                      font-size: 12px;
+                      color: #757575;
+                      font-family: 'Poppins', sans-serif;
+                      margin-bottom: 16px;
+                    "
+                  >
+                    Update your email address.
+                  </p>
+                </v-col>
+              </v-row>
+
               <!-- Email Address Field -->
-              <v-row>
+              <v-row class="mb-6">
                 <v-col cols="12" md="8" class="mb-3">
                   <v-text-field
                     label="Email Address"
