@@ -5,6 +5,7 @@ import { useTaskStore } from '@/stores/taskStore'
 import { supabase } from '@/utils/supabase'
 
 const isDrawerVisible = ref(true)
+const searchQuery = ref('')
 
 // for the tabs part
 const tab = ref('one')
@@ -45,6 +46,22 @@ const inprogressTasks = computed(() =>
 )
 const doneTasks = computed(() => taskStore.tasks.filter((task) => task.status_name === 'Done'))
 
+// Search filter function
+const matchesSearch = (task) => {
+  const query = searchQuery.value.toLowerCase()
+  if (!query) return true
+  return (
+    task.title.toLowerCase().includes(query) ||
+    (task.description && task.description.toLowerCase().includes(query)) ||
+    (task.notes && task.notes.toLowerCase().includes(query))
+  )
+}
+
+// Filtered computed properties based on search
+const filteredTodoTasks = computed(() => todoTasks.value.filter(matchesSearch))
+const filteredInprogressTasks = computed(() => inprogressTasks.value.filter(matchesSearch))
+const filteredDoneTasks = computed(() => doneTasks.value.filter(matchesSearch))
+
 // Function to delete a task
 const deleteTask = async (taskId) => {
   if (confirm('Are you sure you want to delete this task?')) {
@@ -63,6 +80,16 @@ const deleteTask = async (taskId) => {
             <v-tab value="two">In Progress</v-tab>
             <v-tab value="three">Done</v-tab>
           </v-tabs>
+
+          <!-- Search Bar Section -->
+          <div class="pa-4">
+            <v-text-field
+              v-model="searchQuery"
+              placeholder="Search by title, description, or notes..."
+              prepend-inner-icon="mdi-magnify"
+              single-line
+            ></v-text-field>
+          </div>
 
           <v-card-text>
             <v-tabs-window v-model="tab">
@@ -84,8 +111,11 @@ const deleteTask = async (taskId) => {
                     <v-row>
                       <v-col cols="12" class="pa-4">
                         <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
+                        <div v-if="filteredTodoTasks.length === 0" class="text-center pa-4">
+                          <p class="text-gray">No tasks match your search.</p>
+                        </div>
                         <v-card
-                          v-for="task in todoTasks"
+                          v-for="task in filteredTodoTasks"
                           :key="task.id"
                           class="mb-5 custom-border"
                           elevation="0"
@@ -134,8 +164,11 @@ const deleteTask = async (taskId) => {
                     <v-row>
                       <v-col cols="12" class="pa-4">
                         <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
+                        <div v-if="filteredInprogressTasks.length === 0" class="text-center pa-4">
+                          <p class="text-gray">No tasks match your search.</p>
+                        </div>
                         <v-card
-                          v-for="task in inprogressTasks"
+                          v-for="task in filteredInprogressTasks"
                           :key="task.id"
                           class="mb-5 custom-border"
                           elevation="0"
@@ -184,8 +217,11 @@ const deleteTask = async (taskId) => {
                     <v-row>
                       <v-col cols="12" class="pa-4">
                         <h3 class="text-h6 mb-4"><strong>Tasks</strong></h3>
+                        <div v-if="filteredDoneTasks.length === 0" class="text-center pa-4">
+                          <p class="text-gray">No tasks match your search.</p>
+                        </div>
                         <v-card
-                          v-for="task in doneTasks"
+                          v-for="task in filteredDoneTasks"
                           :key="task.id"
                           class="mb-5 custom-border"
                           elevation="0"

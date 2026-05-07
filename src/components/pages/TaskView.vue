@@ -6,6 +6,7 @@ import { supabase } from '@/utils/supabase'
 
 const isDrawerVisible = ref(true)
 const taskStore = useTaskStore()
+const searchQuery = ref('')
 
 // Fetch tasks for the logged-in user when the component is mounted
 onMounted(async () => {
@@ -154,6 +155,22 @@ const nearingDeadlineTasks = computed(() => {
     return diffDays <= 3 && task.deadline !== todayString
   })
 })
+
+// Search filter function
+const matchesSearch = (task) => {
+  const query = searchQuery.value.toLowerCase()
+  if (!query) return true
+  return (
+    task.title.toLowerCase().includes(query) ||
+    (task.description && task.description.toLowerCase().includes(query)) ||
+    (task.notes && task.notes.toLowerCase().includes(query))
+  )
+}
+
+// Filtered tasks based on search query
+const filteredTasks = computed(() => {
+  return taskStore.tasks.filter(matchesSearch)
+})
 </script>
 
 <template>
@@ -203,11 +220,23 @@ const nearingDeadlineTasks = computed(() => {
                   >Stay on Top of Your Tasks</v-card-subtitle
                 >
 
+                <!-- Search Bar -->
+                <v-text-field
+                  v-model="searchQuery"
+                  placeholder="Search by title, description, or notes..."
+                  prepend-inner-icon="mdi-magnify"
+                  class="mb-4"
+                  single-line
+                ></v-text-field>
+
                 <!-- Task List -->
                 <div v-if="taskStore.loading">Loading tasks...</div>
+                <div v-else-if="filteredTasks.length === 0" class="text-center pa-4">
+                  <p class="text-gray">No tasks match your search.</p>
+                </div>
                 <div v-else>
                   <v-row
-                    v-for="(task, index) in taskStore.tasks"
+                    v-for="(task, index) in filteredTasks"
                     :key="index"
                     class="task-container mb-2 align-center"
                     align="center"
