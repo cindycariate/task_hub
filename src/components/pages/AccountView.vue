@@ -17,7 +17,13 @@ const user = ref({
   currentPassword: '',
   newPassword: '',
   confirmPassword: '',
+  avatarUrl: '',
 })
+
+// Avatar upload state
+const avatarFile = ref(null)
+const uploadingAvatar = ref(false)
+const fileInput = ref(null)
 
 // Snackbar for feedback
 const snackbar = ref(false)
@@ -112,20 +118,75 @@ onMounted(async () => {
 
     // Get username from user metadata
     user.value.username = session.session.user.user_metadata?.username || ''
-  } catch (error) {
-    console.error('Unexpected error:', error)
-  }
-})
 
-const verifyCurrentPassword = async (email, password) => {
-  try {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    return !error
-  } catch (error) {
+    // Get avatar URL from user metadata
+    user.value.avatarUrl = session.session.user.user_metadata?.avatar_url || ''
     return false
+  }
+}
+
+const handleAvatarUpload = async (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+
+  uploadingAvatar.value = true
+  try {
+    const { data: session, error: authError } = await supabase.auth.getSession()
+    if (authError || !session?.session?.user?.id) {
+      snackbarMessage.value = 'User not authenticated'
+      snackbarColor.value = 'error'
+      snackbar.value = true
+      return
+    }
+
+    const userId = session.session.user.id
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${userId}-${Date.now()}.${fileExt}`
+    const filePath = `avatars/${fileName}`
+
+    // Upload file to Supabase storage
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true })
+
+    if (uploadError) {
+      console.error('Upload error:', uploadError)
+      snackbarMessage.value = 'Failed to upload avatar'
+      snackbarColor.value = 'error'
+      snackbar.value = true
+      return
+    }
+
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath)
+
+    const avatarUrl = publicUrlData?.publicUrl
+
+    // Update user metadata with avatar URL
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { avatar_url: avatarUrl },
+    })
+
+    if (updateError) {
+      snackbarMessage.value = 'Failed to update avatar'
+      snackbarColor.value = 'error'
+    } else {
+      user.value.avatarUrl = avatarUrl
+      snackbarMessage.value = 'Avatar updated successfully!'
+      snackbarColor.value = 'success'
+    }
+
+    snackbar.value = true
+  } catch (error) {
+    console.error('Error uploading avatar:', error)
+    snackbarMessage.value = 'An error occurred while uploading avatar'
+    snackbarColor.value = 'error'
+    snackbar.value = true
+  } finally {
+    uploadingAvatar.value = false
+    if (fileInput.value) fileInput.value.value = ''
   }
 }
 
@@ -231,7 +292,47 @@ const handleUpdateUserProfile = async () => {
                 </p>
               </v-col>
             </v-row>
+            <!-- Avatar Section -->
+            <v-row class="mb-6">
+              <v-col cols="12" md="8">
+                <div class="d-flex align-center">
+                  <!-- Avatar Display -->
+                  <div class="mr-4">
+                    <v-avatar size="100" color="cyan-darken-2" class="border-avatar">
+                      <img v-if="user.avatarUrl" :src="user.avatarUrl" alt="Profile Avatar" />
+                      <v-icon v-else color="white" size="60">mdi-account-circle</v-icon>
+                    </v-avatar>
+                  </div>
 
+                  <!-- Upload Button -->
+                  <div>
+                    <p class="text-body1" style="font-weight: 600; margin-bottom: 8px">
+                      Profile Picture
+                    </p>
+                    <p style="font-size: 12px; color: #757575; margin-bottom: 16px">
+                      PNG, JPG up to 2MB
+                    </p>
+                    <v-btn
+                      color="cyan-darken-2"
+                      variant="outlined"
+                      size="small"
+                      :loading="uploadingAvatar"
+                      @click="$refs.avatarInput?.click()"
+                    >
+                      <v-icon class="mr-2" size="small">mdi-camera-plus</v-icon>
+                      Change Avatar
+                    </v-btn>
+                    <input
+                      ref="fileInput"
+                      type="file"
+                      accept="image/png,image/jpeg"
+                      style="display: none"
+                      @change="handleAvatarUpload"
+                    />
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
             <v-form>
               <!-- Username Settings Section -->
               <v-row class="mb-2">
@@ -496,5 +597,9 @@ p {
 .custom-border {
   border: 2px solid #0097a7;
   border-radius: 8px;
+}
+
+.border-avatar {
+  border: 3px solid #0097a7;
 }
 </style>
