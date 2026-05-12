@@ -124,7 +124,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('Unexpected error:', error)
   }
-}
+})
 
 const handleAvatarUpload = async (event) => {
   const file = event.target.files?.[0]
@@ -159,9 +159,7 @@ const handleAvatarUpload = async (event) => {
     }
 
     // Get public URL
-    const { data: publicUrlData } = supabase.storage
-      .from('avatars')
-      .getPublicUrl(filePath)
+    const { data: publicUrlData } = supabase.storage.from('avatars').getPublicUrl(filePath)
 
     const avatarUrl = publicUrlData?.publicUrl
 

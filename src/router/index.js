@@ -10,6 +10,7 @@ import TaskView from '@/components/pages/TaskView.vue'
 import PriorityView from '@/components/pages/PriorityView.vue'
 import StatusView from '@/components/pages/StatusView.vue'
 import AccountView from '@/components/pages/AccountView.vue'
+import CalendarView from '@/components/pages/CalendarView.vue'
 
 // Check if a user is authenticated using Supabase
 const isAuthenticated = async () => {
@@ -78,6 +79,11 @@ const routes = [
     path: '/pages/status',
     name: 'status',
     component: StatusView,
+  },
+  {
+    path: '/pages/calendar',
+    name: 'calendar',
+    component: CalendarView,
   },
   {
     path: '/pages/accountSettings',

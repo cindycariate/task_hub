@@ -183,6 +183,9 @@ const addTask = async () => {
       <RouterLink to="/pages/priority" @click.stop>
         <v-list-item prepend-icon="mdi-star" title="Priority" value="priority"></v-list-item>
       </RouterLink>
+      <RouterLink to="/pages/calendar" @click.stop>
+        <v-list-item prepend-icon="mdi-calendar" title="Calendar" value="calendar"></v-list-item>
+      </RouterLink>
       <v-divider class="my-5"></v-divider>
       <RouterLink to="/pages/accountSettings" @click.stop>
         <v-list-item
